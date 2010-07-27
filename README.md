@@ -29,6 +29,8 @@ synopsis
 API
 ---
 
+### Creating a node-static Server #
+
 Creating a file server instance is as simple as:
 
     new static.Server();
@@ -45,6 +47,8 @@ You can also specify how long the client is supposed to cache the files node-sta
 This will set the `Cache-Control` header, telling clients to cache the file for an hour.
 This is the default setting.
 
+### Serving files #
+
 To serve files, simply call the `serve` method on a `Server` instance, passing it
 the HTTP request and response object:
 
@@ -56,20 +60,60 @@ the HTTP request and response object:
         });
     }).listen(8080);
 
-An optional callback can be passed as last argument, it will be called if there is
-an error serving the file:
+### Intercepting errors & Listening #
+
+An optional callback can be passed as last argument, it will be called every time a file
+has been served successfully, or if there was an error serving the file:
 
     var fileServer = new static.Server('./public');
 
     require('http').createServer(function (request, response) {
         request.addListener('end', function () {
-            fileServer.serve(request, response, function (status, headers) {
-                sys.error("Error serving " + request.url + " - " + status);
+            fileServer.serve(request, response, function (err, result) {
+                if (err) { // There was an error serving the file
+                    sys.error("Error serving " + request.url + " - " + err.message);
 
-                response.writeHead(status, headers);
-                response.end();
+                    // Respond to the client
+                    response.writeHead(err.status, err.headers);
+                    response.end();
+                }
             });
         });
     }).listen(8080);
 
+Note that if you pass a callback, and there is an error serving the file, node-static
+*will not* respond to the client. This gives you the opportunity to re-route the request,
+or handle it differently.
+
+For example, you may want to interpret a request as a static request, but if the file isn't found,
+send it to an application.
+
+If you only want to *listen* for errors, you can use *event listeners*:
+
+    fileServer.serve(request, response).addListener('error', function (err) {
+        sys.error("Error serving " + request.url + " - " + err.message);
+    });
+
+With this method, you don't have to explicitly send the response back, in case of an error.
+
+### Options when creating an instance of `Server` #
+
+#### `cache` #
+
+Sets the `Cache-Control` header.
+
+example: `{ cache: 7200 }`
+
+Passing a number will set the cache duration to that number of seconds.
+Passing `false` will disable the `Cache-Control` header.
+
+> Defaults to `3600`
+
+#### `headers` #
+
+Sets response headers.
+
+example: `{ 'X-Hello': 'World!' }`
+
+> defaults to `{}`
 
