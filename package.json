@@ -11,5 +11,5 @@
   "main"          : "./lib/node-static",
   "version"       : "0.2.0",
   "directories"   : { "lib": "./lib/node-static", "test": "./test" },
-  "engines"       : { "node": "> 0.1.98" }
+  "engines"       : { "node": ">= 0.1.98" }
 }
