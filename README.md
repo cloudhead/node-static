@@ -3,6 +3,7 @@ node-static
 
 > a simple, *rfc 2616 compliant* file streaming module for [node](http://nodejs.org)
 
+node-static has an in-memory file cache, making it highly efficient.
 node-static understands and supports *conditional GET* and *HEAD* requests.
 node-static was inspired by some of the other static-file serving modules out there,
 such as node-paperboy and antinode.
