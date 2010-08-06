@@ -48,9 +48,9 @@ You can also specify how long the client is supposed to cache the files node-sta
 This will set the `Cache-Control` header, telling clients to cache the file for an hour.
 This is the default setting.
 
-### Serving files #
+### Serving files under a directory #
 
-To serve files, simply call the `serve` method on a `Server` instance, passing it
+To serve files under a directory, simply call the `serve` method on a `Server` instance, passing it
 the HTTP request and response object:
 
     var fileServer = new static.Server('./public');
@@ -60,6 +60,27 @@ the HTTP request and response object:
             fileServer.serve(request, response);
         });
     }).listen(8080);
+
+### Serving specific files #
+
+If you want to serve a specific file, like an error page for example, use the `serveFile` method:
+
+    fileServer.serveFile('/error.html', request, response);
+
+This will serve the `error.html` file, from under the file root directory. For example, you could
+serve an error page, when the initial request wasn't found:
+
+    require('http').createServer(function (request, response) {
+        request.addListener('end', function () {
+            fileServer.serve(request, response, function (e, res) {
+                if (e && (e.status === 404)) { // If the file wasn't found
+                    fileServer.serveFile('/not-found.html', request, response);
+                }
+            });
+        });
+    }).listen(8080);
+
+More on intercepting errors bellow.
 
 ### Intercepting errors & Listening #
 
