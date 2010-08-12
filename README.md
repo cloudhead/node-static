@@ -65,10 +65,10 @@ the HTTP request and response object:
 
 If you want to serve a specific file, like an error page for example, use the `serveFile` method:
 
-    fileServer.serveFile('/error.html', request, response);
+    fileServer.serveFile('/error.html', 500, {}, request, response);
 
-This will serve the `error.html` file, from under the file root directory. For example, you could
-serve an error page, when the initial request wasn't found:
+This will serve the `error.html` file, from under the file root directory, with a `500` status code.
+For example, you could serve an error page, when the initial request wasn't found:
 
     require('http').createServer(function (request, response) {
         request.addListener('end', function () {
