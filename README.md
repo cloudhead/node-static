@@ -139,3 +139,22 @@ example: `{ 'X-Hello': 'World!' }`
 
 > defaults to `{}`
 
+#### `stripPrefix` #
+
+When serving files you may be using routes to redirect to different file
+servers or node applications. In this case you might want to strip part
+of the request URL to lead to the actual path.
+
+For example, if you want to serve all files in `download/` with an instance
+of
+
+    new static.Server('./downloads', { cache: 3600 });
+
+when URLs of the type `http://www.example.com/downloads/abcd.txt` are
+requested. Without `stripPrefix`, the Server will receive `/downloads/abcd.txt`
+and give a 404, with a `stripPrefix` of `downloads`, this will serve the right
+file.
+
+example: `{ stringPrefix: '/downloads/' }`
+
+> defaults to `''`
