@@ -118,24 +118,30 @@ If you only want to *listen* for errors, you can use *event listeners*:
 
 With this method, you don't have to explicitly send the response back, in case of an error.
 
-### Options when creating an instance of `Server` #
+### Setting rfc2616 Cache Options Options # 
+Controling caching is an important part of optimizing your static file server. In node-static a subset of the rfc2616 `Cache-Control` headers are exposed. 
 
-#### `cache` #
+To enable caching set the cache options when creating a node-static server:
 
-Sets the `Cache-Control` header.
+    var cacheServer = new static.Server('./public', { cache: 7200 });
 
-example: `{ cache: 7200 }`
+* Passing a number will set the cache duration to that number of seconds. 
+* Passing `false` will disable the `Cache-Control` header.
+* Default value is `3600`
 
-Passing a number will set the cache duration to that number of seconds.
-Passing `false` will disable the `Cache-Control` header.
+There are additional options you can pass which set additional optional components of the [rfc2616 Cache-Control header][0]:
 
-> Defaults to `3600`
+* `revalidate`: Sets 'must-revalidate' which tells caches that they must obey any freshness information you give them about a representation. HTTP allows caches to serve stale representations under special conditions; by specifying this header, you’re telling the cache that you want it to strictly follow your rules. [Source][1]
+* `public`: Sets 'public' which marks authenticated responses as cacheable; normally, if HTTP authentication is required, responses are automatically private. [Source][1]
+* `private`: Sets 'private' which allows caches that are specific to one user (e.g., in a browser) to store the response; shared caches (e.g., in a proxy) may not. [Source][1]
 
-#### `headers` #
+### Setting Custom Response Headers
 
-Sets response headers.
+It is possible to set custom response headers by setting the `headers` option when creating an instance of a node-static Server.
 
-example: `{ 'X-Hello': 'World!' }`
+    var server = new static.Server('./public', { 'X-Hello': 'World!' });
 
-> defaults to `{}`
+* defaults to `{}`
 
+[0]: http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9
+[1]: http://www.mnot.net/cache_docs/
