@@ -137,5 +137,13 @@ Sets response headers.
 
 example: `{ 'X-Hello': 'World!' }`
 
-> defaults to `{}`
+> Defaults to `{}`
+
+#### `AutoIndex` #
+
+Automatically generates an html index page for directory listings
+
+example: `{ 'AutoIndex': true }`
+
+> Defaults to `false`
 
