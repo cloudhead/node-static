@@ -9,7 +9,7 @@
   "dependencies"  : [],
   "lib"           : "lib",
   "main"          : "./lib/node-static",
-  "version"       : "0.5.3",
+  "version"       : "0.5.4",
   "directories"   : { "test": "./test" },
-  "engines"       : { "node": ">= 0.3.0" }
+  "engines"       : { "node": ">= 0.4.1" }
 }
