@@ -4,7 +4,7 @@ var static = require('../lib/node-static');
 //
 // Create a node-static server to serve the current directory
 //
-var file = new(static.Server)('.', { cache: 7200, headers: {'X-Hello':'World!'} });
+var file = new(static.Server)('.', { cache: 7200, revalidate: true, public: true, headers: {'X-Hello':'World!'} });
 
 require('http').createServer(function (request, response) {
     request.addListener('end', function () {
