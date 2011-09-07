@@ -48,6 +48,21 @@ You can also specify how long the client is supposed to cache the files node-sta
 This will set the `Cache-Control` header, telling clients to cache the file for an hour.
 This is the default setting.
 
+If you have files that need to be filtered through an asynchronous function, add the filter to your options object. The following example will automatically parse lesscss files:
+
+    new static.Server('./public', { cache: 3600,
+        filters: {
+            less: require('less').render
+        }
+    });
+    
+To create a filter, create a function like this:
+
+    function myFilter(data, callback) {
+        // Args: error, data
+        callback(null, 'The data is: ' + data);
+    }
+
 ### Serving files under a directory #
 
 To serve files under a directory, simply call the `serve` method on a `Server` instance, passing it
