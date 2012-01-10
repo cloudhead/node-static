@@ -74,7 +74,7 @@ For example, you could serve an error page, when the initial request wasn't foun
         request.addListener('end', function () {
             fileServer.serve(request, response, function (e, res) {
                 if (e && (e.status === 404)) { // If the file wasn't found
-                    fileServer.serveFile('/not-found.html', request, response);
+                    fileServer.serveFile('/not-found.html', 404, {}, request, response);
                 }
             });
         });
