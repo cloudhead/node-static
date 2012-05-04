@@ -11,5 +11,6 @@
   "main"          : "./lib/node-static",
   "version"       : "0.5.9",
   "directories"   : { "test": "./test" },
-  "engines"       : { "node": ">= 0.4.1" }
+  "engines"       : { "node": ">= 0.4.1" },
+  "bin"           : { "node-static": "./cli/main.js" }
 }
