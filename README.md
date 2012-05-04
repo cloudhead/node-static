@@ -139,3 +139,20 @@ example: `{ 'X-Hello': 'World!' }`
 
 > defaults to `{}`
 
+
+CLI
+---
+
+If you install this with -g, you can use 'node-static' cli interface to serve files quickly.
+
+    node-static [options] [root]
+
+All --?? options are just packed and passed to file server, otherwise options are considered as root directory.
+
+
+### Remaks #
+
+ * '--port' option passed to listen
+ * '--port' and '--cache' options are filtered with parseInt
+
+

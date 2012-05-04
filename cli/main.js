@@ -1,17 +1,5 @@
 #!/usr/bin/env node
 
-/*
- * node-static [options] [root]
- *
- * All --?? options are just packed and passed to node-static/Server.
- * Otherwise options are considered as root directory.
- *
- * ## remaks
- *
- * * '--port' option passed to listen
- * * '--port' and '--cache' options are filtered with parseInt
- */
-
 var static = require('../lib/node-static'),
     options = parseArgs(process.argv.slice(2)),
     file = new (static.Server)(options.root, options);
