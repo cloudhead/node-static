@@ -139,3 +139,21 @@ example: `{ 'X-Hello': 'World!' }`
 
 > defaults to `{}`
 
+#### `gzip` #
+
+Enable support for sending compressed responses.  This will enable a check for a
+file with the same name plus '.gz' in the same folder.  If the compressed file is
+found and the client has indicated support for gzip file transfer, the contents
+of the .gz file will be sent in place of the uncompressed file along with a
+Content-Encoding: gzip header to inform the client the data has been compressed.
+
+example: `{ gzip: true }`
+example: `{ gzip: /^\/text/ }`
+
+Passing `true` will enable this check for all files.
+Passing a RegExp instance will only enable this check if the content-type of the
+respond would match that RegExp using its test() method.
+
+> Defaults to `false`
+
+
