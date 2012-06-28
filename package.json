@@ -4,12 +4,18 @@
   "url"           : "http://github.com/cloudhead/node-static",
   "keywords"      : ["http", "static", "file", "server"],
   "author"        : "Alexis Sellier <self@cloudhead.net>",
-  "contributors"  : [],
-  "licenses"      : ["MIT"],
-  "dependencies"  : [],
-  "lib"           : "lib",
-  "main"          : "./lib/node-static",
-  "version"       : "0.5.9",
-  "directories"   : { "test": "./test" },
+  "contributors"  : [
+		{
+			"name": "Pablo Cantero",
+			"email": "pablo@pablocantero.com"
+		}
+	],
+	"repository": {
+    "type": "git",
+    "url": "http://github.com/cloudhead/node-static"
+  },
+  "license"      : "MIT",
+  "dependencies"  : {},
+  "version"       : "0.6.0",
   "engines"       : { "node": ">= 0.4.1" }
 }
