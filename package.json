@@ -1,10 +1,10 @@
 {
-  "name"          : "node-static",
-  "description"   : "simple, compliant file streaming module for node",
-  "url"           : "http://github.com/cloudhead/node-static",
-  "keywords"      : ["http", "static", "file", "server"],
-  "author"        : "Alexis Sellier <self@cloudhead.net>",
-  "contributors"  : [
+  "name" : "node-static",
+  "description" : "simple, compliant file streaming module for node",
+  "url" : "http://github.com/cloudhead/node-static",
+  "keywords" : ["http", "static", "file", "server"],
+  "author" : "Alexis Sellier <self@cloudhead.net>",
+  "contributors" : [
 		{
 			"name": "Pablo Cantero",
 			"email": "pablo@pablocantero.com"
@@ -14,9 +14,16 @@
     "type": "git",
     "url": "http://github.com/cloudhead/node-static"
   },
-  "main"          : "./lib/node-static",
-  "license"      : "MIT",
-  "dependencies"  : {},
-  "version"       : "0.6.0",
-  "engines"       : { "node": ">= 0.4.1" }
+  "main" : "./lib/node-static",
+  "scripts": {
+    "test": "vows --spec --isolate"
+  },
+  "license" : "MIT",
+  "dependencies" : {},
+	"devDependencies" : {
+		"request": "latest",
+		"vows": "latest"
+	},
+  "version" : "0.6.0",
+  "engines" : { "node": ">= 0.4.1" }
 }
