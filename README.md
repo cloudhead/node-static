@@ -8,7 +8,7 @@ node-static understands and supports *conditional GET* and *HEAD* requests.
 node-static was inspired by some of the other static-file serving modules out there,
 such as node-paperboy and antinode.
 
-synopsis
+Synopsis
 --------
 
     var static = require('node-static');
@@ -139,3 +139,32 @@ example: `{ 'X-Hello': 'World!' }`
 
 > defaults to `{}`
 
+Command Line Interface
+----------------------
+
+`node-static` also provides a CLI.
+
+### Installation #
+
+    $ npm install -g node-static
+
+### Example Usage #
+
+    # serve up the current directory
+    $ static
+    serving "." at http://127.0.0.1:8080
+
+    # serve up a different directory
+    $ static public
+    serving "public" at http://127.0.0.1:8080
+
+    # specify additional headers (this one is useful for development)
+    $ static -H '{"Cache-Control": "no-cache, must-revaliate"}'
+    serving "." at http://127.0.0.1:8080
+
+    # set cache control max age
+    $ static -c 7200
+    serving "." at http://127.0.0.1:8080
+
+    # show help message, including all options
+    $ static -h
