@@ -3,10 +3,9 @@
 var fs = require('fs'),
     path = require('path'),
     tty = require('tty'),
+		statik = require('./../lib/node-static');
 
-    statik = require('./../lib/node-static'),
-
-    argv = require('optimist')
+    var argv = require('optimist')
         .usage([
             'USAGE: $0 [-p <port>] [<directory>]',
             'simple, rfc 2616 compliant file streaming module for node']
@@ -36,47 +35,54 @@ var fs = require('fs'),
             alias: 'h',
             description: 'display this help message'
         })
-        .argv,
-    dir = argv._[0] || '.',
+        .argv;
 
-    trainwreck = fs.readFileSync(path.join(__dirname, '../etc/trainwreck.jpg')),
-    notFound = fs.readFileSync(path.join(__dirname, '../etc/404.html'))
+    var dir = argv._[0] || '.';
+
+    var trainwreck = fs.readFileSync(path.join(__dirname, '../etc/trainwreck.jpg')),
+				notFound = fs.readFileSync(path.join(__dirname, '../etc/404.html'))
         .toString()
-        .replace('{{trainwreck}}', trainwreck.toString('base64')),
+        .replace('{{trainwreck}}', trainwreck.toString('base64'));
 
-    colors = require('colors'),
-    log = function(request, response, statusCode) {
-        var d = new(Date),
-            seconds = d.getSeconds() < 10? '0'+d.getSeconds() : d.getSeconds(),
+    var colors = require('colors');
+
+    var log = function(request, response, statusCode) {
+        var d = new Date();
+        var seconds = d.getSeconds() < 10? '0'+d.getSeconds() : d.getSeconds(),
             datestr = d.getHours() + ':' + d.getMinutes() + ':' + seconds,
             line = datestr + ' [' + response.statusCode + ']: ' + request.url,
             colorized = line;
         if (tty.isatty(process.stdout.fd))
-            colorized = response.statusCode >= 500? line.red.bold :
-                        response.statusCode >= 400? line.red :
+            colorized = (response.statusCode >= 500) ? line.red.bold :
+                        (response.statusCode >= 400) ? line.red :
                         line;
         console.log(colorized);
-    },
+    };
 
-    file, options;
+    var file, options;
 
-if (argv.help)
-    require('optimist').showHelp(console.log),
+if (argv.help){
+    require('optimist').showHelp(console.log);
     process.exit(0);
+}
 
-if (argv.version)
-    console.log('node-static', statik.version.join('.')),
+if (argv.version){
+    console.log('node-static', statik.version.join('.'));
     process.exit(0);
+}
 
-if (argv.cache)
+if (argv.cache){
     (options = options || {}).cache = argv.cache;
+}
 
-if (argv.headers)
+if (argv.headers){
     (options = options || {}).headers = JSON.parse(argv.headers);
+}
 
-if (argv['header-file'])
+if (argv['header-file']){
     (options = options || {}).headers =
         JSON.parse(fs.readFileSync(argv['header-file']));
+}
 
 file = new(statik.Server)(dir, options);
 
