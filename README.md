@@ -131,6 +131,15 @@ Passing `false` will disable the `Cache-Control` header.
 
 > Defaults to `3600`
 
+
+#### `serverInfo` #
+
+Sets the `Server` header.
+
+example: `{ serverInfo: "myserver" }`
+
+> Defaults to `node-static/{version}`
+
 #### `headers` #
 
 Sets response headers.
