@@ -3,7 +3,7 @@
 var fs = require('fs'),
     path = require('path'),
     tty = require('tty'),
-		statik = require('./../lib/node-static');
+    statik = require('./../lib/node-static');
 
     var argv = require('optimist')
         .usage([
@@ -101,3 +101,4 @@ require('http').createServer(function (request, response) {
 }).listen(+argv.port);
 
 console.log('serving "' + dir + '" at http://127.0.0.1:' + argv.port);
+

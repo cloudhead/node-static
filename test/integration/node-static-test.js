@@ -3,7 +3,7 @@ var vows = require('vows')
 	, assert = require('assert')
 	,	static = require('../../lib/node-static');
 
-var fileServer = new(static.Server)(__dirname + '/../fixtures', {});
+var fileServer = new(static.Server)(__dirname + '/../fixtures', {serverInfo: "custom-server-name"});
 
 var suite = vows.describe('node-static');
 
@@ -21,7 +21,9 @@ suite.addBatch({
       }).listen(TEST_PORT, this.callback)
     },
     'should be listening' : function(){
-			assert.isTrue(true);
+      /* This test is necessary to ensure the topic execution.
+       * A topic without tests will be not executed */
+      assert.isTrue(true);
     }
   }
 }).addBatch({
@@ -49,7 +51,7 @@ suite.addBatch({
     }
   }
 }).addBatch({
-  'implicit serving index.html': {
+  'serving directory index': {
     topic : function(){
       request.get(TEST_SERVER, this.callback);
     }, 
@@ -100,5 +102,14 @@ suite.addBatch({
     'head must has no body' : function(error, response, body){
       assert.isUndefined(body);
     }
+  }
+}).addBatch({
+  'requesting headers': {
+    topic : function(){
+      request.head(TEST_SERVER + '/index.html', this.callback);
+    },
+    'should respond with node-static/0.6.0' : function(error, response, body){
+      assert.equal(response.headers["server"], "custom-server-name");
+    } 
   }
 }).export(module);
