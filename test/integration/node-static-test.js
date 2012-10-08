@@ -112,4 +112,16 @@ suite.addBatch({
       assert.equal(response.headers["server"], "custom-server-name");
     } 
   }
+}).addBatch({
+    'silently compiles less': {
+        topic: function () {
+            request.get(TEST_SERVER + '/style.css', this.callback);
+        },
+        'should respond with 200': function (error, response, body) {
+            assert.equal(response.statusCode, 200);
+        },
+        'should have compiled': function (error, response, body) {
+            assert.equal(body, "h2{color:#eeeeee;}\n");
+        }
+    }
 }).export(module);
