@@ -123,5 +123,13 @@ suite.addBatch({
         'should have compiled': function (error, response, body) {
             assert.equal(body, "h2{color:#eeeeee;}\n");
         }
+    },
+    'returns 404 when no less file': {
+        topic: function () {
+            request.get(TEST_SERVER + '/not-found.css', this.callback);
+        },
+        'should respond with 404': function (error, response, body) {
+            assert.equal(response.statusCode, 404);
+        }
     }
 }).export(module);
