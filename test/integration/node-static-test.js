@@ -90,6 +90,28 @@ suite.addBatch({
     'should respond with 304' : function(error, response, body){
       assert.equal(response.statusCode, 304);
     }
+  },
+  'requesting with If-None-Match and If-Modified-Since': {
+    topic : function(){
+      var _this = this;
+      request.get(TEST_SERVER + '/index.html', function(error, response, body){
+        var modified = Date.parse(response.headers['last-modified']);
+        var oneDayLater = new Date(modified + (24 * 60 * 60 * 1000)).toUTCString();
+        var nonMatchingEtag = '1111222233334444';
+        request({
+          method: 'GET',
+          uri: TEST_SERVER + '/index.html',
+          headers: {
+            'if-none-match': nonMatchingEtag,
+            'if-modified-since': oneDayLater
+          }
+        },
+        _this.callback);
+      });
+    },
+    'should respond with a 200': function(error, response, body){
+      assert.equal(response.statusCode, 200);
+    }
   }
 }).addBatch({
   'requesting HEAD': {
