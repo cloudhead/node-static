@@ -1,9 +1,9 @@
-var vows = require('vows')
-	, request = require('request')
-	, assert = require('assert')
-	,	static = require('../../lib/node-static');
+var vows    = require('vows')
+  , request = require('request')
+  , assert  = require('assert')
+  , static  = require('../../lib/node-static');
 
-var fileServer = new(static.Server)(__dirname + '/../fixtures', {serverInfo: "custom-server-name"});
+var fileServer = new(static.Server)(__dirname + '/../fixtures', {serverInfo: 'custom-server-name'});
 
 var suite = vows.describe('node-static');
 
@@ -109,7 +109,7 @@ suite.addBatch({
       request.head(TEST_SERVER + '/index.html', this.callback);
     },
     'should respond with node-static/0.6.0' : function(error, response, body){
-      assert.equal(response.headers["server"], "custom-server-name");
+      assert.equal(response.headers['server'], 'custom-server-name');
     } 
   }
 }).export(module);
