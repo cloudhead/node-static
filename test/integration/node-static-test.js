@@ -10,10 +10,53 @@ var suite = vows.describe('node-static');
 var TEST_PORT = 8080;
 var TEST_SERVER = 'http://localhost:' + TEST_PORT;
 var server;
+var callback;
 
 suite.addBatch({
-  'once an http server is listening': {
+  'once an http server is listening with a callback': {
     topic: function () {
+      server = require('http').createServer(function (request, response) {
+        request.addListener('end', function () {
+          fileServer.serve(request, response, function(err, result) {
+            if (callback)
+              callback(request, response, err, result);
+            else
+              request.end();
+          });
+        });
+      }).listen(TEST_PORT, this.callback)
+    },
+    'should be listening' : function(){
+      /* This test is necessary to ensure the topic execution.
+       * A topic without tests will be not executed */
+      assert.isTrue(true);
+    }
+  },
+}).addBatch({
+    'streaming a 404 page': {
+      topic: function(){
+        callback = function(request, response, err, result) {
+          if (err) {
+            response.writeHead(err.status, err.headers);
+            setTimeout(function() {
+              response.end('Custom 404 Stream.')
+            }, 100);
+          }
+        }
+        request.get(TEST_SERVER + '/not-found', this.callback);
+      },
+      'should respond with 404' : function(error, response, body){
+        assert.equal(response.statusCode, 404);
+      },
+      'should respond with the streamed content': function(error, response, body){
+        callback = null;
+        assert.equal(body, 'Custom 404 Stream.');
+      }
+    }
+}).addBatch({
+  'once an http server is listening without a callback': {
+    topic: function () {
+      server.close();
       server = require('http').createServer(function (request, response) {
         request.addListener('end', function () {
           fileServer.serve(request, response);
