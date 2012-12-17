@@ -10,13 +10,17 @@ var suite = vows.describe('node-static');
 var TEST_PORT = 8080;
 var TEST_SERVER = 'http://localhost:' + TEST_PORT;
 var server;
+var callback;
 
 suite.addBatch({
   'once an http server is listening': {
     topic: function () {
       server = require('http').createServer(function (request, response) {
         request.addListener('end', function () {
-          fileServer.serve(request, response);
+          fileServer.serve(request, response, function(err, result) {
+            if (callback)
+              callback(request, response, err, result);
+          });
         });
       }).listen(TEST_PORT, this.callback)
     },
@@ -25,7 +29,7 @@ suite.addBatch({
        * A topic without tests will be not executed */
       assert.isTrue(true);
     }
-  }
+  },
 }).addBatch({
     'requesting a file not found': {
       topic : function(){
@@ -33,6 +37,23 @@ suite.addBatch({
       }, 
       'should respond with 404' : function(error, response, body){
         assert.equal(response.statusCode, 404);
+      }
+    },
+    'streaming a 404 page': {
+      topic: function(){
+        callback = function(request, response, err, result) {
+          if (err) {
+            response.writeHead(err.status, err.headers);
+            setTimeout(function() {
+              response.end('Custom 404 Stream.')
+            }, 100);
+          }
+        }
+        request.get(TEST_SERVER + '/not-found', this.callback);
+      },
+      'should respond with the streamed content': function(error, response, body){
+        callback = null;
+        assert.equal(body, 'Custom 404 Stream.');
       }
     }
 }).addBatch({
