@@ -1,15 +1,20 @@
 var vows    = require('vows')
   , request = require('request')
   , assert  = require('assert')
+  , express = require('express')
   , static  = require('../../lib/node-static');
 
-var fileServer = new(static.Server)(__dirname + '/../fixtures', {serverInfo: 'custom-server-name'});
+var fileServer = new(static.Server)(__dirname + '/../fixtures', {serverInfo: 'custom-server-name'}),
+    fileServerExpress  = new(static.Server)(__dirname + '/../fixtures', {serverInfo: 'custom-server-name'});
 
 var suite = vows.describe('node-static');
 
-var TEST_PORT = 8080;
-var TEST_SERVER = 'http://localhost:' + TEST_PORT;
-var server;
+var TEST_PORT = 8080,
+    TEST_PORT_EXPRESS = 7777;
+var TEST_SERVER = 'http://localhost:' + TEST_PORT,
+    TEST_SERVER_EXPRESS = 'http://localhost:' + TEST_PORT_EXPRESS;
+var server,
+    server_express;
 var callback;
 
 suite.addBatch({
@@ -67,6 +72,49 @@ suite.addBatch({
       /* This test is necessary to ensure the topic execution.
        * A topic without tests will be not executed */
       assert.isTrue(true);
+    }
+  }
+}).addBatch({
+  'express + node-static serving 404 file': {
+    topic: function () {
+        server_express = express();
+        
+        server_express.get('*', function(req, res) {
+            fileServerExpress.serve(req, res, function (e, _res) {
+                if (e && (e.status === 404)) {
+                    fileServerExpress.serveFile('hello.txt', e.status, {}, req, res);
+                }
+            });
+        });
+        
+        server_express.listen(TEST_PORT_EXPRESS, this.callback)
+    },
+    'should be listening' : function(){
+      assert.isTrue(true);
+    }
+  }
+}).addBatch({
+    'requesting a file not found on express': {
+      topic : function(){
+        request.get(TEST_SERVER_EXPRESS + '/not-found', this.callback);
+      }, 
+      'should respond with 404' : function(error, response, body){
+        assert.equal(response.statusCode, 404);
+      }
+    }
+}).addBatch({
+  'serving hello.txt on express': {
+    topic : function(){
+      request.get(TEST_SERVER_EXPRESS + '/hello.txt', this.callback);
+    }, 
+    'should respond with 200' : function(error, response, body){
+      assert.equal(response.statusCode, 200);
+    }, 
+    'should respond with text/plain': function(error, response, body){
+      assert.equal(response.headers['content-type'], 'text/plain');
+    }, 
+    'should respond with hello world': function(error, response, body){
+      assert.equal(body, 'hello world');
     }
   }
 }).addBatch({
