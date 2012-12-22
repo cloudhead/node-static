@@ -73,7 +73,7 @@ suite.addBatch({
     'requesting a file not found': {
       topic : function(){
         request.get(TEST_SERVER + '/not-found', this.callback);
-      }, 
+      },
       'should respond with 404' : function(error, response, body){
         assert.equal(response.statusCode, 404);
       }
@@ -82,13 +82,13 @@ suite.addBatch({
   'serving hello.txt': {
     topic : function(){
       request.get(TEST_SERVER + '/hello.txt', this.callback);
-    }, 
+    },
     'should respond with 200' : function(error, response, body){
       assert.equal(response.statusCode, 200);
-    }, 
+    },
     'should respond with text/plain': function(error, response, body){
       assert.equal(response.headers['content-type'], 'text/plain');
-    }, 
+    },
     'should respond with hello world': function(error, response, body){
       assert.equal(body, 'hello world');
     }
@@ -97,10 +97,10 @@ suite.addBatch({
   'serving directory index': {
     topic : function(){
       request.get(TEST_SERVER, this.callback);
-    }, 
+    },
     'should respond with 200' : function(error, response, body){
       assert.equal(response.statusCode, 200);
-    }, 
+    },
     'should respond with text/html': function(error, response, body){
       assert.equal(response.headers['content-type'], 'text/html');
     }
@@ -109,10 +109,10 @@ suite.addBatch({
   'serving index.html from the cache': {
     topic : function(){
       request.get(TEST_SERVER + '/index.html', this.callback);
-    }, 
+    },
     'should respond with 200' : function(error, response, body){
       assert.equal(response.statusCode, 200);
-    }, 
+    },
     'should respond with text/html': function(error, response, body){
       assert.equal(response.headers['content-type'], 'text/html');
     }
@@ -129,7 +129,7 @@ suite.addBatch({
         },
         _this.callback);
       });
-    }, 
+    },
     'should respond with 304' : function(error, response, body){
       assert.equal(response.statusCode, 304);
     }
@@ -163,7 +163,7 @@ suite.addBatch({
     },
     'should respond with 200' : function(error, response, body){
       assert.equal(response.statusCode, 200);
-    }, 
+    },
     'head must has no body' : function(error, response, body){
       assert.isUndefined(body);
     }
@@ -175,6 +175,16 @@ suite.addBatch({
     },
     'should respond with node-static/0.6.0' : function(error, response, body){
       assert.equal(response.headers['server'], 'custom-server-name');
-    } 
+    }
+  }
+}).addBatch({
+  'addings custom mime types': {
+    topic : function(){
+      static.mime.addContentType('woff', 'application/font-woff');
+      this.callback();
+    },
+    'should add woff' : function(error, response, body){
+      assert.equal(static.mime.contentTypes['woff'], 'application/font-woff');
+    }
   }
 }).export(module);
