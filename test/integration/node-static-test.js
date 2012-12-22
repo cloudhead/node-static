@@ -4,8 +4,7 @@ var vows    = require('vows')
   , express = require('express')
   , static  = require('../../lib/node-static');
 
-var fileServer = new(static.Server)(__dirname + '/../fixtures', {serverInfo: 'custom-server-name'}),
-    fileServerExpress  = new(static.Server)(__dirname + '/../fixtures', {serverInfo: 'custom-server-name'});
+var fileServer = new(static.Server)(__dirname + '/../fixtures', {serverInfo: 'custom-server-name'});
 
 var suite = vows.describe('node-static');
 
@@ -14,7 +13,7 @@ var TEST_PORT = 8080,
 var TEST_SERVER = 'http://localhost:' + TEST_PORT,
     TEST_SERVER_EXPRESS = 'http://localhost:' + TEST_PORT_EXPRESS;
 var server,
-    server_express;
+    serverExpress;
 var callback;
 
 suite.addBatch({
@@ -77,17 +76,17 @@ suite.addBatch({
 }).addBatch({
   'express + node-static serving 404 file': {
     topic: function () {
-        server_express = express();
+        serverExpress = express();
         
-        server_express.get('*', function(req, res) {
-            fileServerExpress.serve(req, res, function (e, _res) {
+        serverExpress.get('*', function(req, res) {
+            fileServer.serve(req, res, function (e, _res) {
                 if (e && (e.status === 404)) {
-                    fileServerExpress.serveFile('hello.txt', e.status, {}, req, res);
+                    fileServer.serveFile('hello.txt', e.status, {}, req, res);
                 }
             });
         });
         
-        server_express.listen(TEST_PORT_EXPRESS, this.callback)
+        serverExpress.listen(TEST_PORT_EXPRESS, this.callback)
     },
     'should be listening' : function(){
       assert.isTrue(true);
