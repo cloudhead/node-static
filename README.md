@@ -168,7 +168,7 @@ Command Line Interface
     serving "public" at http://127.0.0.1:8080
 
     # specify additional headers (this one is useful for development)
-    $ static -H '{"Cache-Control": "no-cache, must-revaliate"}'
+    $ static -H '{"Cache-Control": "no-cache, must-revalidate"}'
     serving "." at http://127.0.0.1:8080
 
     # set cache control max age
