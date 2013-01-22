@@ -187,4 +187,19 @@ suite.addBatch({
       assert.equal(static.mime.contentTypes['woff'], 'application/font-woff');
     }
   }
+}).addBatch({
+  'serving jsonp': {
+    topic : function(){
+      request.get(TEST_SERVER + '/hello.js?_callback=abc', this.callback);
+    },
+    'should respond with 200' : function(error, response, body){
+      assert.equal(response.statusCode, 200);
+    },
+    'should respond with text/javascript': function(error, response, body){
+      assert.equal(response.headers['content-type'], 'text/javascript');
+    },
+    'should respond with jsonp format': function(error, response, body){
+      assert.equal(body.slice(0, 4), 'abc(');
+    }
+  }
 }).export(module);

@@ -19,6 +19,10 @@ var fs = require('fs'),
             alias: 'c',
             description: '"Cache-Control" header setting, defaults to 3600'
         })
+        .option('jsonp-hook', {
+            alias: 'j',
+            description: 'jsonp hook, defaults to "_callback"'
+        })
         .option('version', {
             alias: 'v',
             description: 'node-static version'
@@ -77,6 +81,10 @@ if (argv.cache){
 
 if (argv.headers){
     (options = options || {}).headers = JSON.parse(argv.headers);
+}
+
+if (argv['jsonp-hook']) {
+    (options = options || {}).jsonpHook = argv['jsonp-hook'];
 }
 
 if (argv['header-file']){
