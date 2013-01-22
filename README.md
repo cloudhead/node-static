@@ -82,6 +82,24 @@ For example, you could serve an error page, when the initial request wasn't foun
 
 More on intercepting errors bellow.
 
+### Serving jsonp request #
+
+Any request with query like `?_callback=abc` will be treated as a jsonp request.
+For example, requesting a json file named 'test' with path `/test?_callback=abc`:
+
+    {
+        "foo": "bar"
+    }
+
+will output like this:
+    
+    abc({
+        "foo": "bar"
+    });
+
+Take care of the contents of the requesting file, or it will make no sense.
+    
+
 ### Intercepting errors & Listening #
 
 An optional callback can be passed as last argument, it will be called every time a file
@@ -147,6 +165,14 @@ Sets response headers.
 example: `{ 'X-Hello': 'World!' }`
 
 > defaults to `{}`
+
+#### `jsonp-hook` #
+
+Sets jsonp hook.
+
+example: `{jsonpHook: 'callback'}`
+
+> defaults to `_callback`
 
 Command Line Interface
 ----------------------
