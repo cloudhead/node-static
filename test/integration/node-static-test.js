@@ -79,6 +79,15 @@ suite.addBatch({
       }
     }
 }).addBatch({
+    'requesting a malformed URI': {
+      topic: function(){
+        request.get(TEST_SERVER + '/a%AFc', this.callback);
+      },
+      'should respond with 400': function(error, response, body){
+        assert.equal(response.statusCode, 400);
+      }
+    }
+}).addBatch({
   'serving hello.txt': {
     topic : function(){
       request.get(TEST_SERVER + '/hello.txt', this.callback);
