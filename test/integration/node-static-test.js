@@ -23,6 +23,7 @@ suite.addBatch({
             else
               request.end();
           });
+        request.resume();
         });
       }).listen(TEST_PORT, this.callback)
     },
@@ -61,6 +62,7 @@ suite.addBatch({
         request.addListener('end', function () {
           fileServer.serve(request, response);
         });
+        request.resume();
       }).listen(TEST_PORT, this.callback)
     },
     'should be listening' : function(){
