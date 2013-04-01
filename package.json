@@ -24,13 +24,14 @@
   "license" : "MIT",
   "dependencies" : {
     "optimist": ">=0.3.4",
-    "colors": ">=0.6.0"
+    "colors": ">=0.6.0",
+    "mime": ">=1.2.9"
   },
   "devDependencies" : {
     "request": "latest",
     "vows": "latest"
   },
-  "version" : "0.6.5",
+  "version" : "0.6.7",
   "engines" : { "node": ">= 0.4.1" }
 }
 
