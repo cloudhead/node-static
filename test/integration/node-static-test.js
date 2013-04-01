@@ -3,15 +3,13 @@ var vows    = require('vows')
   , assert  = require('assert')
   , static  = require('../../lib/node-static');
 
-var fileServer = new(static.Server)(__dirname + '/../fixtures', {serverInfo: 'custom-server-name'});
-
-var suite = vows.describe('node-static');
-
+var fileServer  = new static.Server(__dirname + '/../fixtures');
+var suite       = vows.describe('node-static');
 var TEST_PORT   = 8080;
 var TEST_SERVER = 'http://localhost:' + TEST_PORT;
+var version     = static.version.join('.');
 var server;
 var callback;
-var version = static.version.join('.');
 
 headers = {
   'requesting headers': {
