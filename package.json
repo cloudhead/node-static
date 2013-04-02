@@ -5,33 +5,33 @@
   "keywords" : ["http", "static", "file", "server"],
   "author" : "Alexis Sellier <self@cloudhead.net>",
   "contributors" : [
-    {
-      "name": "Pablo Cantero",
-      "email": "pablo@pablocantero.com"
-    }
+  {
+    "name": "Pablo Cantero",
+    "email": "pablo@pablocantero.com"
+  }
   ],
-  "repository": {
-    "type": "git",
-    "url": "http://github.com/cloudhead/node-static"
-  },
-  "main" : "./lib/node-static",
-  "scripts": {
-    "test": "vows --spec --isolate"
-  },
-  "bin": {
-    "static": "bin/cli.js"
-  },
-  "license" : "MIT",
-  "dependencies" : {
-    "optimist": ">=0.3.4",
-    "colors": ">=0.6.0",
-    "mime": ">=1.2.9"
-  },
-  "devDependencies" : {
-    "request": "latest",
-    "vows": "latest"
-  },
-  "version" : "0.6.7",
-  "engines" : { "node": ">= 0.4.1" }
+    "repository": {
+      "type": "git",
+      "url": "http://github.com/cloudhead/node-static"
+    },
+    "main" : "./lib/node-static",
+    "scripts": {
+      "test": "vows --spec --isolate"
+    },
+    "bin": {
+      "static": "bin/cli.js"
+    },
+    "license" : "MIT",
+    "dependencies" : {
+      "optimist": ">=0.3.4",
+      "colors": ">=0.6.0",
+      "mime": ">=1.2.9"
+    },
+    "devDependencies" : {
+      "request": "latest",
+      "vows": "latest"
+    },
+    "version" : "0.6.8",
+    "engines" : { "node": ">= 0.4.1" }
 }
 
