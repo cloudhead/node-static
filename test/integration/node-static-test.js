@@ -3,26 +3,34 @@ var vows    = require('vows')
   , assert  = require('assert')
   , static  = require('../../lib/node-static');
 
-var fileServer = new(static.Server)(__dirname + '/../fixtures', {serverInfo: 'custom-server-name'});
-
-var suite = vows.describe('node-static');
-
-var TEST_PORT = 8080;
+var fileServer  = new static.Server(__dirname + '/../fixtures');
+var suite       = vows.describe('node-static');
+var TEST_PORT   = 8080;
 var TEST_SERVER = 'http://localhost:' + TEST_PORT;
+var version     = static.version.join('.');
 var server;
 var callback;
+
+headers = {
+  'requesting headers': {
+    topic : function(){
+      request.head(TEST_SERVER + '/index.html', this.callback);
+    }
+  }
+}
+headers['requesting headers']['should respond with node-static/' + version] = function(error, response, body){
+  assert.equal(response.headers['server'], 'node-static/' + version);
+}
 
 suite.addBatch({
   'once an http server is listening with a callback': {
     topic: function () {
       server = require('http').createServer(function (request, response) {
-        request.addListener('end', function () {
-          fileServer.serve(request, response, function(err, result) {
-            if (callback)
-              callback(request, response, err, result);
-            else
-              request.end();
-          });
+        fileServer.serve(request, response, function(err, result) {
+          if (callback)
+            callback(request, response, err, result);
+          else
+            request.end();
         });
       }).listen(TEST_PORT, this.callback)
     },
@@ -58,9 +66,7 @@ suite.addBatch({
     topic: function () {
       server.close();
       server = require('http').createServer(function (request, response) {
-        request.addListener('end', function () {
-          fileServer.serve(request, response);
-        });
+        fileServer.serve(request, response);
       }).listen(TEST_PORT, this.callback)
     },
     'should be listening' : function(){
@@ -78,7 +84,8 @@ suite.addBatch({
         assert.equal(response.statusCode, 404);
       }
     }
-}).addBatch({
+})
+.addBatch({
     'requesting a malformed URI': {
       topic: function(){
         request.get(TEST_SERVER + '/a%AFc', this.callback);
@@ -87,7 +94,8 @@ suite.addBatch({
         assert.equal(response.statusCode, 400);
       }
     }
-}).addBatch({
+})
+.addBatch({
   'serving hello.txt': {
     topic : function(){
       request.get(TEST_SERVER + '/hello.txt', this.callback);
@@ -177,23 +185,16 @@ suite.addBatch({
       assert.isUndefined(body);
     }
   }
-}).addBatch({
-  'requesting headers': {
-    topic : function(){
-      request.head(TEST_SERVER + '/index.html', this.callback);
-    },
-    'should respond with node-static/0.6.0' : function(error, response, body){
-      assert.equal(response.headers['server'], 'custom-server-name');
-    }
-  }
-}).addBatch({
+})
+.addBatch(headers)
+.addBatch({
   'addings custom mime types': {
     topic : function(){
-      static.mime.addContentType('woff', 'application/font-woff');
+      static.mime.define({'application/font-woff': ['woff']});
       this.callback();
     },
     'should add woff' : function(error, response, body){
-      assert.equal(static.mime.contentTypes['woff'], 'application/font-woff');
+      assert.equal(static.mime.lookup('woff'), 'application/font-woff');
     }
   }
 }).export(module);
