@@ -97,7 +97,7 @@ require('http').createServer(function (request, response) {
                 log(request, response);
             }
         });
-    });
+    }).resume();
 }).listen(+argv.port);
 
 console.log('serving "' + dir + '" at http://127.0.0.1:' + argv.port);
