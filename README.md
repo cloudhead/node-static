@@ -52,6 +52,8 @@ This is the default setting.
 
 To serve files under a directory, simply call the `serve` method on a `Server` instance, passing it
 the HTTP request and response object:
+ 
+    var static = require('node-static');
 
     var fileServer = new static.Server('./public');
 
@@ -87,6 +89,8 @@ More on intercepting errors bellow.
 An optional callback can be passed as last argument, it will be called every time a file
 has been served successfully, or if there was an error serving the file:
 
+    var static = require('node-static');
+    
     var fileServer = new static.Server('./public');
 
     require('http').createServer(function (request, response) {
