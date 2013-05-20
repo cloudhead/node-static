@@ -24,7 +24,7 @@ Synopsis
             // Serve files!
             //
             file.serve(request, response);
-        });
+        }).resume();
     }).listen(8080);
 
 API
@@ -60,7 +60,7 @@ the HTTP request and response object:
     require('http').createServer(function (request, response) {
         request.addListener('end', function () {
             fileServer.serve(request, response);
-        });
+        }).resume();
     }).listen(8080);
 
 ### Serving specific files #
@@ -79,7 +79,7 @@ For example, you could serve an error page, when the initial request wasn't foun
                     fileServer.serveFile('/not-found.html', 404, {}, request, response);
                 }
             });
-        });
+        }).resume();
     }).listen(8080);
 
 More on intercepting errors bellow.
@@ -104,7 +104,7 @@ has been served successfully, or if there was an error serving the file:
                     response.end();
                 }
             });
-        });
+        }).resume();
     }).listen(8080);
 
 Note that if you pass a callback, and there is an error serving the file, node-static
