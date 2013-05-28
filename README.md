@@ -8,7 +8,7 @@ node-static understands and supports *conditional GET* and *HEAD* requests.
 node-static was inspired by some of the other static-file serving modules out there,
 such as node-paperboy and antinode.
 
-synopsis
+Synopsis
 --------
 
     var static = require('node-static');
@@ -24,7 +24,7 @@ synopsis
             // Serve files!
             //
             file.serve(request, response);
-        });
+        }).resume();
     }).listen(8080);
 
 API
@@ -52,13 +52,15 @@ This is the default setting.
 
 To serve files under a directory, simply call the `serve` method on a `Server` instance, passing it
 the HTTP request and response object:
+ 
+    var static = require('node-static');
 
     var fileServer = new static.Server('./public');
 
     require('http').createServer(function (request, response) {
         request.addListener('end', function () {
             fileServer.serve(request, response);
-        });
+        }).resume();
     }).listen(8080);
 
 ### Serving specific files #
@@ -74,10 +76,10 @@ For example, you could serve an error page, when the initial request wasn't foun
         request.addListener('end', function () {
             fileServer.serve(request, response, function (e, res) {
                 if (e && (e.status === 404)) { // If the file wasn't found
-                    fileServer.serveFile('/not-found.html', request, response);
+                    fileServer.serveFile('/not-found.html', 404, {}, request, response);
                 }
             });
-        });
+        }).resume();
     }).listen(8080);
 
 More on intercepting errors bellow.
@@ -87,6 +89,8 @@ More on intercepting errors bellow.
 An optional callback can be passed as last argument, it will be called every time a file
 has been served successfully, or if there was an error serving the file:
 
+    var static = require('node-static');
+    
     var fileServer = new static.Server('./public');
 
     require('http').createServer(function (request, response) {
@@ -100,7 +104,7 @@ has been served successfully, or if there was an error serving the file:
                     response.end();
                 }
             });
-        });
+        }).resume();
     }).listen(8080);
 
 Note that if you pass a callback, and there is an error serving the file, node-static
@@ -131,6 +135,15 @@ Passing `false` will disable the `Cache-Control` header.
 
 > Defaults to `3600`
 
+
+#### `serverInfo` #
+
+Sets the `Server` header.
+
+example: `{ serverInfo: "myserver" }`
+
+> Defaults to `node-static/{version}`
+
 #### `headers` #
 
 Sets response headers.
@@ -139,3 +152,32 @@ example: `{ 'X-Hello': 'World!' }`
 
 > defaults to `{}`
 
+Command Line Interface
+----------------------
+
+`node-static` also provides a CLI.
+
+### Installation #
+
+    $ npm install -g node-static
+
+### Example Usage #
+
+    # serve up the current directory
+    $ static
+    serving "." at http://127.0.0.1:8080
+
+    # serve up a different directory
+    $ static public
+    serving "public" at http://127.0.0.1:8080
+
+    # specify additional headers (this one is useful for development)
+    $ static -H '{"Cache-Control": "no-cache, must-revalidate"}'
+    serving "." at http://127.0.0.1:8080
+
+    # set cache control max age
+    $ static -c 7200
+    serving "." at http://127.0.0.1:8080
+
+    # show help message, including all options
+    $ static -h
