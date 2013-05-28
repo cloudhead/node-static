@@ -197,4 +197,53 @@ suite.addBatch({
       assert.equal(static.mime.lookup('woff'), 'application/font-woff');
     }
   }
+})
+.addBatch({
+  'serving subdirectory index': {
+    topic : function(){
+      request.get(TEST_SERVER + '/there/', this.callback); // with trailing slash
+    },
+    'should respond with 200' : function(error, response, body){
+      assert.equal(response.statusCode, 200);
+    },
+    'should respond with text/html': function(error, response, body){
+      assert.equal(response.headers['content-type'], 'text/html');
+    }
+  }
+})
+.addBatch({
+  'redirecting to subdirectory index': {
+    topic : function(){
+      request.get({ url: TEST_SERVER + '/there', followRedirect: false }, this.callback); // without trailing slash
+    },
+    'should respond with 301' : function(error, response, body){
+      assert.equal(response.statusCode, 301);
+    },
+    'should respond with location header': function(error, response, body){
+      assert.equal(response.headers['location'], '/there/'); // now with trailing slash
+    },
+    'should respond with empty string body' : function(error, response, body){
+      assert.equal(body, '');
+    }
+  }
+})
+.addBatch({
+  'requesting a subdirectory (with trailing slash) not found': {
+    topic : function(){
+      request.get(TEST_SERVER + '/notthere/', this.callback); // with trailing slash
+    },
+    'should respond with 404' : function(error, response, body){
+      assert.equal(response.statusCode, 404);
+    }
+  }
+})
+.addBatch({
+  'requesting a subdirectory (without trailing slash) not found': {
+    topic : function(){
+      request.get({ url: TEST_SERVER + '/notthere', followRedirect: false }, this.callback); // without trailing slash
+    },
+    'should respond with 404' : function(error, response, body){
+      assert.equal(response.statusCode, 404);
+    }
+  }
 }).export(module);
