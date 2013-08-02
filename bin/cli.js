@@ -20,6 +20,9 @@ var fs = require('fs'),
             alias: 'c',
             description: '"Cache-Control" header setting, defaults to 3600'
         })
+        .option('cors', {
+            description: 'enable "Access-Control-Allow-Origin" set to "*" in header setting'
+        })
         .option('version', {
             alias: 'v',
             description: 'node-static version'
@@ -92,6 +95,14 @@ if (argv['header-file']){
 file = new(statik.Server)(dir, options);
 
 app = express();
+
+if (argv.cors) {
+    app.all('*', function(req, res, next) {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+        next();
+    });
+}
 
 app.get("*", function(request, response) {
     if (argv.q) {
