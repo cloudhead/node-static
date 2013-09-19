@@ -3,6 +3,7 @@
 var fs = require('fs'),
     path = require('path'),
     tty = require('tty'),
+    express = require('express'),
     statik = require('./../lib/node-static');
 
     var argv = require('optimist')
@@ -19,6 +20,9 @@ var fs = require('fs'),
             alias: 'c',
             description: '"Cache-Control" header setting, defaults to 3600'
         })
+        .option('cors', {
+            description: 'enable "Access-Control-Allow-Origin" set to "*" in header setting'
+        })
         .option('version', {
             alias: 'v',
             description: 'node-static version'
@@ -30,6 +34,10 @@ var fs = require('fs'),
         .option('header-file', {
             alias: 'f',
             description: 'JSON file of additional headers'
+        })
+        .option('query-filename', {
+            alias: 'q',
+            description: 'Use the entire query param as the filename'
         })
         .option('help', {
             alias: 'h',
@@ -86,19 +94,38 @@ if (argv['header-file']){
 
 file = new(statik.Server)(dir, options);
 
-require('http').createServer(function (request, response) {
-    request.addListener('end', function () {
-        file.serve(request, response, function(e, rsp) {
-            if (e && e.status === 404) {
-                response.writeHead(e.status, e.headers);
-                response.end(notFound);
-                log(request, response);
-            } else {
-                log(request, response);
-            }
-        });
-    }).resume();
-}).listen(+argv.port);
+app = express();
 
+if (argv.cors) {
+    app.all('*', function(req, res, next) {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+        next();
+    });
+}
+
+app.get("*", function(request, response) {
+    if (argv.q) {
+      file.serveFile(request.url, 200, {}, request, response).on('error', function (e) {
+          response.writeHead(404, e.headers);
+          response.end(notFound);
+          log(request, response);
+      }).on('success', function (e) {
+          log(request, response);
+      });
+    } else {
+      file.serve(request, response, function(e, rsp) {
+          if (e && e.status === 404) {
+              response.writeHead(e.status, e.headers);
+              response.end(notFound);
+              log(request, response);
+          } else {
+              log(request, response);
+          }
+      });
+    }
+})
+
+app.listen(argv.port);
 console.log('serving "' + dir + '" at http://127.0.0.1:' + argv.port);
 
