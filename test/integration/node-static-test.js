@@ -173,7 +173,21 @@ suite.addBatch({
       assert.equal(response.statusCode, 200);
     }
   }
-}).addBatch({
+})
+.addBatch({
+  'requesting POST': {
+    topic : function(){
+      request.post(TEST_SERVER + '/index.html', this.callback);
+    },
+    'should respond with 200' : function(error, response, body){
+      assert.equal(response.statusCode, 200);
+    },
+    'should not be empty' : function(error, response, body){
+      assert.isNotEmpty(body);
+    }
+  }
+})
+.addBatch({
   'requesting HEAD': {
     topic : function(){
       request.head(TEST_SERVER + '/index.html', this.callback);
@@ -182,7 +196,7 @@ suite.addBatch({
       assert.equal(response.statusCode, 200);
     },
     'head must has no body' : function(error, response, body){
-      assert.isUndefined(body);
+      assert.isEmpty(body);
     }
   }
 })
@@ -247,3 +261,4 @@ suite.addBatch({
     }
   }
 }).export(module);
+
