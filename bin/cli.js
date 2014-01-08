@@ -39,11 +39,6 @@ var fs = require('fs'),
 
     var dir = argv._[0] || '.';
 
-    var trainwreck = fs.readFileSync(path.join(__dirname, '../etc/trainwreck.jpg')),
-				notFound = fs.readFileSync(path.join(__dirname, '../etc/404.html'))
-        .toString()
-        .replace('{{trainwreck}}', trainwreck.toString('base64'));
-
     var colors = require('colors');
 
     var log = function(request, response, statusCode) {
@@ -91,7 +86,7 @@ require('http').createServer(function (request, response) {
         file.serve(request, response, function(e, rsp) {
             if (e && e.status === 404) {
                 response.writeHead(e.status, e.headers);
-                response.end(notFound);
+                response.end("Not Found");
                 log(request, response);
             } else {
                 log(request, response);
