@@ -195,25 +195,29 @@ Command Line Interface
 
 ### Installation #
 
-    $ npm install -g node-static
+```sh
+$ npm install -g node-static
+```
 
 ### Example Usage #
 
-    # serve up the current directory
-    $ static
-    serving "." at http://127.0.0.1:8080
+```sh
+# serve up the current directory
+$ static
+serving "." at http://127.0.0.1:8080
 
-    # serve up a different directory
-    $ static public
-    serving "public" at http://127.0.0.1:8080
+# serve up a different directory
+$ static public
+serving "public" at http://127.0.0.1:8080
 
-    # specify additional headers (this one is useful for development)
-    $ static -H '{"Cache-Control": "no-cache, must-revalidate"}'
-    serving "." at http://127.0.0.1:8080
+# specify additional headers (this one is useful for development)
+$ static -H '{"Cache-Control": "no-cache, must-revalidate"}'
+serving "." at http://127.0.0.1:8080
 
-    # set cache control max age
-    $ static -c 7200
-    serving "." at http://127.0.0.1:8080
+# set cache control max age
+$ static -c 7200
+serving "." at http://127.0.0.1:8080
 
-    # show help message, including all options
-    $ static -h
+# show help message, including all options
+$ static -h
+```
