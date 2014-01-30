@@ -11,21 +11,23 @@ such as node-paperboy and antinode.
 Synopsis
 --------
 
-    var static = require('node-static');
+```js
+var static = require('node-static');
 
-    //
-    // Create a node-static server instance to serve the './public' folder
-    //
-    var file = new static.Server('./public');
+//
+// Create a node-static server instance to serve the './public' folder
+//
+var file = new static.Server('./public');
 
-    require('http').createServer(function (request, response) {
-        request.addListener('end', function () {
-            //
-            // Serve files!
-            //
-            file.serve(request, response);
-        }).resume();
-    }).listen(8080);
+require('http').createServer(function (request, response) {
+    request.addListener('end', function () {
+        //
+        // Serve files!
+        //
+        file.serve(request, response);
+    }).resume();
+}).listen(8080);
+```
 
 API
 ---
@@ -34,16 +36,22 @@ API
 
 Creating a file server instance is as simple as:
 
-    new static.Server();
+```js
+new static.Server();
+```
 
 This will serve files in the current directory. If you want to serve files in a specific
 directory, pass it as the first argument:
 
-    new static.Server('./public');
+```js
+new static.Server('./public');
+```
 
 You can also specify how long the client is supposed to cache the files node-static serves:
 
-    new static.Server('./public', { cache: 3600 });
+```js
+new static.Server('./public', { cache: 3600 });
+```
 
 This will set the `Cache-Control` header, telling clients to cache the file for an hour.
 This is the default setting.
@@ -52,35 +60,41 @@ This is the default setting.
 
 To serve files under a directory, simply call the `serve` method on a `Server` instance, passing it
 the HTTP request and response object:
- 
-    var static = require('node-static');
 
-    var fileServer = new static.Server('./public');
+```js 
+var static = require('node-static');
 
-    require('http').createServer(function (request, response) {
-        request.addListener('end', function () {
-            fileServer.serve(request, response);
-        }).resume();
-    }).listen(8080);
+var fileServer = new static.Server('./public');
+
+require('http').createServer(function (request, response) {
+    request.addListener('end', function () {
+        fileServer.serve(request, response);
+    }).resume();
+}).listen(8080);
+```
 
 ### Serving specific files #
 
 If you want to serve a specific file, like an error page for example, use the `serveFile` method:
 
-    fileServer.serveFile('/error.html', 500, {}, request, response);
+```js
+fileServer.serveFile('/error.html', 500, {}, request, response);
+```
 
 This will serve the `error.html` file, from under the file root directory, with a `500` status code.
 For example, you could serve an error page, when the initial request wasn't found:
 
-    require('http').createServer(function (request, response) {
-        request.addListener('end', function () {
-            fileServer.serve(request, response, function (e, res) {
-                if (e && (e.status === 404)) { // If the file wasn't found
-                    fileServer.serveFile('/not-found.html', 404, {}, request, response);
-                }
-            });
-        }).resume();
-    }).listen(8080);
+```js
+require('http').createServer(function (request, response) {
+    request.addListener('end', function () {
+        fileServer.serve(request, response, function (e, res) {
+            if (e && (e.status === 404)) { // If the file wasn't found
+                fileServer.serveFile('/not-found.html', 404, {}, request, response);
+            }
+        });
+    }).resume();
+}).listen(8080);
+```
 
 More on intercepting errors bellow.
 
@@ -89,23 +103,25 @@ More on intercepting errors bellow.
 An optional callback can be passed as last argument, it will be called every time a file
 has been served successfully, or if there was an error serving the file:
 
-    var static = require('node-static');
+```js
+var static = require('node-static');
     
-    var fileServer = new static.Server('./public');
+var fileServer = new static.Server('./public');
 
-    require('http').createServer(function (request, response) {
-        request.addListener('end', function () {
-            fileServer.serve(request, response, function (err, result) {
-                if (err) { // There was an error serving the file
-                    sys.error("Error serving " + request.url + " - " + err.message);
+require('http').createServer(function (request, response) {
+    request.addListener('end', function () {
+        fileServer.serve(request, response, function (err, result) {
+            if (err) { // There was an error serving the file
+                sys.error("Error serving " + request.url + " - " + err.message);
 
-                    // Respond to the client
-                    response.writeHead(err.status, err.headers);
-                    response.end();
-                }
-            });
-        }).resume();
-    }).listen(8080);
+                // Respond to the client
+                response.writeHead(err.status, err.headers);
+                response.end();
+            }
+        });
+    }).resume();
+}).listen(8080);
+```
 
 Note that if you pass a callback, and there is an error serving the file, node-static
 *will not* respond to the client. This gives you the opportunity to re-route the request,
@@ -116,9 +132,11 @@ send it to an application.
 
 If you only want to *listen* for errors, you can use *event listeners*:
 
-    fileServer.serve(request, response).addListener('error', function (err) {
-        sys.error("Error serving " + request.url + " - " + err.message);
-    });
+```js
+fileServer.serve(request, response).addListener('error', function (err) {
+    sys.error("Error serving " + request.url + " - " + err.message);
+});
+```
 
 With this method, you don't have to explicitly send the response back, in case of an error.
 
@@ -177,25 +195,29 @@ Command Line Interface
 
 ### Installation #
 
-    $ npm install -g node-static
+```sh
+$ npm install -g node-static
+```
 
 ### Example Usage #
 
-    # serve up the current directory
-    $ static
-    serving "." at http://127.0.0.1:8080
+```sh
+# serve up the current directory
+$ static
+serving "." at http://127.0.0.1:8080
 
-    # serve up a different directory
-    $ static public
-    serving "public" at http://127.0.0.1:8080
+# serve up a different directory
+$ static public
+serving "public" at http://127.0.0.1:8080
 
-    # specify additional headers (this one is useful for development)
-    $ static -H '{"Cache-Control": "no-cache, must-revalidate"}'
-    serving "." at http://127.0.0.1:8080
+# specify additional headers (this one is useful for development)
+$ static -H '{"Cache-Control": "no-cache, must-revalidate"}'
+serving "." at http://127.0.0.1:8080
 
-    # set cache control max age
-    $ static -c 7200
-    serving "." at http://127.0.0.1:8080
+# set cache control max age
+$ static -c 7200
+serving "." at http://127.0.0.1:8080
 
-    # show help message, including all options
-    $ static -h
+# show help message, including all options
+$ static -h
+```
