@@ -31,6 +31,10 @@ var fs = require('fs'),
             alias: 'f',
             description: 'JSON file of additional headers'
         })
+        .option('gzip', {
+            alias: 'z',
+            description: 'enable compression (tries to serve file of same name plus \'.gz\')'
+        })
         .option('help', {
             alias: 'h',
             description: 'display this help message'
@@ -77,6 +81,10 @@ if (argv.headers){
 if (argv['header-file']){
     (options = options || {}).headers =
         JSON.parse(fs.readFileSync(argv['header-file']));
+}
+
+if (argv.gzip){
+    (options = options || {}).gzip = true;
 }
 
 file = new(statik.Server)(dir, options);
