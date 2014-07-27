@@ -15,6 +15,11 @@ var fs = require('fs'),
             'default': 8080,
             description: 'TCP port at which the files will be served'
         })
+        .option('host-address', {
+            alias: 'a',
+            'default': '127.0.0.1',
+            description: 'the local network interface at which to listen'
+        })
         .option('cache', {
             alias: 'c',
             description: '"Cache-Control" header setting, defaults to 3600'
@@ -101,7 +106,6 @@ require('http').createServer(function (request, response) {
             }
         });
     }).resume();
-}).listen(+argv.port);
+}).listen(+argv.port, argv['host-address']);
 
-console.log('serving "' + dir + '" at http://127.0.0.1:' + argv.port);
-
+console.log('serving "' + dir + '" at http://' + argv['host-address'] + ':' + argv.port);
