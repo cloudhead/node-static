@@ -217,6 +217,10 @@ serving "." at http://127.0.0.1:8080
 $ static -c 7200
 serving "." at http://127.0.0.1:8080
 
+# expose the server to your local network
+$ static -a 0.0.0.0
+serving "." at http://0.0.0.0:8080
+
 # show help message, including all options
 $ static -h
 ```
