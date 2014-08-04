@@ -113,14 +113,12 @@ suite.addBatch({
 }).addBatch({
   'serving first 5 bytes of hello.txt': {
     topic : function(){
-
       var options = {
         url: TEST_SERVER + '/hello.txt',
         headers: {
           'Range': 'bytes=0-4'
         }
       };
-
       request.get(options, this.callback);
     },
     'should respond with 206' : function(error, response, body){
@@ -139,14 +137,12 @@ suite.addBatch({
 }).addBatch({
   'serving last 5 bytes of hello.txt': {
     topic : function(){
-
       var options = {
         url: TEST_SERVER + '/hello.txt',
         headers: {
           'Range': 'bytes=6-10'
         }
       };
-
       request.get(options, this.callback);
     },
     'should respond with 206' : function(error, response, body){
