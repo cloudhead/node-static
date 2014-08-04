@@ -111,7 +111,7 @@ suite.addBatch({
     }
   }
 }).addBatch({
-  'serving hello.txt': {
+  'serving first 5 bytes of hello.txt': {
     topic : function(){
 
       var options = {
@@ -137,7 +137,7 @@ suite.addBatch({
     }
   }
 }).addBatch({
-  'serving hello.txt': {
+  'serving last 5 bytes of hello.txt': {
     topic : function(){
 
       var options = {
