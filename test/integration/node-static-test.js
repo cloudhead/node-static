@@ -146,6 +146,9 @@ suite.addBatch({
     'should have content-length of 5 bytes': function(error, response, body){
       assert.equal(response.headers['content-length'], 5);
     },
+    'should have a valid Content-Range header in response': function(error, response, body){
+      assert.equal(response.headers['content-range'], 'bytes 0-4/11');
+    },
     'should respond with hello': function(error, response, body){
       assert.equal(body, 'hello');
     }
@@ -170,8 +173,38 @@ suite.addBatch({
     'should have content-length of 5 bytes': function(error, response, body){
       assert.equal(response.headers['content-length'], 5);
     },
+    'should have a valid Content-Range header in response': function(error, response, body){
+      assert.equal(response.headers['content-range'], 'bytes 6-10/11');
+    },
     'should respond with world': function(error, response, body){
       assert.equal(body, 'world');
+    }
+  }
+}).addBatch({
+  'serving all from the start of hello.txt': {
+    topic : function(){
+      var options = {
+        url: TEST_SERVER + '/hello.txt',
+        headers: {
+          'Range': 'bytes=0-'
+        }
+      };
+      request.get(options, this.callback);
+    },
+    'should respond with 206' : function(error, response, body){
+      assert.equal(response.statusCode, 206);
+    },
+    'should respond with text/plain': function(error, response, body){
+      assert.equal(response.headers['content-type'], 'text/plain');
+    },
+    'should have content-length of 11 bytes': function(error, response, body){
+      assert.equal(response.headers['content-length'], 11);
+    },
+    'should have a valid Content-Range header in response': function(error, response, body){
+      assert.equal(response.headers['content-range'], 'bytes 0-10/11');
+    },
+    'should respond with "hello world"': function(error, response, body){
+      assert.equal(body, 'hello world');
     }
   }
 }).addBatch({
