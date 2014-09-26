@@ -96,6 +96,22 @@ suite.addBatch({
     }
 })
 .addBatch({
+  'serving empty.css': {
+    topic : function(){
+      request.get(TEST_SERVER + '/empty.css', this.callback);
+    },
+    'should respond with 200' : function(error, response, body){
+      assert.equal(response.statusCode, 200);
+    },
+    'should respond with text/css': function(error, response, body){
+      assert.equal(response.headers['content-type'], 'text/css');
+    },
+    'should respond with empty string': function(error, response, body){
+      assert.equal(body, '');
+    }
+  }
+})
+.addBatch({
   'serving hello.txt': {
     topic : function(){
       request.get(TEST_SERVER + '/hello.txt', this.callback);
