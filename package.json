@@ -1,37 +1,49 @@
 {
-  "name" : "node-static",
-  "description" : "simple, compliant file streaming module for node",
-  "url" : "http://github.com/cloudhead/node-static",
-  "keywords" : ["http", "static", "file", "server"],
-  "author" : "Alexis Sellier <self@cloudhead.net>",
-  "contributors" : [
-  {
-    "name": "Pablo Cantero",
-    "email": "pablo@pablocantero.com"
-  }
+  "name": "node-static",
+  "description": "simple, compliant file streaming module for node",
+  "url": "http://github.com/cloudhead/node-static",
+  "keywords": [
+    "http",
+    "static",
+    "file",
+    "server"
   ],
-    "repository": {
-      "type": "git",
-      "url": "http://github.com/cloudhead/node-static"
-    },
-    "main" : "./lib/node-static",
-    "scripts": {
-      "test": "vows --spec --isolate"
-    },
-    "bin": {
-      "static": "bin/cli.js"
-    },
-    "license" : "MIT",
-    "dependencies" : {
-      "optimist": ">=0.3.4",
-      "colors": ">=0.6.0",
-      "mime": ">=1.2.9"
-    },
-    "devDependencies" : {
-      "request": "latest",
-      "vows": "latest"
-    },
-    "version" : "0.7.5",
-    "engines" : { "node": ">= 0.4.1" }
+  "author": "Alexis Sellier <self@cloudhead.net>",
+  "contributors": [
+    "Pablo Cantero <pablo@pablocantero.com>",
+    "Ionică Bizău <bizauionica@gmail.com>"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/cloudhead/node-static"
+  },
+  "main": "./lib/node-static",
+  "scripts": {
+    "test": "vows --spec --isolate"
+  },
+  "bin": {
+    "static": "bin/cli.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "optimist": ">=0.3.4",
+    "colors": ">=0.6.0",
+    "mime": ">=1.2.9"
+  },
+  "devDependencies": {
+    "request": "latest",
+    "vows": "latest"
+  },
+  "version": "0.7.5",
+  "engines": {
+    "node": ">= 0.4.1"
+  },
+  "bugs": {
+    "url": "https://github.com/cloudhead/node-static/issues"
+  },
+  "homepage": "https://github.com/cloudhead/node-static",
+  "directories": {
+    "example": "examples",
+    "test": "test"
+  }
 }
-
