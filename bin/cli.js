@@ -94,6 +94,8 @@ if (argv.gzip){
 
 file = new(statik.Server)(dir, options);
 
+var port = (argv.port == 'env') ? +process.env.PORT : +argv.port;
+
 require('http').createServer(function (request, response) {
     request.addListener('end', function () {
         file.serve(request, response, function(e, rsp) {
@@ -106,6 +108,6 @@ require('http').createServer(function (request, response) {
             }
         });
     }).resume();
-}).listen(+argv.port, argv['host-address']);
+}).listen(port, argv['host-address']);
 
-console.log('serving "' + dir + '" at http://' + argv['host-address'] + ':' + argv.port);
+console.log('serving "' + dir + '" at http://' + argv['host-address'] + ':' + port);
