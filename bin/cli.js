@@ -75,7 +75,7 @@ if (argv.version){
     process.exit(0);
 }
 
-if (argv.cache){
+if ('cache' in argv){
     (options = options || {}).cache = argv.cache;
 }
 
