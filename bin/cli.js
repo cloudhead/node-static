@@ -94,7 +94,7 @@ if (argv.gzip){
 
 file = new(statik.Server)(dir, options);
 
-require('http').createServer(function (request, response) {
+var server = require('http').createServer(function (request, response) {
     request.addListener('end', function () {
         file.serve(request, response, function(e, rsp) {
             if (e && e.status === 404) {
@@ -106,6 +106,12 @@ require('http').createServer(function (request, response) {
             }
         });
     }).resume();
-}).listen(+argv.port, argv['host-address']);
+});
+
+if (argv['host-address'] === '127.0.0.1') {
+    server.listen(+argv.port);
+} else {
+    server.listen(+argv.port, argv['host-address']);
+}
 
 console.log('serving "' + dir + '" at http://' + argv['host-address'] + ':' + argv.port);
