@@ -357,5 +357,34 @@ suite.addBatch({
       assert.equal(response.statusCode, 404);
     }
   }
+}).addBatch({
+  'once an http server is listening with custom index configuration': {
+    topic: function () {
+      server.close();
+
+      fileServer  = new static.Server(__dirname + '/../fixtures', { indexFile: "hello.txt" });
+
+      server = require('http').createServer(function (request, response) {
+        fileServer.serve(request, response);
+      }).listen(TEST_PORT, this.callback)
+    },
+    'should be listening' : function(){
+      /* This test is necessary to ensure the topic execution.
+       * A topic without tests will be not executed */
+      assert.isTrue(true);
+    }
+  }
+}).addBatch({
+  'serving custom index file': {
+    topic : function(){
+      request.get(TEST_SERVER + '/', this.callback);
+    },
+    'should respond with 200' : function(error, response, body){
+      assert.equal(response.statusCode, 200);
+    },
+    'should respond with empty string': function(error, response, body){
+      assert.equal(body, 'hello world');
+    }
+  }
 }).export(module);
 
