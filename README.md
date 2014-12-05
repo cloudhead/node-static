@@ -186,6 +186,14 @@ respond would match that RegExp using its test() method.
 
 > Defaults to `false`
 
+#### `indexFile` #
+
+Choose a custom index file when serving up directories.
+
+example: `{ indexFile: "index.htm" }`
+
+> Defaults to `index.html`
+
 
 Command Line Interface
 ----------------------
