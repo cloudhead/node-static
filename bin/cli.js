@@ -52,8 +52,10 @@ var fs = require('fs'),
 
     var log = function(request, response, statusCode) {
         var d = new Date();
-        var seconds = d.getSeconds() < 10? '0'+d.getSeconds() : d.getSeconds(),
-            datestr = d.getHours() + ':' + d.getMinutes() + ':' + seconds,
+        var seconds = d.getSeconds() < 10 ? '0' + d.getSeconds() : d.getSeconds(),
+            minutes = d.getMinutes() < 10 ? '0' + d .getMinutes() : d.getMinutes(),
+            hours   = d.getHours() < 10 ? '0' + d .getHours() : d.getHours(),
+            datestr = hours + ':' + minutes + ':' + seconds,
             line = datestr + ' [' + response.statusCode + ']: ' + request.url,
             colorized = line;
         if (tty.isatty(process.stdout.fd))
