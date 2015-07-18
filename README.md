@@ -111,7 +111,7 @@ require('http').createServer(function (request, response) {
     request.addListener('end', function () {
         fileServer.serve(request, response, function (err, result) {
             if (err) { // There was an error serving the file
-                sys.error("Error serving " + request.url + " - " + err.message);
+                console.error("Error serving " + request.url + " - " + err.message);
 
                 // Respond to the client
                 response.writeHead(err.status, err.headers);
@@ -133,7 +133,7 @@ If you only want to *listen* for errors, you can use *event listeners*:
 
 ```js
 fileServer.serve(request, response).addListener('error', function (err) {
-    sys.error("Error serving " + request.url + " - " + err.message);
+    console.error("Error serving " + request.url + " - " + err.message);
 });
 ```
 
