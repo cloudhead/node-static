@@ -40,6 +40,10 @@ var fs = require('fs'),
             alias: 'z',
             description: 'enable compression (tries to serve file of same name plus \'.gz\')'
         })
+        .option('index-file', {
+            alias: 'i',
+            description: 'choose a custom index file when serving up directories'
+        })
         .option('help', {
             alias: 'h',
             description: 'display this help message'
@@ -90,6 +94,10 @@ if (argv['header-file']){
 
 if (argv.gzip){
     (options = options || {}).gzip = true;
+}
+
+if (argv['index-file']) {
+    (options = options || {}).indexFile = argv['index-file'];
 }
 
 file = new(statik.Server)(dir, options);
