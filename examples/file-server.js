@@ -1,9 +1,9 @@
-var static = require('../lib/node-static');
+var nodeStatic = require('node-static');
 
 //
 // Create a node-static server to serve the current directory
 //
-var file = new static.Server('.', { cache: 7200, headers: {'X-Hello':'World!'} });
+var file = new nodeStatic.Server('.', { cache: 7200, headers: {'X-Hello':'World!'} });
 
 require('http').createServer(function (request, response) {
     file.serve(request, response, function (err, res) {

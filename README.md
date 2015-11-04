@@ -11,12 +11,12 @@ Synopsis
 --------
 
 ```js
-var static = require('node-static');
+var nodeStatic = require('node-static');
 
 //
 // Create a node-static server instance to serve the './public' folder
 //
-var file = new static.Server('./public');
+var file = new nodeStatic.Server('./public');
 
 require('http').createServer(function (request, response) {
     request.addListener('end', function () {
@@ -36,20 +36,20 @@ API
 Creating a file server instance is as simple as:
 
 ```js
-new static.Server();
+new nodeStatic.Server();
 ```
 
 This will serve files in the current directory. If you want to serve files in a specific
 directory, pass it as the first argument:
 
 ```js
-new static.Server('./public');
+new nodeStatic.Server('./public');
 ```
 
 You can also specify how long the client is supposed to cache the files node-static serves:
 
 ```js
-new static.Server('./public', { cache: 3600 });
+new nodeStatic.Server('./public', { cache: 3600 });
 ```
 
 This will set the `Cache-Control` header, telling clients to cache the file for an hour.
@@ -61,9 +61,9 @@ To serve files under a directory, simply call the `serve` method on a `Server` i
 the HTTP request and response object:
 
 ```js 
-var static = require('node-static');
+var nodeStatic = require('node-static');
 
-var fileServer = new static.Server('./public');
+var fileServer = new nodeStatic.Server('./public');
 
 require('http').createServer(function (request, response) {
     request.addListener('end', function () {
@@ -103,9 +103,9 @@ An optional callback can be passed as last argument, it will be called every tim
 has been served successfully, or if there was an error serving the file:
 
 ```js
-var static = require('node-static');
+var nodeStatic = require('node-static');
     
-var fileServer = new static.Server('./public');
+var fileServer = new nodeStatic.Server('./public');
 
 require('http').createServer(function (request, response) {
     request.addListener('end', function () {
