@@ -389,7 +389,7 @@ suite.addBatch({
 }).addBatch({
 	'terminate server': {
 		topic: function () {
-			server.close();
+			server.close(this.callback);
 		},
 		'should be listening' : function(){
 			/* This test is necessary to ensure the topic execution.
