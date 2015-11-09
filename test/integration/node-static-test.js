@@ -386,5 +386,16 @@ suite.addBatch({
       assert.equal(body, 'hello world');
     }
   }
+}).addBatch({
+	'terminate server': {
+		topic: function () {
+			server.close();
+		},
+		'should be listening' : function(){
+			/* This test is necessary to ensure the topic execution.
+			 * A topic without tests will be not executed */
+			assert.isTrue(true);
+		}
+	}
 }).export(module);
 
