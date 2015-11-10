@@ -387,15 +387,36 @@ suite.addBatch({
     }
   }
 }).addBatch({
-	'terminate server': {
-		topic: function () {
-			server.close(this.callback);
-		},
-		'should be listening' : function(){
-			/* This test is necessary to ensure the topic execution.
-			 * A topic without tests will be not executed */
-			assert.isTrue(true);
-		}
-	}
-}).export(module);
+  'finding a file by default extension': {
+    topic: function() {
+      server.close();
 
+      fileServer = new static.Server(__dirname+'/../fixtures', {defaultExtension: ".txt"});
+
+      server = require('http').createServer(function(request, response) {
+        fileServer.serve(request, response);
+      }).listen(TEST_PORT);
+      request.get(TEST_SERVER + '/hello', this.callback);
+    },
+    'should respond with 200': function(error, response, body) {
+      assert.equal(response.statusCode, 200);
+    },
+    'should respond with text/plain': function(error, response, body) {
+      assert.equal(response.headers['content-type'], 'text/plain');
+    },
+    'should respond with hello world': function(error, response, body) {
+      assert.equal(body, 'hello world');
+    }
+  }
+}).addBatch({
+  'terminate server': {
+    topic: function() {
+      server.close(this.callback);
+    },
+    'should be listening': function() {
+      /* This test is necessary to ensure the topic execution.
+       * A topic without tests will be not executed */
+      assert.isTrue(true);
+    }
+  }
+}).export(module);
