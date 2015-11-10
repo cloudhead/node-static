@@ -409,6 +409,28 @@ suite.addBatch({
     }
   }
 }).addBatch({
+  'default extension does not interfere with folders': {
+    topic : function(){
+      server.close();
+
+      fileServer = new static.Server(__dirname+'/../fixtures', {defaultExtension: "html"});
+
+      server = require('http').createServer(function(request, response) {
+        fileServer.serve(request, response);
+      }).listen(TEST_PORT);
+      request.get({ url: TEST_SERVER + '/there', followRedirect: false }, this.callback); // without trailing slash
+    },
+    'should respond with 301' : function(error, response, body){
+      assert.equal(response.statusCode, 301);
+    },
+    'should respond with location header': function(error, response, body){
+      assert.equal(response.headers['location'], '/there/'); // now with trailing slash
+    },
+    'should respond with empty string body' : function(error, response, body){
+      assert.equal(body, '');
+    }
+  }
+}).addBatch({
   'terminate server': {
     topic: function() {
       server.close(this.callback);

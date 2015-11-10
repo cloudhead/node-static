@@ -194,6 +194,15 @@ example: `{ indexFile: "index.htm" }`
 
 > Defaults to `index.html`
 
+#### `defaultExtension` #
+
+Choose a default extension when serving files.
+A request to '/myFile' would check for a `myFile` folder (first) then a `myFile.html` (second).
+
+example: `{ defaultExtension: "html" }`
+
+> Defaults to `null`
+
 
 Command Line Interface
 ----------------------
