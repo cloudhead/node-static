@@ -391,7 +391,7 @@ suite.addBatch({
     topic: function() {
       server.close();
 
-      fileServer = new static.Server(__dirname+'/../fixtures', {defaultExtension: ".txt"});
+      fileServer = new static.Server(__dirname+'/../fixtures', {defaultExtension: "txt"});
 
       server = require('http').createServer(function(request, response) {
         fileServer.serve(request, response);
