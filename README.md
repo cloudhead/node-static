@@ -141,58 +141,46 @@ With this method, you don't have to explicitly send the response back, in case o
 
 ### Options when creating an instance of `Server` #
 
-#### `cache` #
+* **`cache`** (defaults to `3600`)
 
-Sets the `Cache-Control` header.
+  Sets the `Cache-Control` header.
 
-example: `{ cache: 7200 }`
+  example: `{ cache: 7200 }`
 
-Passing a number will set the cache duration to that number of seconds.
-Passing `false` will disable the `Cache-Control` header.
+  Passing a number will set the cache duration to that number of seconds.
+  Passing `false` will disable the `Cache-Control` header.
 
-> Defaults to `3600`
+* **`serverInfo`** (defaults to `node-static/{version}`)
 
+  Sets the `Server` header.
 
-#### `serverInfo` #
+  example: `{ serverInfo: "myserver" }`
 
-Sets the `Server` header.
+* **`headers`** (defaults to `{}`)
 
-example: `{ serverInfo: "myserver" }`
+  Sets response headers.
 
-> Defaults to `node-static/{version}`
+  example: `{ 'X-Hello': 'World!' }`
 
-#### `headers` #
+* **`gzip`** (defaults to `false`)
 
-Sets response headers.
+  Enable support for sending compressed responses.  This will enable a check for a
+  file with the same name plus '.gz' in the same folder.  If the compressed file is
+  found and the client has indicated support for gzip file transfer, the contents
+  of the .gz file will be sent in place of the uncompressed file along with a
+  Content-Encoding: gzip header to inform the client the data has been compressed.
 
-example: `{ 'X-Hello': 'World!' }`
+  example: `{ gzip: true }` or `{ gzip: /^\/text/ }`
 
-> defaults to `{}`
+  Passing `true` will enable this check for all files.
+  Passing a RegExp instance will only enable this check if the content-type of the
+  respond would match that RegExp using its test() method.
 
-#### `gzip` #
+* **`indexFile`** (defaults to `index.html`)
 
-Enable support for sending compressed responses.  This will enable a check for a
-file with the same name plus '.gz' in the same folder.  If the compressed file is
-found and the client has indicated support for gzip file transfer, the contents
-of the .gz file will be sent in place of the uncompressed file along with a
-Content-Encoding: gzip header to inform the client the data has been compressed.
+  Choose a custom index file when serving up directories.
 
-example: `{ gzip: true }`
-example: `{ gzip: /^\/text/ }`
-
-Passing `true` will enable this check for all files.
-Passing a RegExp instance will only enable this check if the content-type of the
-respond would match that RegExp using its test() method.
-
-> Defaults to `false`
-
-#### `indexFile` #
-
-Choose a custom index file when serving up directories.
-
-example: `{ indexFile: "index.htm" }`
-
-> Defaults to `index.html`
+  example: `{ indexFile: "index.htm" }`
 
 
 Command Line Interface
@@ -206,29 +194,34 @@ Command Line Interface
 $ npm install -g node-static
 ```
 
+### CLI Options
+
+```sh
+  --port, -p          TCP port at which the files will be served                        [default: 8080]
+  --host-address, -a  the local network interface at which to listen                    [default: "127.0.0.1"]
+  --cache, -c         "Cache-Control" header setting, defaults to 3600
+  --version, -v       node-static version
+  --headers, -H       additional headers (in JSON format)
+  --header-file, -f   JSON file of additional headers
+  --gzip, -z          enable compression (tries to serve file of same name plus '.gz')
+  --help, -h          display this help message
+```
+
 ### Example Usage #
 
 ```sh
 # serve up the current directory
 $ static
-serving "." at http://127.0.0.1:8080
 
 # serve up a different directory
 $ static public
-serving "public" at http://127.0.0.1:8080
 
 # specify additional headers (this one is useful for development)
 $ static -H '{"Cache-Control": "no-cache, must-revalidate"}'
-serving "." at http://127.0.0.1:8080
 
 # set cache control max age
 $ static -c 7200
-serving "." at http://127.0.0.1:8080
 
 # expose the server to your local network
 $ static -a 0.0.0.0
-serving "." at http://0.0.0.0:8080
-
-# show help message, including all options
-$ static -h
 ```
