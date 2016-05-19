@@ -41,7 +41,6 @@ var fs = require('fs'),
             description: 'enable compression (tries to serve file of same name plus \'.gz\')'
         })
         .option('spa', {
-            alias: 's',
             description: 'serve the content as a single page app by redirecting all non-file requests to the index html file'
         })
         .option('indexFile', {
@@ -74,34 +73,34 @@ var fs = require('fs'),
 
     var file, options;
 
-if (argv.help){
+if (argv.help) {
     require('optimist').showHelp(console.log);
     process.exit(0);
 }
 
-if (argv.version){
+if (argv.version) {
     console.log('node-static', statik.version.join('.'));
     process.exit(0);
 }
 
-if (argv.cache){
+if (argv.cache) {
     (options = options || {}).cache = argv.cache;
 }
 
-if (argv.headers){
+if (argv.headers) {
     (options = options || {}).headers = JSON.parse(argv.headers);
 }
 
-if (argv['header-file']){
+if (argv['header-file']) {
     (options = options || {}).headers =
         JSON.parse(fs.readFileSync(argv['header-file']));
 }
 
-if (argv.gzip){
+if (argv.gzip) {
     (options = options || {}).gzip = true;
 }
 
-if (argv.indexFile){
+if (argv.indexFile) {
     (options = options || {}).indexFile = argv['indexFile'];
 }
 
@@ -117,9 +116,9 @@ require('http').createServer(function (request, response) {
           } else {
               log(request, response);
           }
-        }
+        };
 
-        if (argv['spa'] && !request.url.includes(".")){
+        if (argv['spa'] && !request.url.includes(".")) {
             file.serveFile(argv['indexFile'], 500, {}, request, response);
         } else {
             file.serve(request, response, callback);
@@ -129,5 +128,5 @@ require('http').createServer(function (request, response) {
 
 console.log('serving "' + dir + '" at http://' + argv['host-address'] + ':' + argv.port);
 if (argv.spa) {
-  console.log('serving as a single page app (all non-file requests redirect to ' + argv['indexFile'] +')')
+  console.log('serving as a single page app (all non-file requests redirect to ' + argv['indexFile'] +')');
 }
