@@ -118,7 +118,7 @@ require('http').createServer(function (request, response) {
           }
         };
 
-        if (argv['spa'] && !request.url.includes(".")) {
+        if (argv['spa'] && request.url.indexOf(".") !== -1) {
             file.serveFile(argv['indexFile'], 500, {}, request, response);
         } else {
             file.serve(request, response, callback);
