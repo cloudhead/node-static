@@ -40,6 +40,14 @@ var fs = require('fs'),
             alias: 'z',
             description: 'enable compression (tries to serve file of same name plus \'.gz\')'
         })
+        .option('spa', {
+            description: 'serve the content as a single page app by redirecting all non-file requests to the index html file'
+        })
+        .option('indexFile', {
+            alias: 'i',
+            'default': 'index.html',
+            description: 'specify a custom index file when serving up directories'
+        })
         .option('help', {
             alias: 'h',
             description: 'display this help message'
@@ -65,47 +73,60 @@ var fs = require('fs'),
 
     var file, options;
 
-if (argv.help){
+if (argv.help) {
     require('optimist').showHelp(console.log);
     process.exit(0);
 }
 
-if (argv.version){
+if (argv.version) {
     console.log('node-static', statik.version.join('.'));
     process.exit(0);
 }
 
-if (argv.cache){
+if (argv.cache) {
     (options = options || {}).cache = argv.cache;
 }
 
-if (argv.headers){
+if (argv.headers) {
     (options = options || {}).headers = JSON.parse(argv.headers);
 }
 
-if (argv['header-file']){
+if (argv['header-file']) {
     (options = options || {}).headers =
         JSON.parse(fs.readFileSync(argv['header-file']));
 }
 
-if (argv.gzip){
+if (argv.gzip) {
     (options = options || {}).gzip = true;
+}
+
+if (argv.indexFile) {
+    (options = options || {}).indexFile = argv['indexFile'];
 }
 
 file = new(statik.Server)(dir, options);
 
 require('http').createServer(function (request, response) {
     request.addListener('end', function () {
-        file.serve(request, response, function(e, rsp) {
-            if (e && e.status === 404) {
-                response.writeHead(e.status, e.headers);
-                response.end("Not Found");
-                log(request, response);
-            } else {
-                log(request, response);
-            }
-        });
+        var callback = function(e, rsp) {
+          if (e && e.status === 404) {
+              response.writeHead(e.status, e.headers);
+              response.end("Not Found");
+              log(request, response);
+          } else {
+              log(request, response);
+          }
+        };
+
+        if (argv['spa'] && request.url.indexOf(".") !== -1) {
+            file.serveFile(argv['indexFile'], 500, {}, request, response);
+        } else {
+            file.serve(request, response, callback);
+        }
     }).resume();
 }).listen(+argv.port, argv['host-address']);
 
 console.log('serving "' + dir + '" at http://' + argv['host-address'] + ':' + argv.port);
+if (argv.spa) {
+  console.log('serving as a single page app (all non-file requests redirect to ' + argv['indexFile'] +')');
+}
