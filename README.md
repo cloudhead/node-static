@@ -145,10 +145,12 @@ With this method, you don't have to explicitly send the response back, in case o
 
 Sets the `Cache-Control` header.
 
-example: `{ cache: 7200 }`
+example: `{ cache: 7200 }` will set the max-age for all files to 7200 seconds
+example: `{ cache: {'**/*.css': 300}}` will set the max-age for all CSS files to 5 minutes.
 
 Passing a number will set the cache duration to that number of seconds.
 Passing `false` will disable the `Cache-Control` header.
+Passing a object with [minimatch glob pattern](https://github.com/isaacs/minimatch) keys and number values will set cache max-age for any matching paths.
 
 > Defaults to `3600`
 

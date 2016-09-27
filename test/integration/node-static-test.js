@@ -229,6 +229,9 @@ suite.addBatch({
     },
     'should respond with text/html': function(error, response, body){
       assert.equal(response.headers['content-type'], 'text/html');
+    },
+    'should respond with cache-control': function(error, response, body){
+      assert.equal(response.headers['cache-control'], 'max-age=3600');
     }
   }
 }).addBatch({
@@ -384,6 +387,64 @@ suite.addBatch({
     },
     'should respond with empty string': function(error, response, body){
       assert.equal(body, 'hello world');
+    }
+  }
+}).addBatch({
+  'once an http server is listening with custom cache configuration': {
+    topic: function () {
+      server.close();
+
+      fileServer  = new static.Server(__dirname + '/../fixtures', {
+        cache: {
+          '**/*.txt': 100,
+          '**/': 300
+        }
+      });
+
+      server = require('http').createServer(function (request, response) {
+        fileServer.serve(request, response);
+      }).listen(TEST_PORT, this.callback)
+    },
+    'should be listening' : function(){
+      /* This test is necessary to ensure the topic execution.
+       * A topic without tests will be not executed */
+      assert.isTrue(true);
+    }
+  }
+}).addBatch({
+  'requesting custom cache index file': {
+    topic : function(){
+      request.get(TEST_SERVER + '/', this.callback);
+    },
+    'should respond with 200' : function(error, response, body){
+      assert.equal(response.statusCode, 200);
+    },
+    'should respond with cache-control': function(error, response, body){
+      assert.equal(response.headers['cache-control'], 'max-age=300');
+    }
+  }
+}).addBatch({
+  'requesting custom cache text file': {
+    topic : function(){
+      request.get(TEST_SERVER + '/hello.txt', this.callback);
+    },
+    'should respond with 200' : function(error, response, body){
+      assert.equal(response.statusCode, 200);
+    },
+    'should respond with cache-control': function(error, response, body){
+      assert.equal(response.headers['cache-control'], 'max-age=100');
+    }
+  }
+}).addBatch({
+  'requesting custom cache un-cached file': {
+    topic : function(){
+      request.get(TEST_SERVER + '/empty.css', this.callback);
+    },
+    'should respond with 200' : function(error, response, body){
+      assert.equal(response.statusCode, 200);
+    },
+    'should not respond with cache-control': function(error, response, body){
+      assert.equal(response.headers['cache-control'], undefined);
     }
   }
 }).export(module);
