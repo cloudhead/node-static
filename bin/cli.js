@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 var fs = require('fs'),
-    path = require('path'),
     tty = require('tty'),
     statik = require('./../lib/node-static');
 
