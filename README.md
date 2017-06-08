@@ -165,7 +165,7 @@ example: `{ serverInfo: "myserver" }`
 
 Sets response headers.
 
-example: `{ 'X-Hello': 'World!' }`
+example: `{ headers: { 'X-Hello': 'World!' } }`
 
 > defaults to `{}`
 
