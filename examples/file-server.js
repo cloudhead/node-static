@@ -7,7 +7,7 @@ var file = new static.Server('.', { cache: 7200, headers: {'X-Hello':'World!'} }
 
 require('http').createServer(function (request, response) {
     file.serve(request, response, function (err, res) {
-        if (err) { // An error as occured
+        if (err) { // An error as occurred
             console.error("> Error serving " + request.url + " - " + err.message);
             response.writeHead(err.status, err.headers);
             response.end();
