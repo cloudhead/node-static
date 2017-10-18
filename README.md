@@ -5,7 +5,8 @@ node-static
 
 node-static understands and supports *conditional GET* and *HEAD* requests.
 node-static was inspired by some of the other static-file serving modules out there,
-such as node-paperboy and antinode.
+such as [node-paperboy](https://github.com/felixge/node-paperboy) and
+[antinode](https://github.com/mhansen/antinode).
 
 Synopsis
 --------
