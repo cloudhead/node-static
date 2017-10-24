@@ -229,6 +229,10 @@ serving "." at http://127.0.0.1:8080
 $ static -a 0.0.0.0
 serving "." at http://0.0.0.0:8080
 
+# listening on a specific port
+$ static -p 8282
+serving "." at http://127.0.0.1:8282
+
 # show help message, including all options
 $ static -h
 ```
