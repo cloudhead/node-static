@@ -2,6 +2,7 @@
 
 var fs = require('fs'),
     tty = require('tty'),
+    url = require('url'),
     statik = require('./../lib/node-static');
 
     var argv = require('optimist')
@@ -117,7 +118,7 @@ require('http').createServer(function (request, response) {
           }
         };
 
-        if (argv['spa'] && request.url.indexOf(".") == -1) {
+        if (argv['spa'] && url.parse(request.url).pathname.indexOf(".") == -1) {
             file.serveFile(argv['indexFile'], 200, {}, request, response);
         } else {
             file.serve(request, response, callback);
