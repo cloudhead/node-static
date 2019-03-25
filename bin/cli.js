@@ -82,7 +82,11 @@ if (argv.version) {
     process.exit(0);
 }
 
-if (argv.cache) {
+if (argv.cache === 0 || argv.cache) {
+    var loweredCache = argv.cache.toString().toLowerCase();
+    if (loweredCache === 'false' || loweredCache === 'f') {
+      argv.cache = 0;
+    }
     (options = options || {}).cache = argv.cache;
 }
 
