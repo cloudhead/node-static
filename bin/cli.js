@@ -1,106 +1,86 @@
 #!/usr/bin/env node
 
+function help() {
+    return `Node-Static CLI - simple, RFC 2616 compliant file streaming module for Node.
+
+USAGE: cli.js [OPTIONS] [-p PORT] [<directory>]
+
+Options:
+    -p PORT, --port PORT
+            TCP port at which the files will be served. [default: 8080]
+    -a ADDRESS, --host-address ADDRESS
+            The local network interface at which to listen. [default: "127.0.0.1"]
+    -c SECONDS, --cache SECONDS
+            "Cache-Control" header setting. [default: 3600]
+    -v, --version
+            Node-static version
+    -H HEADERS, --headers HEADERS
+            Additional headers in JSON format.
+    -f FILE, --header-file FILE
+            JSON file of additional headers.
+    -z, --gzip
+            Enable compression (tries to serve file of same name plus ".gz").
+    --spa
+            Serve the content as a single page app by redirecting all non-file requests to the index HTML file.
+    -i FILENAME, --indexFile FILENAME
+            Specify a custom index file when serving up directories. [default: "index.html"]
+    -h, --help
+            Display this help message.
+`;
+}
+
 var fs = require('fs'),
     tty = require('tty'),
     statik = require('./../lib/node-static');
+    neodoc = require('neodoc');
 
-    var argv = require('optimist')
-        .usage([
-            'USAGE: $0 [-p <port>] [<directory>]',
-            'simple, rfc 2616 compliant file streaming module for node']
-            .join('\n\n'))
-        .option('port', {
-            alias: 'p',
-            'default': 8080,
-            description: 'TCP port at which the files will be served'
-        })
-        .option('host-address', {
-            alias: 'a',
-            'default': '127.0.0.1',
-            description: 'the local network interface at which to listen'
-        })
-        .option('cache', {
-            alias: 'c',
-            description: '"Cache-Control" header setting, defaults to 3600'
-        })
-        .option('version', {
-            alias: 'v',
-            description: 'node-static version'
-        })
-        .option('headers', {
-            alias: 'H',
-            description: 'additional headers (in JSON format)'
-        })
-        .option('header-file', {
-            alias: 'f',
-            description: 'JSON file of additional headers'
-        })
-        .option('gzip', {
-            alias: 'z',
-            description: 'enable compression (tries to serve file of same name plus \'.gz\')'
-        })
-        .option('spa', {
-            description: 'serve the content as a single page app by redirecting all non-file requests to the index html file'
-        })
-        .option('indexFile', {
-            alias: 'i',
-            'default': 'index.html',
-            description: 'specify a custom index file when serving up directories'
-        })
-        .option('help', {
-            alias: 'h',
-            description: 'display this help message'
-        })
-        .argv;
+var args = neodoc.run(help(), {
+    laxPlacement: true,
+    helpFlags: ['-h', '--help']
+});
 
-    var dir = argv._[0] || '.';
+var dir = args['<directory>'] || '.';
 
-    var colors = require('colors');
+var colors = require('colors');
 
-    var log = function(request, response, statusCode) {
-        var d = new Date();
-        var seconds = d.getSeconds() < 10? '0'+d.getSeconds() : d.getSeconds(),
-            datestr = d.getHours() + ':' + d.getMinutes() + ':' + seconds,
-            line = datestr + ' [' + response.statusCode + ']: ' + request.url,
-            colorized = line;
-        if (tty.isatty(process.stdout.fd))
-            colorized = (response.statusCode >= 500) ? line.red.bold :
-                        (response.statusCode >= 400) ? line.red :
-                        line;
-        console.log(colorized);
-    };
+var log = function(request, response, statusCode) {
+    var d = new Date();
+    var seconds = d.getSeconds() < 10? '0'+d.getSeconds() : d.getSeconds(),
+        datestr = d.getHours() + ':' + d.getMinutes() + ':' + seconds,
+        line = datestr + ' [' + response.statusCode + ']: ' + request.url,
+        colorized = line;
+    if (tty.isatty(process.stdout.fd))
+        colorized = (response.statusCode >= 500) ? line.red.bold :
+                    (response.statusCode >= 400) ? line.red :
+                    line;
+    console.log(colorized);
+};
 
-    var file, options;
+var file, options = {};
 
-if (argv.help) {
-    require('optimist').showHelp(console.log);
-    process.exit(0);
-}
-
-if (argv.version) {
+if (args['--version']) {
     console.log('node-static', statik.version.join('.'));
     process.exit(0);
 }
 
-if (argv.cache) {
-    (options = options || {}).cache = argv.cache;
+if (args['--cache']) {
+    options.cache = args['--cache']
 }
 
-if (argv.headers) {
-    (options = options || {}).headers = JSON.parse(argv.headers);
+if (args['--headers']) {
+    options.headers = JSON.parse(args['--headers']);
 }
 
-if (argv['header-file']) {
-    (options = options || {}).headers =
-        JSON.parse(fs.readFileSync(argv['header-file']));
+if (args['--header-file']) {
+    options.headers = JSON.parse(fs.readFileSync(args['--header-file']));
 }
 
-if (argv.gzip) {
-    (options = options || {}).gzip = true;
+if (args['--gzip']) {
+    options.gzip = true;
 }
 
-if (argv.indexFile) {
-    (options = options || {}).indexFile = argv['indexFile'];
+if (args['--index-file']) {
+    options.indexFile = args['--index-file'];
 }
 
 file = new(statik.Server)(dir, options);
@@ -117,15 +97,15 @@ require('http').createServer(function (request, response) {
           }
         };
 
-        if (argv['spa'] && request.url.indexOf(".") == -1) {
-            file.serveFile(argv['indexFile'], 200, {}, request, response);
+        if (args['--spa'] && request.url.indexOf(".") == -1) {
+            file.serveFile(args['--index-file'], 200, {}, request, response);
         } else {
             file.serve(request, response, callback);
         }
     }).resume();
-}).listen(+argv.port, argv['host-address']);
+}).listen(+args['--port'], args['--host-address']);
 
-console.log('serving "' + dir + '" at http://' + argv['host-address'] + ':' + argv.port);
-if (argv.spa) {
-  console.log('serving as a single page app (all non-file requests redirect to ' + argv['indexFile'] +')');
+console.log('serving "' + dir + '" at http://' + args['--host-address'] + ':' + args['--port']);
+if (args['--spa']) {
+  console.log('serving as a single page app (all non-file requests redirect to ' + arg['--index-file'] +')');
 }

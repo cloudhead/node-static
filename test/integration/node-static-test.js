@@ -305,7 +305,7 @@ suite.addBatch({
       this.callback();
     },
     'should add woff' : function(error, response, body){
-      assert.equal(static.mime.lookup('woff'), 'application/font-woff');
+      assert.equal(static.mime.getType('woff'), 'font/woff');
     }
   }
 })
