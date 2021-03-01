@@ -386,5 +386,14 @@ suite.addBatch({
       assert.equal(body, 'hello world');
     }
   }
+}).addBatch({
+  'handling malicious urls': {
+    topic : function(){
+      request.get(TEST_SERVER + '/%00', this.callback);
+    },
+    'should respond with 404' : function(error, response, body){
+      assert.equal(response.statusCode, 404);
+    }
+  }
 }).export(module);
 
