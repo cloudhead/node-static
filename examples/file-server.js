@@ -1,13 +1,15 @@
-var static = require('../lib/node-static');
+'use strict';
+
+const statik = require('../lib/node-static');
 
 //
 // Create a node-static server to serve the current directory
 //
-var file = new static.Server('.', { cache: 7200, headers: {'X-Hello':'World!'} });
+const file = new statik.Server('.', { cache: 7200, headers: {'X-Hello':'World!'} });
 
 require('http').createServer(function (request, response) {
     file.serve(request, response, function (err, res) {
-        if (err) { // An error as occured
+        if (err) { // An error has occurred
             console.error("> Error serving " + request.url + " - " + err.message);
             response.writeHead(err.status, err.headers);
             response.end();
