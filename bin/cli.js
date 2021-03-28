@@ -62,7 +62,10 @@ const dir = argv._[0] || '.';
 const log = function(request, response, statusCode) {
     const d = new Date();
     const seconds = d.getSeconds() < 10 ? '0' + d.getSeconds() : d.getSeconds(),
-        datestr = d.getHours() + ':' + d.getMinutes() + ':' + seconds,
+        minutes = d.getMinutes() < 10 ? '0' + d .getMinutes() : d.getMinutes(),
+        hours   = d.getHours() < 10 ? '0' + d .getHours() : d.getHours(),
+        datestr = hours + ':' + minutes + ':' + seconds,
+
         line = datestr + ' [' + response.statusCode + ']: ' + request.url;
     let colorized = line;
     if (tty.isatty(process.stdout.fd))
