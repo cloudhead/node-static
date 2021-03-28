@@ -5,7 +5,7 @@ Licensed to The Apache Software Foundation, http://www.apache.org/
 Benchmarking 127.0.0.1 (be patient)
 
 
-Server Software:        node-static/0.3.0
+Server Software:        @brettz9/node-static/0.3.0
 Server Hostname:        127.0.0.1
 Server Port:            8080
 
