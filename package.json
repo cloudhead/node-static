@@ -1,21 +1,21 @@
 {
-  "name": "node-static",
+  "name": "@brettz9/node-static",
   "description": "simple, compliant file streaming module for node",
-  "url": "http://github.com/cloudhead/node-static",
   "keywords": [
     "http",
     "static",
     "file",
     "server"
   ],
-  "author": "Alexis Sellier <alexis@cloudhead.io>",
+  "author": "Brett Zamir",
   "contributors": [
+    "Alexis Sellier <alexis@cloudhead.io>",
     "Pablo Cantero <pablo@pablocantero.com>",
     "Ionică Bizău <bizauionica@gmail.com>"
   ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/cloudhead/node-static"
+    "url": "http://github.com/brettz9/node-static"
   },
   "main": "./lib/node-static",
   "scripts": {
