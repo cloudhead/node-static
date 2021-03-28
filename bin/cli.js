@@ -27,7 +27,7 @@ const argv = require('optimist')
     })
     .option('version', {
         alias: 'v',
-        description: 'node-static version'
+        description: '@brettz9/node-static version'
     })
     .option('headers', {
         alias: 'H',
@@ -83,7 +83,7 @@ if (argv.help) {
 }
 
 if (argv.version) {
-    console.log('node-static', statik.version.join('.'));
+    console.log('@brettz9/node-static', statik.version.join('.'));
     process.exit(0);
 }
 

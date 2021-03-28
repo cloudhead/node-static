@@ -1,22 +1,21 @@
-node-static
-===========
+# @brettz9/node-static
 
 > a simple, *rfc 2616 compliant* file streaming module for [node](http://nodejs.org)
 
-node-static understands and supports *conditional GET* and *HEAD* requests.
-node-static was inspired by some of the other static-file serving modules out there,
-such as node-paperboy and antinode.
+A maintained fork of `node-static`. `node-static` was inspired by some of the
+other static-file serving modules out there, such as node-paperboy and antinode.
 
-Synopsis
---------
+`@brettz9/node-static` understands and supports *conditional GET* and *HEAD* requests.
+
+# Synopsis
 
 ```js
-var static = require('node-static');
+const statik = require('@brettz9/node-static');
 
 //
-// Create a node-static server instance to serve the './public' folder
+// Create a @brettz9/node-static server instance to serve the './public' folder
 //
-var file = new static.Server('./public');
+var file = new statik.Server('./public');
 
 require('http').createServer(function (request, response) {
     request.addListener('end', function () {
@@ -31,25 +30,26 @@ require('http').createServer(function (request, response) {
 API
 ---
 
-### Creating a node-static Server #
+### Creating a @brettz9/node-static Server #
 
 Creating a file server instance is as simple as:
 
 ```js
-new static.Server();
+new statik.Server();
 ```
 
 This will serve files in the current directory. If you want to serve files in a specific
 directory, pass it as the first argument:
 
 ```js
-new static.Server('./public');
+new statik.Server('./public');
 ```
 
-You can also specify how long the client is supposed to cache the files node-static serves:
+You can also specify how long the client is supposed to cache the files
+@brettz9/node-static serves:
 
 ```js
-new static.Server('./public', { cache: 3600 });
+new statik.Server('./public', { cache: 3600 });
 ```
 
 This will set the `Cache-Control` header, telling clients to cache the file for an hour.
@@ -60,10 +60,10 @@ This is the default setting.
 To serve files under a directory, simply call the `serve` method on a `Server` instance, passing it
 the HTTP request and response object:
 
-```js 
-var static = require('node-static');
+```js
+var statik = require('@brettz9/node-static');
 
-var fileServer = new static.Server('./public');
+var fileServer = new statik.Server('./public');
 
 require('http').createServer(function (request, response) {
     request.addListener('end', function () {
@@ -103,9 +103,9 @@ An optional callback can be passed as last argument, it will be called every tim
 has been served successfully, or if there was an error serving the file:
 
 ```js
-var static = require('node-static');
-    
-var fileServer = new static.Server('./public');
+var statik = require('@brettz9/node-static');
+
+var fileServer = new statik.Server('./public');
 
 require('http').createServer(function (request, response) {
     request.addListener('end', function () {
@@ -122,12 +122,13 @@ require('http').createServer(function (request, response) {
 }).listen(8080);
 ```
 
-Note that if you pass a callback, and there is an error serving the file, node-static
-*will not* respond to the client. This gives you the opportunity to re-route the request,
+Note that if you pass a callback, and there is an error serving the file,
+@brettz9/node-static *will not* respond to the client. This gives you the
+opportunity to re-route the request,
 or handle it differently.
 
-For example, you may want to interpret a request as a static request, but if the file isn't found,
-send it to an application.
+For example, you may want to interpret a request as a static request, but if
+the file isn't found, send it to an application.
 
 If you only want to *listen* for errors, you can use *event listeners*:
 
@@ -159,7 +160,7 @@ Sets the `Server` header.
 
 example: `{ serverInfo: "myserver" }`
 
-> Defaults to `node-static/{version}`
+> Defaults to `@brettz9/node-static/{version}`
 
 #### `headers` #
 
@@ -198,12 +199,12 @@ example: `{ indexFile: "index.htm" }`
 Command Line Interface
 ----------------------
 
-`node-static` also provides a CLI.
+`@brettz9/node-static` also provides a CLI.
 
 ### Installation #
 
 ```sh
-$ npm install -g node-static
+$ npm install -g @brettz9/node-static
 ```
 
 ### Example Usage #
