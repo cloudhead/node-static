@@ -19,6 +19,7 @@
   },
   "main": "./lib/node-static",
   "scripts": {
+    "lint": "eslint .",
     "test": "vows --spec --isolate"
   },
   "bin": {
@@ -26,17 +27,18 @@
   },
   "license": "MIT",
   "dependencies": {
-    "optimist": ">=0.3.4",
     "colors": ">=0.6.0",
-    "mime": "^1.2.9"
+    "mime": "^1.2.9",
+    "optimist": ">=0.3.4"
   },
   "devDependencies": {
+    "eslint": "^7.23.0",
     "request": "latest",
     "vows": "latest"
   },
   "version": "0.7.11",
   "engines": {
-    "node": ">= 0.4.1"
+    "node": ">=10.0.0"
   },
   "bugs": {
     "url": "https://github.com/cloudhead/node-static/issues"
