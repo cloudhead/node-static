@@ -24,8 +24,12 @@ Fork from `node-static`
 - npm: Update `mime` (updating to latest minor update only)
 =======
 - npm: Update `mime` and `colors` (@fidian)
+<<<<<<< HEAD
 >>>>>>> 69d9f54 (- Refactoring: Use safer non-prototype version of `colors` (had indeed been in use))
 - npm: Set engines to 10.11.0+
+=======
+- npm: Set `engines` to 10.11.0+
+>>>>>>> 8e3059e (- Docs: Code)
 
 ### Dev-facing
 
