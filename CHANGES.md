@@ -12,6 +12,7 @@ Fork from `node-static`
 - Update/fix: Protect `fs.stat` calls from bad path arguments (@brpvieira)
 - Enhancement: Allow `serverInfo` to be `null` (@martindale)
 - Enhancement: Time display logging with leading 0 (@mauris)
+- Enhancement: Respect static `--cache 0` (@matthew-andrews)
 - Optimization: 'use strict' directive
 - Docs: Fix header example (@emmanouil)
 - Docs: Sp. (@EdwardBetts)
