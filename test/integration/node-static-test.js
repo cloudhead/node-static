@@ -374,12 +374,33 @@ suite.addBatch({
     .addBatch(headers)
     .addBatch({
         'addings custom mime types': {
-            topic : function(){
-                statik.mime.define({'application/font-woff': ['woff']});
+            topic : function() {
+                statik.mime.define({
+                    // 'application/font-woff': ['woff'], // Will throw
+                    'application/x-special': ['special']
+                });
                 this.callback();
             },
-            'should add woff' : function(error, response, body){
-                assert.equal(statik.mime.lookup('woff'), 'application/font-woff');
+            'should add special' : function(error, response, body){
+                assert.equal(statik.mime.getType('special'), 'application/x-special');
+            }
+        }
+    })
+    .addBatch({
+        'addings custom mime types (force)': {
+            topic : function() {
+                const force = true;
+                statik.mime.define({
+                    'application/font-woff': ['woff'],
+                    'application/x-special': ['special']
+                }, force);
+                this.callback();
+            },
+            'should add special' : function(error, response, body){
+                assert.equal(statik.mime.getType('special'), 'application/x-special');
+            },
+            'should add woff without overriding built-in mapping' : function(error, response, body){
+                assert.equal(statik.mime.getType('woff'), 'application/font-woff');
             }
         }
     })
