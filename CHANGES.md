@@ -17,6 +17,7 @@ Fork from `node-static`
 - Enhancement: Time display logging with leading 0 (@mauris)
 - Enhancement: Respect static `--cache 0` (@matthew-andrews)
 - Enhancement: New option: `defaultExtension` (@fmalk)
+- Enhancement: Added glob matching for setting cache headers (@lightswitch05)
 - Optimization: 'use strict' directive
 - Docs: Fix header example (@emmanouil)
 - Docs: Sp. (@EdwardBetts)
