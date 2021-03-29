@@ -17,6 +17,12 @@ Fork from `node-static`
 - Update/fix: Protect `fs.stat` calls from bad path arguments (@brpvieira)
 - Enhancement: Allow `serverInfo` to be `null` (@martindale)
 - Enhancement: Time display logging with leading 0 (@mauris)
+<<<<<<< HEAD
+=======
+- Enhancement: Respect static `--cache 0` (@matthew-andrews)
+- Enhancement: New option: `defaultExtension` (@fmalk)
+- Enhancement: Added glob matching for setting cache headers (@lightswitch05)
+>>>>>>> 64d9d86 (Docs: Give credit in CHANGES)
 - Optimization: 'use strict' directive
 - Docs: Fix header example (@emmanouil)
 - Docs: Sp. (@EdwardBetts)
