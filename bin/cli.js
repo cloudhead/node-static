@@ -111,7 +111,7 @@ if (argv.indexFile) {
 
 const file = new(statik.Server)(dir, options);
 
-require('http').createServer(function (request, response) {
+var server = require('http').createServer(function (request, response) {
     request.addListener('end', function () {
         const callback = function(e, rsp) {
             if (e && e.status === 404) {
@@ -132,7 +132,13 @@ require('http').createServer(function (request, response) {
             file.serve(request, response, callback);
         }
     }).resume();
-}).listen(+argv.port, argv['host-address']);
+});
+
+if (argv['host-address'] === '127.0.0.1') {
+    server.listen(+argv.port);
+} else {
+    server.listen(+argv.port, argv['host-address']);
+}
 
 console.log('serving "' + dir + '" at http://' + argv['host-address'] + ':' + argv.port);
 if (argv.spa) {
