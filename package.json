@@ -1,32 +1,33 @@
 {
   "name": "@brettz9/node-static",
+  "version": "0.1.1",
   "description": "simple, compliant file streaming module for node",
-  "keywords": [
-    "http",
-    "static",
-    "file",
-    "server"
-  ],
   "author": "Brett Zamir",
   "contributors": [
     "Alexis Sellier <alexis@cloudhead.io>",
     "Pablo Cantero <pablo@pablocantero.com>",
     "Ionică Bizău <bizauionica@gmail.com>"
   ],
+  "main": "./lib/node-static",
+  "license": "MIT",
+  "bin": {
+    "static": "bin/cli.js"
+  },
+  "keywords": [
+    "http",
+    "static",
+    "file",
+    "server"
+  ],
   "repository": {
     "type": "git",
     "url": "http://github.com/brettz9/node-static"
   },
-  "main": "./lib/node-static",
   "scripts": {
     "start": "./bin/cli.js",
     "lint": "eslint .",
     "test": "vows --spec --isolate"
   },
-  "bin": {
-    "static": "bin/cli.js"
-  },
-  "license": "MIT",
   "dependencies": {
     "colors": "^1.4.0",
     "mime": "^2.5.2",
@@ -38,7 +39,6 @@
     "request": "latest",
     "vows": "latest"
   },
-  "version": "0.1.0",
   "engines": {
     "node": ">=10.0.0"
   },
