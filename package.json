@@ -28,7 +28,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "mime": "^1.2.9",
+    "mime": "^1.4.1",
     "optimist": ">=0.3.4"
   },
   "devDependencies": {
