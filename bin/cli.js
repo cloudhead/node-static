@@ -33,7 +33,6 @@ Options:
 
 const fs = require('fs'),
     tty = require('tty'),
-    url = require('url'),
     statik = require('./../lib/node-static'),
     neodoc = require('neodoc'),
     colors = require('colors/safe');
@@ -105,7 +104,7 @@ const server = require('http').createServer(function (request, response) {
         // Parsing catches:
         //   npm start -- --spa --indexFile test/fixtures/there/index.html
         //   with http://127.0.0.1:8080/test/fixtures/there?email=john.cena
-        if (args['spa'] && !url.parse(request.url).pathname.includes(".")) {
+        if (args['spa'] && !new URL(request.url, 'http://localhost').pathname.includes(".")) {
             file.serveFile(args['--index-file'], 200, {}, request, response);
         } else {
             file.serve(request, response, callback);
