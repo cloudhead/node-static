@@ -13,6 +13,7 @@ Fork from `node-static`
 - Enhancement: Allow `serverInfo` to be `null` (@martindale)
 - Enhancement: Time display logging with leading 0 (@mauris)
 - Optimization: 'use strict' directive
+- Optimization: Remove unused `colors`
 - Docs: Fix header example (@emmanouil)
 - Docs: Sp. (@EdwardBetts)
 - npm: Set engines to 10.11.0+

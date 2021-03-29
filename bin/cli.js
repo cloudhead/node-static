@@ -58,8 +58,6 @@ const argv = require('optimist')
 
 const dir = argv._[0] || '.';
 
-// const colors = require('colors');
-
 const log = function(request, response, statusCode) {
     const d = new Date();
     const seconds = d.getSeconds() < 10 ? '0' + d.getSeconds() : d.getSeconds(),
