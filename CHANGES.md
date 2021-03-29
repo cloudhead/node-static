@@ -6,6 +6,8 @@ Fork from `node-static`
 
 ### User-facing
 
+- Security: Fix dependency vulnerabilities by switching from `optimist` to
+    `neodoc`
 - Fix: Avoid octal (@bgao / @Ilrilan)
 - Fix: Support `bytes=0-0` Range header (@prajwalkman)
 - Fix: For `spa`, allow dots after path (@gjuchault)
@@ -19,7 +21,7 @@ Fork from `node-static`
 - Optimization: Remove unused `colors`
 - Docs: Fix header example (@emmanouil)
 - Docs: Sp. (@EdwardBetts)
-- npm: Update `mime` (updating to latest minor update only)
+- npm: Update `mime` (@fidian)
 - npm: Set engines to 10.11.0+
 
 ### Dev-facing
