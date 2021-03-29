@@ -43,7 +43,7 @@ Fork from `node-static`
     prefer `startsWith` and `includes`
 - Refactoring: Use safer non-prototype version of `colors`
 - Maintenance: Add `.editorconfig`
-- Testing: Add checks for supposed direct node-static vulnerabilities
+- Testing: Add checks for supposed direct `node-static` vulnerabilities
 - Testing: Add test for `null` and non-`null` serverInfo
 - npm: Add eslint devDep. and script
 - npm: Add lock file
