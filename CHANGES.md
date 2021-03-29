@@ -1,5 +1,9 @@
 # CHANGES for `@brettz9/node-static`
 
+## 0.1.1
+
+- Update/fix: Protect additional `fs.stat` call (for `defaultExtension`)
+
 ## 0.1.0
 
 Fork from `node-static`
