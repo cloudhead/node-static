@@ -18,16 +18,16 @@ Fork from `node-static`
 - Enhancement: Respect static `--cache 0` (@matthew-andrews)
 - Enhancement: New option: `defaultExtension` (@fmalk)
 - Optimization: 'use strict' directive
-- Optimization: Remove unused `colors`
 - Docs: Fix header example (@emmanouil)
 - Docs: Sp. (@EdwardBetts)
-- npm: Update `mime` (@fidian)
+- npm: Update `mime` and `colors` (@fidian)
 - npm: Set engines to 10.11.0+
 
 ### Dev-facing
 
 - Linting: Prefer const, no-var, fix indent, comment-out unused,
     prefer `startsWith` and `includes`
+- Refactoring: Use safer non-prototype version of `colors`
 - Maintenance: Add `.editorconfig`
 - Testing: Add test for `null` and non-`null` serverInfo
 - Testing: Allow tests at end (@fmalk)

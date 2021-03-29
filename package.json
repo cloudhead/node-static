@@ -28,6 +28,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "colors": "^1.4.0",
     "mime": "^2.5.2",
     "neodoc": "^2.0.2"
   },
