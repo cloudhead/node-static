@@ -86,10 +86,31 @@ suite.addBatch({
             assert.equal(response.statusCode, 404);
         }
     }
+}).addBatch({
+    'requesting a file not found (file with same initial letters)': {
+        topic : function(){
+            fileServer  = new statik.Server(__dirname + '/../fixtures/there');
+            request.get(TEST_SERVER + '/there.html', this.callback);
+        },
+        'should respond with 404' : function(error, response, body){
+            assert.equal(response.statusCode, 404);
+        }
+    }
+}).addBatch({
+    'requesting a file not found (directory with same initial letters)': {
+        topic : function(){
+            fileServer  = new statik.Server(__dirname + '/../fixtures/there');
+            request.get(TEST_SERVER + '/thereat/index.html', this.callback);
+        },
+        'should respond with 404' : function(error, response, body){
+            assert.equal(response.statusCode, 404);
+        }
+    }
 })
     .addBatch({
         'requesting a malformed URI': {
             topic: function(){
+                fileServer  = new statik.Server(__dirname + '/../fixtures');
                 request.get(TEST_SERVER + '/a%AFc', this.callback);
             },
             'should respond with 400': function(error, response, body){
