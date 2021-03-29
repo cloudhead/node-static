@@ -29,6 +29,7 @@ Fork from `node-static`
     prefer `startsWith` and `includes`
 - Refactoring: Use safer non-prototype version of `colors`
 - Maintenance: Add `.editorconfig`
+- Testing: Add checks for supposed direct node-static vulnerabilities
 - Testing: Add test for `null` and non-`null` serverInfo
 - Testing: Allow tests at end (@fmalk)
 - npm: Add eslint devDep. and script
