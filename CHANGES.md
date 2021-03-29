@@ -16,6 +16,7 @@ Fork from `node-static`
 - Enhancement: Respect static `--cache 0` (@matthew-andrews)
 - Enhancement: New option: `defaultExtension` (@fmalk)
 - Optimization: 'use strict' directive
+- Optimization: Remove unused `colors`
 - Docs: Fix header example (@emmanouil)
 - Docs: Sp. (@EdwardBetts)
 - npm: Set engines to 10.11.0+

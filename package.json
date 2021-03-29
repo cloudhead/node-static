@@ -28,7 +28,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "colors": ">=0.6.0",
     "mime": "^1.2.9",
     "optimist": ">=0.3.4"
   },
