@@ -35,7 +35,8 @@ const fs = require('fs'),
     tty = require('tty'),
     url = require('url'),
     statik = require('./../lib/node-static'),
-    neodoc = require('neodoc');
+    neodoc = require('neodoc'),
+    colors = require('colors/safe');
 
 const args = neodoc.run(help(), {
     laxPlacement: true,
@@ -54,8 +55,8 @@ const log = function(request, response, statusCode) {
         line = datestr + ' [' + response.statusCode + ']: ' + request.url;
     let colorized = line;
     if (tty.isatty(process.stdout.fd))
-        colorized = (response.statusCode >= 500) ? line.red.bold :
-            (response.statusCode >= 400) ? line.red :
+        colorized = (response.statusCode >= 500) ? colors.red.bold(line) :
+            (response.statusCode >= 400) ? colors.red(line) :
                 line;
     console.log(colorized);
 };
