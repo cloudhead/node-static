@@ -7,7 +7,7 @@ Fork from `node-static`
 ### User-facing
 
 - Security: Fix dependency vulnerabilities by switching from `optimist` to
-    `neodoc`
+    `neodoc` (@fidian)
 - Fix: Avoid octal (@bgao / @Ilrilan)
 - Fix: Support `bytes=0-0` Range header (@prajwalkman)
 - Fix: For `spa`, allow dots after path (@gjuchault)
