@@ -42,9 +42,9 @@
     "node": ">=10.0.0"
   },
   "bugs": {
-    "url": "https://github.com/cloudhead/node-static/issues"
+    "url": "https://github.com/brettz9/node-static/issues"
   },
-  "homepage": "https://github.com/cloudhead/node-static",
+  "homepage": "https://github.com/brettz9/node-static",
   "directories": {
     "example": "examples",
     "test": "test"
