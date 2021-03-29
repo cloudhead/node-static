@@ -21,7 +21,7 @@ Fork from `node-static`
 - Docs: Fix header example (@emmanouil)
 - Docs: Sp. (@EdwardBetts)
 - npm: Update `mime` and `colors` (@fidian)
-- npm: Set engines to 10.11.0+
+- npm: Set `engines` to 10.11.0+
 
 ### Dev-facing
 
