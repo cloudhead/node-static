@@ -16,6 +16,7 @@ Fork from `node-static`
 - Optimization: Remove unused `colors`
 - Docs: Fix header example (@emmanouil)
 - Docs: Sp. (@EdwardBetts)
+- npm: Update `mime` (updating to latest minor update only)
 - npm: Set engines to 10.11.0+
 
 ### Dev-facing
