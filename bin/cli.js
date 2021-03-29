@@ -4,6 +4,7 @@
 
 const fs = require('fs'),
     tty = require('tty'),
+    url = require('url'),
     statik = require('./../lib/node-static');
 
 const argv = require('optimist')
@@ -122,7 +123,10 @@ require('http').createServer(function (request, response) {
             }
         };
 
-        if (argv['spa'] && request.url.indexOf(".") == -1) {
+        // Parsing catches:
+        //   npm start -- --spa --indexFile test/fixtures/there/index.html
+        //   with http://127.0.0.1:8080/test/fixtures/there?email=john.cena
+        if (argv['spa'] && !url.parse(request.url).pathname.includes(".")) {
             file.serveFile(argv['indexFile'], 200, {}, request, response);
         } else {
             file.serve(request, response, callback);
