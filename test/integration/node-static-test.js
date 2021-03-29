@@ -183,6 +183,33 @@ suite.addBatch({
             }
         }
     }).addBatch({
+        'serving first byte of hello.txt': {
+            topic : function(){
+                const options = {
+                    url: TEST_SERVER + '/hello.txt',
+                    headers: {
+                        'Range': 'bytes=0-0'
+                    }
+                };
+                request.get(options, this.callback);
+            },
+            'should respond with 206' : function(error, response, body){
+                assert.equal(response.statusCode, 206);
+            },
+            'should respond with text/plain': function(error, response, body){
+                assert.equal(response.headers['content-type'], 'text/plain');
+            },
+            'should have content-length of 1 bytes': function(error, response, body){
+                assert.equal(response.headers['content-length'], 1);
+            },
+            'should have a valid Content-Range header in response': function(error, response, body){
+                assert.equal(response.headers['content-range'], 'bytes 0-0/11');
+            },
+            'should respond with h': function(error, response, body){
+                assert.equal(body, 'h');
+            }
+        }
+    }).addBatch({
         'serving all from the start of hello.txt': {
             topic : function(){
                 const options = {
