@@ -442,6 +442,19 @@ suite.addBatch({
         }
     })
     .addBatch({
+        'serving subdirectory embedding website name (should not redirect)': {
+            topic : function(){
+                request.get({ url: TEST_SERVER + '//example.com', followRedirect: false }, this.callback); // without trailing slash
+            },
+            'should respond with 200' : function(error, response, body){
+                assert.equal(response.statusCode, 200);
+            },
+            'should respond with text/html': function(error, response, body){
+                assert.equal(response.headers['content-type'], 'text/html');
+            }
+        }
+    })
+    .addBatch({
         'redirecting to subdirectory index': {
             topic : function(){
                 request.get({ url: TEST_SERVER + '/there', followRedirect: false }, this.callback); // without trailing slash
