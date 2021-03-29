@@ -129,8 +129,53 @@ suite.addBatch({
             }
         }
     }).addBatch({
+        'serving hello.txt without server header': {
+            topic : function(){
+                fileServer  = new statik.Server(__dirname + '/../fixtures', {
+                    serverInfo: null
+                });
+
+                request.get(TEST_SERVER + '/hello.txt', this.callback);
+            },
+            'should respond with 200' : function(error, response, body){
+                assert.equal(response.statusCode, 200);
+            },
+            'should respond with text/plain': function(error, response, body){
+                assert.equal(response.headers['content-type'], 'text/plain');
+            },
+            'should contain server header': function(error, response, body){
+                assert.equal(response.headers['server'], null);
+            },
+            'should respond with hello world': function(error, response, body){
+                assert.equal(body, 'hello world');
+            }
+        }
+    }).addBatch({
+        'serving hello.txt with custom server header': {
+            topic : function(){
+                fileServer  = new statik.Server(__dirname + '/../fixtures', {
+                    serverInfo: 'own header'
+                });
+
+                request.get(TEST_SERVER + '/hello.txt', this.callback);
+            },
+            'should respond with 200' : function(error, response, body){
+                assert.equal(response.statusCode, 200);
+            },
+            'should respond with text/plain': function(error, response, body){
+                assert.equal(response.headers['content-type'], 'text/plain');
+            },
+            'should contain custom server header': function(error, response, body){
+                assert.equal(response.headers['server'], 'own header');
+            },
+            'should respond with hello world': function(error, response, body){
+                assert.equal(body, 'hello world');
+            }
+        }
+    }).addBatch({
         'serving first 5 bytes of hello.txt': {
             topic : function(){
+                fileServer  = new statik.Server(__dirname + '/../fixtures');
                 const options = {
                     url: TEST_SERVER + '/hello.txt',
                     headers: {
