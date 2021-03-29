@@ -30,7 +30,7 @@
   "dependencies": {
     "colors": "^1.4.0",
     "mime": "^2.5.2",
-    "minimatch": "^3.0.3",
+    "minimatch": "^3.0.4",
     "neodoc": "^2.0.2"
   },
   "devDependencies": {
