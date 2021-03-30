@@ -5,7 +5,7 @@
 ### User-facing
 
 - Docs (README): Detail some changes from fork
-- Docs (CHANGES): clarifications
+- Docs (CHANGES): Clarifications
 
 ### Dev-facing
 
@@ -102,5 +102,9 @@ Fork from `node-static`
 - Maintenance: Add `.editorconfig`
 - Testing: Add checks for supposed direct `node-static` vulnerabilities
 - Testing: Add test for `null` and non-`null` serverInfo
+<<<<<<< HEAD
+=======
+- Testing: Allow tests to end (@fmalk)
+>>>>>>> 6e5173a (Docs (CHANGES): Fix)
 - npm: Add eslint devDep. and script
 - npm: Add lock file
