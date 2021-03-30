@@ -26,7 +26,8 @@
   "scripts": {
     "start": "./bin/cli.js",
     "lint": "eslint .",
-    "test": "vows --spec --isolate"
+    "vows": "vows --spec --isolate",
+    "test": "nyc npm run vows"
   },
   "dependencies": {
     "colors": "^1.4.0",
@@ -36,6 +37,7 @@
   },
   "devDependencies": {
     "eslint": "^7.23.0",
+    "nyc": "^15.1.0",
     "request": "latest",
     "vows": "latest"
   },

@@ -1,5 +1,16 @@
 # CHANGES for `@brettz9/node-static`
 
+## ? (UNRELEASED)
+
+### User-facing
+
+- Docs (README): Detail some changes from fork
+- Docs (CHANGES): clarifications
+
+### Dev-facing
+
+- Testing: Add `nyc` for coverage
+
 ## 0.1.1
 
 ### User-facing
