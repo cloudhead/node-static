@@ -12,6 +12,7 @@ Fork from `node-static`
 
 ### User-facing
 
+- **Breaking change** (npm): Set `engines` to 10.11.0+
 - Security: Fix dependency vulnerabilities by switching from `optimist` to
     `neodoc` (@fidian)
 - Fix: Avoid octal (@bgao / @Ilrilan)
@@ -27,8 +28,8 @@ Fork from `node-static`
 - Optimization: 'use strict' directive
 - Docs: Fix header example (@emmanouil)
 - Docs: Sp. (@EdwardBetts)
+- Docs: Add `CHANGES.md`
 - npm: Update `mime` and `colors` (@fidian)
-- npm: Set `engines` to 10.11.0+
 
 ### Dev-facing
 
