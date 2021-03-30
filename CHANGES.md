@@ -2,6 +2,8 @@
 
 ## 0.1.1
 
+### User-facing
+
 - Update/fix: Protect additional `fs.stat` call (for `defaultExtension`)
 
 ## 0.1.0

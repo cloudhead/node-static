@@ -2,10 +2,24 @@
 
 > a simple, *rfc 2616 compliant* file streaming module for [node](http://nodejs.org)
 
-A maintained fork of `node-static`. `node-static` was inspired by some of the
-other static-file serving modules out there, such as node-paperboy and antinode.
+A maintained fork of `node-static`. Currently offers these additional features:
 
-`@brettz9/node-static` understands and supports *conditional GET* and *HEAD* requests.
+1. Fixes for vulnerabilities:
+    1. [Unauthorized File Access](https://www.npmjs.com/advisories/1206)
+    1. [Open Redirect](https://www.npmjs.com/advisories/1207)
+    1. [Denial of Service](https://www.npmjs.com/advisories/1208)
+    1. Avoids dependencies with vulnerabilities
+1. Important fixes:
+    1. Important octal fix (and uses strict mode)
+    1. Avoids crashes with `fs.stat` checks
+1. A numbe of other fixes and enhancements detailed in
+    [CHANGES.md](./CHANGES.md).
+
+The project was inspired by some of the other static-file serving modules out
+there, such as node-paperboy and antinode.
+
+`@brettz9/node-static` understands and supports *conditional GET* and *HEAD*
+requests.
 
 # Synopsis
 
