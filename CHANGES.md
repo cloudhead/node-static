@@ -25,6 +25,7 @@ Fork from `node-static`
 =======
 - Security: Update `mime` and `colors` (@fidian)
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> b3516d1 (Docs (CHANGES): Denote security fix)
 =======
 - Security: Support `bytes=0-0` Range header; fixes
@@ -36,6 +37,21 @@ Fork from `node-static`
 - Security Update/fix: Use `URL` constructor over deprecated `url.parse`;
     should fix Open Redirect issue <https://www.npmjs.com/advisories/1207>
 - Update/fix: Protect `fs.stat` calls from bad path arguments (@brpvieira)
+=======
+- Security Update/fix: Use `URL` constructor over deprecated `url.parse`;
+    should fix Open Redirect issue <https://www.npmjs.com/advisories/1207>
+- Security Update/fix: Protect `fs.stat` calls from bad path arguments; fixes
+    Denial of Service issue <https://www.npmjs.com/advisories/1208>
+    (@brpvieira)
+- Security fix?: The Unauthorized File Access issue
+    <https://www.npmjs.com/advisories/1206> does not appear to be an issue
+    per testing (if it ever was); if you can provide a test case where it
+    fails, please report
+- Fix: Support `bytes=0-0` Range header (@prajwalkman)
+- Fix: Avoid octal (@bgao / @Ilrilan)
+- Fix: For `spa`, allow dots after path (@gjuchault)
+- Enhancement: Allow access with local ip (@flyingsky)
+>>>>>>> 51fdfdb (Docs (CHANGES): Fix labeling of issue and indicate security fixes and potential fix)
 - Enhancement: Allow `serverInfo` to be `null` (@martindale)
 - Enhancement: Time display logging with leading 0 (@mauris)
 <<<<<<< HEAD
@@ -45,6 +61,7 @@ Fork from `node-static`
 - Enhancement: Added glob matching for setting cache headers (@lightswitch05)
 >>>>>>> 64d9d86 (Docs: Give credit in CHANGES)
 - Optimization: 'use strict' directive
+- Docs: For examples (and internally) avoid `static` reserved word
 - Docs: Fix header example (@emmanouil)
 - Docs: Sp. (@EdwardBetts)
 <<<<<<< HEAD
