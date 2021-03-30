@@ -15,6 +15,7 @@ Fork from `node-static`
 - **Breaking change** (npm): Set `engines` to 10.11.0+
 - Security: Fix dependency vulnerabilities by switching from `optimist` to
     `neodoc` (@fidian)
+- Security: Update `mime` and `colors` (@fidian)
 - Fix: Avoid octal (@bgao / @Ilrilan)
 - Fix: Support `bytes=0-0` Range header (@prajwalkman)
 - Fix: For `spa`, allow dots after path (@gjuchault)
@@ -29,7 +30,6 @@ Fork from `node-static`
 - Docs: Fix header example (@emmanouil)
 - Docs: Sp. (@EdwardBetts)
 - Docs: Add `CHANGES.md`
-- npm: Update `mime` and `colors` (@fidian)
 
 ### Dev-facing
 
