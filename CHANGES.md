@@ -20,7 +20,11 @@ Fork from `node-static`
 >>>>>>> 4a4b46a (Docs: CHANGES clarifications)
 - Security: Fix dependency vulnerabilities by switching from `optimist` to
     `neodoc` (@fidian)
+<<<<<<< HEAD
 >>>>>>> 3d70b2e (- Docs: Add missing credit to CHANGES)
+=======
+- Security: Update `mime` and `colors` (@fidian)
+>>>>>>> b3516d1 (Docs (CHANGES): Denote security fix)
 - Fix: Avoid octal (@bgao / @Ilrilan)
 - Fix: Support `bytes=0-0` Range header (@prajwalkman)
 - Fix: For `spa`, allow dots after path (@gjuchault)
@@ -49,8 +53,11 @@ Fork from `node-static`
 >>>>>>> 8e3059e (- Docs: Code)
 =======
 - Docs: Add `CHANGES.md`
+<<<<<<< HEAD
 - npm: Update `mime` and `colors` (@fidian)
 >>>>>>> 4a4b46a (Docs: CHANGES clarifications)
+=======
+>>>>>>> b3516d1 (Docs (CHANGES): Denote security fix)
 
 ### Dev-facing
 
