@@ -16,9 +16,13 @@ Fork from `node-static`
 - Security: Fix dependency vulnerabilities by switching from `optimist` to
     `neodoc` (@fidian)
 - Security: Update `mime` and `colors` (@fidian)
+- Security: Support `bytes=0-0` Range header; fixes
+    Unauthorized File Access issue <https://www.npmjs.com/advisories/1208>
+    (@prajwalkman).
 - Fix: Avoid octal (@bgao / @Ilrilan)
-- Fix: Support `bytes=0-0` Range header (@prajwalkman)
 - Fix: For `spa`, allow dots after path (@gjuchault)
+- Security Update/fix: Use `URL` constructor over deprecated `url.parse`;
+    should fix Open Redirect issue <https://www.npmjs.com/advisories/1207>
 - Update/fix: Protect `fs.stat` calls from bad path arguments (@brpvieira)
 - Enhancement: Allow access with local ip (@flyingsky)
 - Enhancement: Allow `serverInfo` to be `null` (@martindale)
