@@ -24,10 +24,17 @@ Fork from `node-static`
 >>>>>>> 3d70b2e (- Docs: Add missing credit to CHANGES)
 =======
 - Security: Update `mime` and `colors` (@fidian)
+<<<<<<< HEAD
 >>>>>>> b3516d1 (Docs (CHANGES): Denote security fix)
+=======
+- Security: Support `bytes=0-0` Range header; fixes
+    Unauthorized File Access issue <https://www.npmjs.com/advisories/1208>
+    (@prajwalkman).
+>>>>>>> 8dc43b0 (Docs (CHANGES): Further security fix denotations)
 - Fix: Avoid octal (@bgao / @Ilrilan)
-- Fix: Support `bytes=0-0` Range header (@prajwalkman)
 - Fix: For `spa`, allow dots after path (@gjuchault)
+- Security Update/fix: Use `URL` constructor over deprecated `url.parse`;
+    should fix Open Redirect issue <https://www.npmjs.com/advisories/1207>
 - Update/fix: Protect `fs.stat` calls from bad path arguments (@brpvieira)
 - Enhancement: Allow `serverInfo` to be `null` (@martindale)
 - Enhancement: Time display logging with leading 0 (@mauris)
