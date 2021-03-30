@@ -13,7 +13,11 @@ Fork from `node-static`
 ### User-facing
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+- **Breaking change** (npm): Set `engines` to 10.11.0+
+>>>>>>> 4a4b46a (Docs: CHANGES clarifications)
 - Security: Fix dependency vulnerabilities by switching from `optimist` to
     `neodoc` (@fidian)
 >>>>>>> 3d70b2e (- Docs: Add missing credit to CHANGES)
@@ -33,6 +37,7 @@ Fork from `node-static`
 - Docs: Fix header example (@emmanouil)
 - Docs: Sp. (@EdwardBetts)
 <<<<<<< HEAD
+<<<<<<< HEAD
 - npm: Update `mime` (updating to latest minor update only)
 =======
 - npm: Update `mime` and `colors` (@fidian)
@@ -42,6 +47,10 @@ Fork from `node-static`
 =======
 - npm: Set `engines` to 10.11.0+
 >>>>>>> 8e3059e (- Docs: Code)
+=======
+- Docs: Add `CHANGES.md`
+- npm: Update `mime` and `colors` (@fidian)
+>>>>>>> 4a4b46a (Docs: CHANGES clarifications)
 
 ### Dev-facing
 
