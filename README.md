@@ -6,7 +6,13 @@ node-static understands and supports *conditional GET* and *HEAD* requests.
 node-static was inspired by some of the other static-file serving modules out
 there, such as node-paperboy and antinode.
 
-# Synopsis
+## Installation
+
+```sh
+$ npm install node-static
+```
+
+## Synopsis
 
 ```js
 const statik = require('node-static');
@@ -26,8 +32,7 @@ require('http').createServer(function (request, response) {
 }).listen(8080);
 ```
 
-API
----
+## API
 
 ### Creating a node-static Server
 
@@ -217,8 +222,7 @@ example: `{ defaultExtension: "html" }`
 > Defaults to `null`
 
 
-Command Line Interface
-----------------------
+## Command Line Interface
 
 `node-static` also provides a CLI.
 
