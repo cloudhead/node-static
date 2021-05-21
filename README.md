@@ -154,7 +154,7 @@ of an error.
 
 ### Options when creating an instance of `Server`
 
-#### `cache`
+#### `cache` (Default: `3600`)
 
 Sets the `Cache-Control` header.
 
@@ -166,26 +166,19 @@ Passing `false` will disable the `Cache-Control` header.
 Passing a object with [minimatch glob pattern](https://github.com/isaacs/minimatch)
 keys and number values will set cache max-age for any matching paths.
 
-> Defaults to `3600`
-
-
-#### `serverInfo`
+#### `serverInfo` (Default: `node-static/{version}`)
 
 Sets the `Server` header.
 
 example: `{ serverInfo: "myserver" }`
 
-> Defaults to `node-static/{version}`
-
-#### `headers`
+#### `headers` (Default: `{}`)
 
 Sets response headers.
 
 example: `{ headers: { 'X-Hello': 'World!' } }`
 
-> defaults to `{}`
-
-#### `gzip`
+#### `gzip` (Default: `false`)
 
 Enable support for sending compressed responses.  This will enable a check for
 a file with the same name plus '.gz' in the same folder.  If the compressed
@@ -201,17 +194,13 @@ Passing `true` will enable this check for all files.
 Passing a RegExp instance will only enable this check if the content-type of
 the respond would match that RegExp using its test() method.
 
-> Defaults to `false`
-
-#### `indexFile`
+#### `indexFile` (Default: `index.html`)
 
 Choose a custom index file when serving up directories.
 
 example: `{ indexFile: "index.htm" }`
 
-> Defaults to `index.html`
-
-#### `defaultExtension`
+#### `defaultExtension` (Default: `null`)
 
 Choose a default extension when serving files.
 A request to '/myFile' would check for a `myFile` folder (first) then a
@@ -219,17 +208,22 @@ A request to '/myFile' would check for a `myFile` folder (first) then a
 
 example: `{ defaultExtension: "html" }`
 
-> Defaults to `null`
-
-
 ## Command Line Interface
 
 `node-static` also provides a CLI.
 
-### Installation
-
-```sh
-$ npm install -g node-static
+```text
+--port, -p          TCP port at which the files will be served                        [default: 8080]
+--host-address, -a  the local network interface at which to listen                    [default: "127.0.0.1"]
+--cache, -c         "Cache-Control" header setting, defaults to 3600
+--version, -v       node-static version
+--headers, -H       additional headers (in JSON format)
+--header-file, -f   JSON file of additional headers
+--gzip, -z          enable compression (tries to serve file of same name plus '.gz')
+--spa               Serve the content as a single page app by redirecting all
+                    non-file requests to the index HTML file.
+--indexFile, -i     Specify a custom index file when serving up directories.          [default: "index.html"]
+--help, -h          display this help message
 ```
 
 ### Example Usage
