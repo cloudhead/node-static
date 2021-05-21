@@ -6,7 +6,7 @@ const vows    = require('vows')
     , statik  = require('../../lib/node-static');
 
 let fileServer  = new statik.Server(__dirname + '/../fixtures');
-const suite       = vows.describe('@brettz9/node-static');
+const suite       = vows.describe('node-static');
 const TEST_PORT   = 8080;
 const TEST_SERVER = 'http://localhost:' + TEST_PORT;
 const version     = statik.version.join('.');
@@ -20,8 +20,8 @@ const headers = {
         }
     }
 }
-headers['requesting headers']['should respond with @brettz9/node-static/' + version] = function(error, response, body){
-    assert.equal(response.headers['server'], '@brettz9/node-static/' + version);
+headers['requesting headers']['should respond with node-static/' + version] = function(error, response, body){
+    assert.equal(response.headers['server'], 'node-static/' + version);
 }
 
 suite.addBatch({

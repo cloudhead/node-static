@@ -1,25 +1,6 @@
-# CHANGES for `@brettz9/node-static`
+# CHANGES for `node-static`
 
 ## ? (UNRELEASED)
-
-### User-facing
-
-- Docs (README): Detail some changes from fork
-- Docs (CHANGES): Clarifications
-
-### Dev-facing
-
-- Testing: Add `nyc` for coverage
-
-## 0.1.1
-
-### User-facing
-
-- Update/fix: Protect additional `fs.stat` call (for `defaultExtension`)
-
-## 0.1.0
-
-Fork from `node-static`
 
 ### User-facing
 
@@ -60,5 +41,6 @@ Fork from `node-static`
 - Testing: Add checks for supposed direct `node-static` vulnerabilities
 - Testing: Add test for `null` and non-`null` serverInfo
 - Testing: Allow tests to end (@fmalk)
+- Testing: Add `nyc` for coverage
 - npm: Add eslint devDep. and script
 - npm: Add lock file

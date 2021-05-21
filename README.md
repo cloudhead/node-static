@@ -1,35 +1,20 @@
-# @brettz9/node-static
+# node-static
 
 > a simple, *rfc 2616 compliant* file streaming module for [node](http://nodejs.org)
 
-A maintained fork of `node-static`. Currently offers these additional features:
-
-1. Fixes for vulnerabilities:
-    1. [Unauthorized File Access](https://www.npmjs.com/advisories/1206)
-    1. [Open Redirect](https://www.npmjs.com/advisories/1207)
-    1. [Denial of Service](https://www.npmjs.com/advisories/1208)
-    1. Avoids dependencies with vulnerabilities
-1. Important fixes:
-    1. Important octal fix (and uses strict mode)
-    1. Avoids crashes with `fs.stat` checks
-1. A numbe of other fixes and enhancements detailed in
-    [CHANGES.md](./CHANGES.md).
-
-The project was inspired by some of the other static-file serving modules out
+node-static understands and supports *conditional GET* and *HEAD* requests.
+node-static was inspired by some of the other static-file serving modules out
 there, such as node-paperboy and antinode.
-
-`@brettz9/node-static` understands and supports *conditional GET* and *HEAD*
-requests.
 
 # Synopsis
 
 ```js
-const statik = require('@brettz9/node-static');
+const statik = require('node-static');
 
 //
-// Create a @brettz9/node-static server instance to serve the './public' folder
+// Create a node-static server instance to serve the './public' folder
 //
-var file = new statik.Server('./public');
+const file = new statik.Server('./public');
 
 require('http').createServer(function (request, response) {
     request.addListener('end', function () {
@@ -44,7 +29,7 @@ require('http').createServer(function (request, response) {
 API
 ---
 
-### Creating a @brettz9/node-static Server #
+### Creating a node-static Server
 
 Creating a file server instance is as simple as:
 
@@ -52,30 +37,30 @@ Creating a file server instance is as simple as:
 new statik.Server();
 ```
 
-This will serve files in the current directory. If you want to serve files in a specific
-directory, pass it as the first argument:
+This will serve files in the current directory. If you want to serve files in
+a specific directory, pass it as the first argument:
 
 ```js
 new statik.Server('./public');
 ```
 
 You can also specify how long the client is supposed to cache the files
-@brettz9/node-static serves:
+node-static serves:
 
 ```js
 new statik.Server('./public', { cache: 3600 });
 ```
 
-This will set the `Cache-Control` header, telling clients to cache the file for an hour.
-This is the default setting.
+This will set the `Cache-Control` header, telling clients to cache the file for
+an hour. This is the default setting.
 
-### Serving files under a directory #
+### Serving files under a directory
 
-To serve files under a directory, simply call the `serve` method on a `Server` instance, passing it
-the HTTP request and response object:
+To serve files under a directory, simply call the `serve` method on a `Server`
+instance, passing it the HTTP request and response object:
 
 ```js
-var statik = require('@brettz9/node-static');
+const statik = require('node-static');
 
 var fileServer = new statik.Server('./public');
 
@@ -86,23 +71,28 @@ require('http').createServer(function (request, response) {
 }).listen(8080);
 ```
 
-### Serving specific files #
+### Serving specific files
 
-If you want to serve a specific file, like an error page for example, use the `serveFile` method:
+If you want to serve a specific file, like an error page for example, use the
+`serveFile` method:
 
 ```js
 fileServer.serveFile('/error.html', 500, {}, request, response);
 ```
 
-This will serve the `error.html` file, from under the file root directory, with a `500` status code.
-For example, you could serve an error page, when the initial request wasn't found:
+This will serve the `error.html` file, from under the file root directory, with
+a `500` status code.
+For example, you could serve an error page, when the initial request wasn't
+found:
 
 ```js
 require('http').createServer(function (request, response) {
     request.addListener('end', function () {
         fileServer.serve(request, response, function (e, res) {
             if (e && (e.status === 404)) { // If the file wasn't found
-                fileServer.serveFile('/not-found.html', 404, {}, request, response);
+                fileServer.serveFile(
+                    '/not-found.html', 404, {}, request, response
+                );
             }
         });
     }).resume();
@@ -111,21 +101,24 @@ require('http').createServer(function (request, response) {
 
 More on intercepting errors bellow.
 
-### Intercepting errors & Listening #
+### Intercepting errors & Listening
 
-An optional callback can be passed as last argument, it will be called every time a file
-has been served successfully, or if there was an error serving the file:
+An optional callback can be passed as last argument, it will be called every
+time a file has been served successfully, or if there was an error serving the
+file:
 
 ```js
-var statik = require('@brettz9/node-static');
+const statik = require('node-static');
 
-var fileServer = new statik.Server('./public');
+const fileServer = new statik.Server('./public');
 
 require('http').createServer(function (request, response) {
     request.addListener('end', function () {
         fileServer.serve(request, response, function (err, result) {
             if (err) { // There was an error serving the file
-                console.error("Error serving " + request.url + " - " + err.message);
+                console.error(
+                    "Error serving " + request.url + " - " + err.message
+                );
 
                 // Respond to the client
                 response.writeHead(err.status, err.headers);
@@ -137,9 +130,8 @@ require('http').createServer(function (request, response) {
 ```
 
 Note that if you pass a callback, and there is an error serving the file,
-@brettz9/node-static *will not* respond to the client. This gives you the
-opportunity to re-route the request,
-or handle it differently.
+node-static *will not* respond to the client. This gives you the opportunity
+to re-route the request, or handle it differently.
 
 For example, you may want to interpret a request as a static request, but if
 the file isn't found, send it to an application.
@@ -152,11 +144,12 @@ fileServer.serve(request, response).addListener('error', function (err) {
 });
 ```
 
-With this method, you don't have to explicitly send the response back, in case of an error.
+With this method, you don't have to explicitly send the response back, in case
+of an error.
 
-### Options when creating an instance of `Server` #
+### Options when creating an instance of `Server`
 
-#### `cache` #
+#### `cache`
 
 Sets the `Cache-Control` header.
 
@@ -165,20 +158,21 @@ example: `{ cache: {'**/*.css': 300}}` will set the max-age for all CSS files to
 
 Passing a number will set the cache duration to that number of seconds.
 Passing `false` will disable the `Cache-Control` header.
-Passing a object with [minimatch glob pattern](https://github.com/isaacs/minimatch) keys and number values will set cache max-age for any matching paths.
+Passing a object with [minimatch glob pattern](https://github.com/isaacs/minimatch)
+keys and number values will set cache max-age for any matching paths.
 
 > Defaults to `3600`
 
 
-#### `serverInfo` #
+#### `serverInfo`
 
 Sets the `Server` header.
 
 example: `{ serverInfo: "myserver" }`
 
-> Defaults to `@brettz9/node-static/{version}`
+> Defaults to `node-static/{version}`
 
-#### `headers` #
+#### `headers`
 
 Sets response headers.
 
@@ -186,24 +180,25 @@ example: `{ headers: { 'X-Hello': 'World!' } }`
 
 > defaults to `{}`
 
-#### `gzip` #
+#### `gzip`
 
-Enable support for sending compressed responses.  This will enable a check for a
-file with the same name plus '.gz' in the same folder.  If the compressed file is
-found and the client has indicated support for gzip file transfer, the contents
-of the .gz file will be sent in place of the uncompressed file along with a
-Content-Encoding: gzip header to inform the client the data has been compressed.
+Enable support for sending compressed responses.  This will enable a check for
+a file with the same name plus '.gz' in the same folder.  If the compressed
+file is found and the client has indicated support for gzip file transfer,
+the contents of the .gz file will be sent in place of the uncompressed file
+along with a Content-Encoding: gzip header to inform the client the data has
+been compressed.
 
 example: `{ gzip: true }`
 example: `{ gzip: /^\/text/ }`
 
 Passing `true` will enable this check for all files.
-Passing a RegExp instance will only enable this check if the content-type of the
-respond would match that RegExp using its test() method.
+Passing a RegExp instance will only enable this check if the content-type of
+the respond would match that RegExp using its test() method.
 
 > Defaults to `false`
 
-#### `indexFile` #
+#### `indexFile`
 
 Choose a custom index file when serving up directories.
 
@@ -211,10 +206,11 @@ example: `{ indexFile: "index.htm" }`
 
 > Defaults to `index.html`
 
-#### `defaultExtension` #
+#### `defaultExtension`
 
 Choose a default extension when serving files.
-A request to '/myFile' would check for a `myFile` folder (first) then a `myFile.html` (second).
+A request to '/myFile' would check for a `myFile` folder (first) then a
+`myFile.html` (second).
 
 example: `{ defaultExtension: "html" }`
 
@@ -224,15 +220,15 @@ example: `{ defaultExtension: "html" }`
 Command Line Interface
 ----------------------
 
-`@brettz9/node-static` also provides a CLI.
+`node-static` also provides a CLI.
 
-### Installation #
+### Installation
 
 ```sh
-$ npm install -g @brettz9/node-static
+$ npm install -g node-static
 ```
 
-### Example Usage #
+### Example Usage
 
 ```sh
 # serve up the current directory

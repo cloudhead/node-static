@@ -63,7 +63,7 @@ const log = function(request, response, statusCode) {
 const options = {};
 
 if (args['--version']) {
-    console.log('@brettz9/node-static', statik.version.join('.'));
+    console.log('node-static', statik.version.join('.'));
     process.exit(0);
 }
 
