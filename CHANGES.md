@@ -20,6 +20,7 @@
 - Fix: Support `bytes=0-0` Range header (@prajwalkman)
 - Fix: Avoid octal (@bgao / @Ilrilan)
 - Fix: For `spa`, allow dots after path (@gjuchault)
+- Fix: Ensure package `version` stays up to date
 - Enhancement: Allow access with local ip (@flyingsky)
 - Enhancement: Allow `serverInfo` to be `null` (@martindale)
 - Enhancement: Time display logging with leading 0 (@mauris)
@@ -30,6 +31,8 @@
 - Docs: For examples (and internally) avoid `static` reserved word
 - Docs: Fix header example (@emmanouil)
 - Docs: Sp. (@EdwardBetts)
+- Docs: Make install section more visible, make defaults visible in
+    semantically marked-up headings and add CLI options
 - Docs: Add `CHANGES.md`
 
 ### Dev-facing
