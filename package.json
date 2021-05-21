@@ -1,42 +1,48 @@
 {
   "name": "node-static",
+  "version": "0.1.1",
   "description": "simple, compliant file streaming module for node",
-  "url": "http://github.com/cloudhead/node-static",
+  "author": "Alexis Sellier <alexis@cloudhead.io>",
+  "contributors": [
+    "Pablo Cantero <pablo@pablocantero.com>",
+    "Ionică Bizău <bizauionica@gmail.com>",
+    "Brett Zamir"
+  ],
+  "main": "./lib/node-static",
+  "license": "MIT",
+  "bin": {
+    "static": "bin/cli.js"
+  },
   "keywords": [
     "http",
     "static",
     "file",
     "server"
   ],
-  "author": "Alexis Sellier <alexis@cloudhead.io>",
-  "contributors": [
-    "Pablo Cantero <pablo@pablocantero.com>",
-    "Ionică Bizău <bizauionica@gmail.com>"
-  ],
   "repository": {
     "type": "git",
     "url": "http://github.com/cloudhead/node-static"
   },
-  "main": "./lib/node-static",
   "scripts": {
-    "test": "vows --spec --isolate"
+    "start": "./bin/cli.js",
+    "lint": "eslint .",
+    "vows": "vows --spec --isolate",
+    "test": "nyc npm run vows"
   },
-  "bin": {
-    "static": "bin/cli.js"
-  },
-  "license": "MIT",
   "dependencies": {
-    "optimist": ">=0.3.4",
-    "colors": ">=0.6.0",
-    "mime": "^1.2.9"
+    "colors": "^1.4.0",
+    "mime": "^2.5.2",
+    "minimatch": "^3.0.4",
+    "neodoc": "^2.0.2"
   },
   "devDependencies": {
+    "eslint": "^7.23.0",
+    "nyc": "^15.1.0",
     "request": "latest",
     "vows": "latest"
   },
-  "version": "0.7.11",
   "engines": {
-    "node": ">= 0.4.1"
+    "node": ">=10.0.0"
   },
   "bugs": {
     "url": "https://github.com/cloudhead/node-static/issues"
