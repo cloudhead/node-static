@@ -1,9 +1,10 @@
-# CHANGES for `@brettz9/node-static`
+# CHANGES for `node-static`
 
 ## ? (UNRELEASED)
 
 ### User-facing
 
+<<<<<<< HEAD
 - Docs (README): Detail some changes from fork
 - Docs (CHANGES): Clarifications
 
@@ -27,6 +28,8 @@ Fork from `node-static`
 <<<<<<< HEAD
 =======
 =======
+=======
+>>>>>>> 3fcb831 (Revert scoping changes; line breaks; use of `const` in README)
 - **Breaking change** (npm): Set `engines` to 10.11.0+
 >>>>>>> 4a4b46a (Docs: CHANGES clarifications)
 - Security: Fix dependency vulnerabilities by switching from `optimist` to
@@ -105,6 +108,10 @@ Fork from `node-static`
 <<<<<<< HEAD
 =======
 - Testing: Allow tests to end (@fmalk)
+<<<<<<< HEAD
 >>>>>>> 6e5173a (Docs (CHANGES): Fix)
+=======
+- Testing: Add `nyc` for coverage
+>>>>>>> 3fcb831 (Revert scoping changes; line breaks; use of `const` in README)
 - npm: Add eslint devDep. and script
 - npm: Add lock file
