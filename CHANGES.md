@@ -64,6 +64,7 @@ Fork from `node-static`
 - Fix: Support `bytes=0-0` Range header (@prajwalkman)
 - Fix: Avoid octal (@bgao / @Ilrilan)
 - Fix: For `spa`, allow dots after path (@gjuchault)
+- Fix: Ensure package `version` stays up to date
 - Enhancement: Allow access with local ip (@flyingsky)
 >>>>>>> 51fdfdb (Docs (CHANGES): Fix labeling of issue and indicate security fixes and potential fix)
 - Enhancement: Allow `serverInfo` to be `null` (@martindale)
@@ -80,6 +81,7 @@ Fork from `node-static`
 - Docs: Sp. (@EdwardBetts)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 - npm: Update `mime` (updating to latest minor update only)
 =======
 - npm: Update `mime` and `colors` (@fidian)
@@ -90,6 +92,10 @@ Fork from `node-static`
 - npm: Set `engines` to 10.11.0+
 >>>>>>> 8e3059e (- Docs: Code)
 =======
+=======
+- Docs: Make install section more visible, make defaults visible in
+    semantically marked-up headings and add CLI options
+>>>>>>> 4b7e884 (chore: update devDep. (eslint))
 - Docs: Add `CHANGES.md`
 <<<<<<< HEAD
 - npm: Update `mime` and `colors` (@fidian)
