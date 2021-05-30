@@ -4,7 +4,7 @@
 
 ### User-facing
 
-- **Breaking change** (npm): Set `engines` to 10.11.0+
+- **Breaking change** (npm): Set `engines` to 12.0.0+
 - Security: Fix dependency vulnerabilities by switching from `optimist` to
     `neodoc` (@fidian)
 - Security: Update `mime` and `colors` (@fidian)
