@@ -69,6 +69,8 @@ Fork from `node-static`
 - Fix: Avoid octal (@bgao / @Ilrilan)
 - Fix: For `spa`, allow dots after path (@gjuchault)
 - Fix: Ensure package `version` stays up to date
+- Fix: path should be more generous in unescaping anything valid in a
+    path (such as a hash)
 - Enhancement: Allow access with local ip (@flyingsky)
 >>>>>>> 51fdfdb (Docs (CHANGES): Fix labeling of issue and indicate security fixes and potential fix)
 - Enhancement: Allow `serverInfo` to be `null` (@martindale)
