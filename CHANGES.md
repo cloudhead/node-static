@@ -21,6 +21,8 @@
 - Fix: Avoid octal (@bgao / @Ilrilan)
 - Fix: For `spa`, allow dots after path (@gjuchault)
 - Fix: Ensure package `version` stays up to date
+- Fix: path should be more generous in unescaping anything valid in a
+    path (such as a hash)
 - Enhancement: Allow access with local ip (@flyingsky)
 - Enhancement: Allow `serverInfo` to be `null` (@martindale)
 - Enhancement: Time display logging with leading 0 (@mauris)
