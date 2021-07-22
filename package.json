@@ -8,7 +8,14 @@
     "Ionică Bizău <bizauionica@gmail.com>",
     "Brett Zamir"
   ],
+  "type": "module",
   "main": "./lib/node-static",
+  "exports": {
+    ".": {
+      "import": "./lib/node-static.js",
+      "require": "./dist/node-static.cjs"
+    }
+  },
   "license": "MIT",
   "bin": {
     "static": "bin/cli.js"
@@ -26,19 +33,19 @@
   "scripts": {
     "start": "./bin/cli.js",
     "lint": "eslint .",
-    "vows": "vows --spec --isolate",
-    "test": "nyc npm run vows"
+    "mocha": "vows --spec --isolate",
+    "test": "c8 npm run mocha"
   },
   "dependencies": {
     "colors": "^1.4.0",
     "mime": "^2.5.2",
-    "minimatch": "^3.0.4",
-    "neodoc": "^2.0.2"
+    "minimatch": "^3.0.4"
   },
   "devDependencies": {
+    "c8": "^7.7.3",
+    "command-line-basics": "^1.0.1",
     "eslint": "^7.30.0",
-    "nyc": "^15.1.0",
-    "request": "latest",
+    "got": "^9.6.0",
     "vows": "latest"
   },
   "engines": {

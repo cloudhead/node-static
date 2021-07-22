@@ -1,6 +1,14 @@
 #!/usr/bin/env node
 
-'use strict';
+// import {cliBasics} from 'command-line-basics';
+// import mainScript from '../src/index.js';
+
+import fs from 'fs';
+import tty from 'tty';
+
+import statik from './../lib/node-static.js';
+import neodoc from 'neodoc';
+import colors from 'colors/safe';
 
 function help () {
     return `Node-Static CLI - simple, RFC 2616 compliant file streaming module for Node.
@@ -30,12 +38,6 @@ Options:
             Display this help message.
 `;
 }
-
-const fs = require('fs'),
-    tty = require('tty'),
-    statik = require('./../lib/node-static'),
-    neodoc = require('neodoc'),
-    colors = require('colors/safe');
 
 const args = neodoc.run(help(), {
     laxPlacement: true,

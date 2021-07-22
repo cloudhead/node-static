@@ -1,4 +1,6 @@
-import statik from '../lib/node-static.js';
+'use strict';
+
+const statik = require('../dist/node-static.cjs');
 
 //
 // Create a node-static server to serve the current directory
