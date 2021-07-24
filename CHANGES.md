@@ -35,7 +35,12 @@ Fork from `node-static`
 >>>>>>> 4a4b46a (Docs: CHANGES clarifications)
 =======
 - **Breaking change** (npm): Set `engines` to 12.0.0+
+<<<<<<< HEAD
 >>>>>>> ed8026e (chore: bump `engines` to maintained Node (12+))
+=======
+- **Breaking change**: Add `type: 'module'` and `exports` to `package.json`;
+    change internal CJS path
+>>>>>>> 99710bc (Add `type: 'module'` and `exports` to `package.json`)
 - Security: Fix dependency vulnerabilities by switching from `optimist` to
     `neodoc` (@fidian)
 <<<<<<< HEAD
@@ -80,8 +85,13 @@ Fork from `node-static`
 - Enhancement: Respect static `--cache 0` (@matthew-andrews)
 - Enhancement: New option: `defaultExtension` (@fmalk)
 - Enhancement: Added glob matching for setting cache headers (@lightswitch05)
+<<<<<<< HEAD
 >>>>>>> 64d9d86 (Docs: Give credit in CHANGES)
+=======
+- Update: Switch from deprecated `request` to `node-fetch`
+>>>>>>> 99710bc (Add `type: 'module'` and `exports` to `package.json`)
 - Optimization: 'use strict' directive
+- Refactoring: Switch to ESM
 - Docs: For examples (and internally) avoid `static` reserved word
 - Docs: Fix header example (@emmanouil)
 - Docs: Sp. (@EdwardBetts)
@@ -104,10 +114,14 @@ Fork from `node-static`
 >>>>>>> 4b7e884 (chore: update devDep. (eslint))
 - Docs: Add `CHANGES.md`
 <<<<<<< HEAD
+<<<<<<< HEAD
 - npm: Update `mime` and `colors` (@fidian)
 >>>>>>> 4a4b46a (Docs: CHANGES clarifications)
 =======
 >>>>>>> b3516d1 (Docs (CHANGES): Denote security fix)
+=======
+- Docs: Add ESM file-server example
+>>>>>>> 99710bc (Add `type: 'module'` and `exports` to `package.json`)
 
 ### Dev-facing
 
@@ -121,9 +135,14 @@ Fork from `node-static`
 =======
 - Testing: Allow tests to end (@fmalk)
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 6e5173a (Docs (CHANGES): Fix)
 =======
 - Testing: Add `nyc` for coverage
 >>>>>>> 3fcb831 (Revert scoping changes; line breaks; use of `const` in README)
+=======
+- Testing: Switch to `mocha`/`chai`/`c8`
+- Testing: Begin binary file coverage
+>>>>>>> 99710bc (Add `type: 'module'` and `exports` to `package.json`)
 - npm: Add eslint devDep. and script
 - npm: Add lock file
