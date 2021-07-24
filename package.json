@@ -39,17 +39,20 @@
   },
   "dependencies": {
     "colors": "^1.4.0",
+    "command-line-basics": "^1.0.2",
     "mime": "^2.5.2",
-    "minimatch": "^3.0.4",
-    "neodoc": "^2.0.2"
+    "minimatch": "^3.0.4"
   },
   "c8": {
-    "exclude": ["dist", "test"]
+    "exclude": [
+      "dist",
+      "test"
+    ]
   },
   "devDependencies": {
     "c8": "^7.7.3",
     "chai": "^4.3.4",
-    "eslint": "^7.30.0",
+    "eslint": "^7.31.0",
     "mocha": "^9.0.2",
     "node-fetch": "^2.6.1",
     "rollup": "^2.53.3"
