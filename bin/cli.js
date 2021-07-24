@@ -1,6 +1,12 @@
 #!/usr/bin/env node
 
-'use strict';
+import http from 'http';
+import fs from 'fs';
+import tty from 'tty';
+
+import * as statik from './../lib/node-static.js';
+import neodoc from 'neodoc';
+import colors from 'colors/safe.js';
 
 function help () {
     return `Node-Static CLI - simple, RFC 2616 compliant file streaming module for Node.
@@ -30,12 +36,6 @@ Options:
             Display this help message.
 `;
 }
-
-const fs = require('fs'),
-    tty = require('tty'),
-    statik = require('./../lib/node-static'),
-    neodoc = require('neodoc'),
-    colors = require('colors/safe');
 
 const args = neodoc.run(help(), {
     laxPlacement: true,
@@ -89,7 +89,7 @@ if (args['--index-file']) {
 
 const file = new(statik.Server)(dir, options);
 
-const server = require('http').createServer(function (request, response) {
+const server = http.createServer(function (request, response) {
     request.addListener('end', function () {
         const callback = function(e, rsp) {
             if (e && e.status === 404) {

@@ -5,6 +5,8 @@
 ### User-facing
 
 - **Breaking change** (npm): Set `engines` to 12.0.0+
+- **Breaking change**: Add `type: 'module'` and `exports` to `package.json`;
+    change internal CJS path
 - Security: Fix dependency vulnerabilities by switching from `optimist` to
     `neodoc` (@fidian)
 - Security: Update `mime` and `colors` (@fidian)
@@ -29,13 +31,16 @@
 - Enhancement: Respect static `--cache 0` (@matthew-andrews)
 - Enhancement: New option: `defaultExtension` (@fmalk)
 - Enhancement: Added glob matching for setting cache headers (@lightswitch05)
+- Update: Switch from deprecated `request` to `node-fetch`
 - Optimization: 'use strict' directive
+- Refactoring: Switch to ESM
 - Docs: For examples (and internally) avoid `static` reserved word
 - Docs: Fix header example (@emmanouil)
 - Docs: Sp. (@EdwardBetts)
 - Docs: Make install section more visible, make defaults visible in
     semantically marked-up headings and add CLI options
 - Docs: Add `CHANGES.md`
+- Docs: Add ESM file-server example
 
 ### Dev-facing
 
@@ -46,6 +51,7 @@
 - Testing: Add checks for supposed direct `node-static` vulnerabilities
 - Testing: Add test for `null` and non-`null` serverInfo
 - Testing: Allow tests to end (@fmalk)
-- Testing: Add `nyc` for coverage
+- Testing: Switch to `mocha`/`chai`/`c8`
+- Testing: Begin binary file coverage
 - npm: Add eslint devDep. and script
 - npm: Add lock file

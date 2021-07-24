@@ -12,11 +12,26 @@ there, such as node-paperboy and antinode.
 $ npm install node-static
 ```
 
-## Synopsis
+## Set-up
+
+### ESM
+
+```js
+import {Server, version, mime} from 'node-static';
+
+// OR:
+// import * as statik from 'node-static';
+```
+
+### CommonJS
 
 ```js
 const statik = require('node-static');
+```
 
+## Usage
+
+```js
 //
 // Create a node-static server instance to serve the './public' folder
 //
