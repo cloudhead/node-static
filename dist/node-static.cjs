@@ -1,22 +1,64 @@
-import fs from 'fs';
-import events from 'events';
-import http from 'http';
-import path from 'path';
-// import buffer from 'buffer';
+'use strict';
 
-import mime from 'mime';
-import minimatch from 'minimatch';
-import {mstat} from './node-static/util.js';
+Object.defineProperty(exports, '__esModule', { value: true });
 
-const pkg = JSON.parse(fs.readFileSync(
-    new URL('../package.json', import.meta.url)
+var fs = require('fs');
+var events = require('events');
+var http = require('http');
+var path = require('path');
+var mime = require('mime');
+var minimatch = require('minimatch');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
+var events__default = /*#__PURE__*/_interopDefaultLegacy(events);
+var http__default = /*#__PURE__*/_interopDefaultLegacy(http);
+var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
+var mime__default = /*#__PURE__*/_interopDefaultLegacy(mime);
+var minimatch__default = /*#__PURE__*/_interopDefaultLegacy(minimatch);
+
+function mstat (dir, files, callback) {
+    (function mstat(files, stats) {
+        const file = files.shift();
+
+        if (file) {
+            try {
+                fs__default['default'].stat(path__default['default'].join(dir, file), function (e, stat) {
+                    if (e) {
+                        callback(e);
+                    } else {
+                        mstat(files, stats.concat([stat]));
+                    }
+                });
+            } catch (e) {
+                callback(e);
+            }
+        } else {
+            callback(null, {
+                size: stats.reduce(function (total, stat) {
+                    return total + stat.size;
+                }, 0),
+                mtime: stats.reduce(function (latest, stat) {
+                    return latest > stat.mtime ? latest : stat.mtime;
+                }, 0),
+                ino: stats.reduce(function (total, stat) {
+                    return total + stat.ino;
+                }, 0)
+            });
+        }
+    })(files.slice(0), []);
+}
+
+const pkg = JSON.parse(fs__default['default'].readFileSync(
+    new URL('../package.json', (typeof document === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : (document.currentScript && document.currentScript.src || new URL('node-static.cjs', document.baseURI).href)))
 ));
 
 const version = pkg.version.split('.');
 
 function tryStat(p, callback) {
     try {
-        fs.stat(p, callback);
+        fs__default['default'].stat(p, callback);
     } catch (e) {
         callback(e);
     }
@@ -24,10 +66,10 @@ function tryStat(p, callback) {
 
 class Server {
     constructor (root, options) {
-        if (root && typeof root === 'object') { options = root; root = null }
+        if (root && typeof root === 'object') { options = root; root = null; }
 
         // resolve() doesn't normalize (to lowercase) drive letters on Windows
-        this.root    = path.normalize(path.resolve(root || '.'));
+        this.root    = path__default['default'].normalize(path__default['default'].resolve(root || '.'));
         this.options = options || {};
         this.cache   = {'**': 3600};
 
@@ -69,7 +111,7 @@ class Server {
     }
 
     serveDir (pathname, req, res, finish) {
-        const htmlIndex = path.join(pathname, this.options.indexFile),
+        const htmlIndex = path__default['default'].join(pathname, this.options.indexFile),
             that = this;
 
         tryStat(htmlIndex, function (e, stat) {
@@ -84,7 +126,7 @@ class Server {
                 }
             } else {
                 // Stream a directory of files as a single file.
-                fs.readFile(path.join(pathname, 'index.json'), function (e, contents) {
+                fs__default['default'].readFile(path__default['default'].join(pathname, 'index.json'), function (e, contents) {
                     if (e) { return finish(404, {}) }
                     const index = JSON.parse(contents);
                     streamFiles(index.files);
@@ -101,7 +143,7 @@ class Server {
 
     serveFile (pathname, status, headers, req, res) {
         const that = this;
-        const promise = new(events.EventEmitter);
+        const promise = new(events__default['default'].EventEmitter);
 
         pathname = this.resolve(pathname);
 
@@ -120,7 +162,7 @@ class Server {
         const result = {
             status,
             headers,
-            message: http.STATUS_CODES[status]
+            message: http__default['default'].STATUS_CODES[status]
         };
 
         if (this.options.serverInfo !== null) {
@@ -153,7 +195,7 @@ class Server {
 
     servePath (pathname, status, headers, req, res, finish) {
         const that = this,
-            promise = new(events.EventEmitter);
+            promise = new(events__default['default'].EventEmitter);
 
         pathname = this.resolve(pathname);
 
@@ -193,12 +235,12 @@ class Server {
     }
 
     resolve (pathname) {
-        return path.resolve(path.join(this.root, pathname));
+        return path__default['default'].resolve(path__default['default'].join(this.root, pathname));
     }
 
     serve (req, res, callback) {
         const that    = this,
-            promise = new(events.EventEmitter);
+            promise = new(events__default['default'].EventEmitter);
         let pathname;
 
         const finish = function (status, headers) {
@@ -266,7 +308,7 @@ class Server {
             from: 0,
             to: 0,
             valid: false
-        }
+        };
 
         let rangeHeader = req.headers['range'];
         const flavor = 'bytes=';
@@ -333,9 +375,9 @@ class Server {
         }
 
         // Copy default headers
-        for (const k in this.options.headers) {  headers[k] = this.options.headers[k] }
+        for (const k in this.options.headers) {  headers[k] = this.options.headers[k]; }
         // Copy custom headers
-        for (const k in _headers) { headers[k] = _headers[k] }
+        for (const k in _headers) { headers[k] = _headers[k]; }
 
         headers['Etag']          = JSON.stringify([stat.ino, stat.size, mtime].join('-'));
         headers['Date']          = new(Date)().toUTCString();
@@ -343,7 +385,7 @@ class Server {
         headers['Content-Type']   = contentType;
         headers['Content-Length'] = length;
 
-        for (const k in _headers) { headers[k] = _headers[k] }
+        for (const k in _headers) { headers[k] = _headers[k]; }
 
         // Conditional GET
         // If the "If-Modified-Since" or "If-None-Match" headers
@@ -376,7 +418,7 @@ class Server {
 
     respond (pathname, status, _headers, files, stat, req, res, finish) {
         const contentType = _headers['Content-Type'] ||
-                          mime.getType(files[0]) ||
+                          mime__default['default'].getType(files[0]) ||
                           'application/octet-stream';
         _headers = this.setCacheHeaders(_headers, req);
 
@@ -393,10 +435,10 @@ class Server {
             let file = files.shift();
 
             if (file) {
-                file = path.resolve(file) === path.normalize(file)  ? file : path.join(pathname || '.', file);
+                file = path__default['default'].resolve(file) === path__default['default'].normalize(file)  ? file : path__default['default'].join(pathname || '.', file);
 
                 // Stream the file to the client
-                fs.createReadStream(file, {
+                fs__default['default'].createReadStream(file, {
                     flags: 'r',
                     mode: '0666',
                     start: startByte,
@@ -431,7 +473,7 @@ class Server {
     getMaxAge (requestUrl) {
         if (this.cache) {
             for (const pattern in this.cache) {
-                if (minimatch(requestUrl, pattern)) {
+                if (minimatch__default['default'](requestUrl, pattern)) {
                     return this.cache[pattern];
                 }
             }
@@ -440,4 +482,11 @@ class Server {
     }
 }
 
-export {Server, version, mime};
+Object.defineProperty(exports, 'mime', {
+    enumerable: true,
+    get: function () {
+        return mime__default['default'];
+    }
+});
+exports.Server = Server;
+exports.version = version;
