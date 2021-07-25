@@ -1,5 +1,5 @@
 import http from 'http';
-import {dirname} from 'path';
+import {dirname, join} from 'path';
 import {fileURLToPath} from 'url';
 
 import {assert} from 'chai';
@@ -19,7 +19,7 @@ async function setupStaticServer (obj) {
 }
 const version = statik.version.join('.');
 
-let fileServer = new statik.Server(__dirname + '/../fixtures');
+let fileServer = new statik.Server(join(__dirname, '../fixtures'));
 
 function startStaticServer (port) {
     return new Promise((resolve, reject) => {
