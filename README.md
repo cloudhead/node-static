@@ -1,5 +1,7 @@
 # node-static
 
+[![Node.js CI status](https://github.com/http://github.com/cloudhead/node-static/workflows/Node.js%20CI/badge.svg)](https://github.com/http://github.com/cloudhead/node-static/actions)
+
 > a simple, *rfc 2616 compliant* file streaming module for [node](http://nodejs.org)
 
 node-static understands and supports *conditional GET* and *HEAD* requests.
