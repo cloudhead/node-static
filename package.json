@@ -31,7 +31,7 @@
     "url": "http://github.com/cloudhead/node-static"
   },
   "scripts": {
-    "rollup": "rollup -c",
+    "build": "rollup -c",
     "start": "./bin/cli.js",
     "lint": "eslint --ext=cjs,js .",
     "mocha": "mocha test/integration --parallel",
