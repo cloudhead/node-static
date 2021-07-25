@@ -30,7 +30,7 @@ describe('node-static (CLI)', function () {
             await updatePort(this);
         });
         it('serving hello.txt', async function () {
-            const {response} = await spawnConditional(binFile, [
+            const {response /* , stdout */} = await spawnConditional(binFile, [
                 '-p', this.port, fixturePath
             ], timeout - 9000, {
                 condition: /serving ".*?"/,
