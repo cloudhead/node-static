@@ -34,7 +34,7 @@
     "rollup": "rollup -c",
     "start": "./bin/cli.js",
     "lint": "eslint --ext=cjs,js .",
-    "mocha": "mocha test/integration",
+    "mocha": "mocha test/integration --parallel",
     "test": "c8 npm run mocha"
   },
   "dependencies": {
