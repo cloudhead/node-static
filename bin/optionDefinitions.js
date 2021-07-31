@@ -23,7 +23,7 @@ const optionDefinitions = [
         typeLabel: '{underline ADDRESS}'
     },
     {
-        name: 'cache', alias: 'c', type: Number,
+        name: 'cache', alias: 'c', type: JSON.parse,
         description: '"Cache-Control" header setting. [default: 3600]',
         typeLabel: '{underline SECONDS}'
     },
