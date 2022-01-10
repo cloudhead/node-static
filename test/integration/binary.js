@@ -81,6 +81,9 @@ describe('node-static (CLI)', function () {
                 }), fixturePath
             ], timeout - 9000, {
                 condition: /serving ".*?"/,
+                error (err) {
+                    throw err;
+                },
                 action: (/* err, stdout */) => {
                     return Promise.all([
                         fetch(
