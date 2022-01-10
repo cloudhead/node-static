@@ -11,7 +11,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const binFile = join(__dirname, '../../bin/cli.js');
 const fixturePath = join(__dirname, '../fixtures');
 
-let testPort = 8081;
+let testPort = 8281;
 async function updatePort (obj) {
     obj.port = ++testPort;
 }
@@ -19,7 +19,7 @@ async function updatePort (obj) {
 
 describe('node-static (CLI)', function () {
     it('Gets help text', async function () {
-        const {stdout} = await spawnPromise(binFile, ['-h'], 1000);
+        const {stdout} = await spawnPromise(binFile, ['-h']);
         assert.match(stdout, /USAGE: /u);
     });
 
