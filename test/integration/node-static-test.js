@@ -8,7 +8,7 @@ import * as statik from '../../lib/node-static.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-let testPort = 8081;
+let testPort = 8151;
 
 async function setupStaticServer (obj) {
     obj.port = ++testPort;
