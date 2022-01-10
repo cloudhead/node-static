@@ -376,8 +376,6 @@ class Server {
 
         // Copy default headers
         for (const k in this.options.headers) {  headers[k] = this.options.headers[k]; }
-        // Copy custom headers
-        for (const k in _headers) { headers[k] = _headers[k]; }
 
         headers['Etag']          = JSON.stringify([stat.ino, stat.size, mtime].join('-'));
         headers['Date']          = new(Date)().toUTCString();
@@ -385,6 +383,7 @@ class Server {
         headers['Content-Type']   = contentType;
         headers['Content-Length'] = length;
 
+        // Copy custom headers
         for (const k in _headers) { headers[k] = _headers[k]; }
 
         // Conditional GET
