@@ -58,7 +58,7 @@
     "rollup": "^2.53.3"
   },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=14.0.0"
   },
   "bugs": {
     "url": "https://github.com/cloudhead/node-static/issues"
