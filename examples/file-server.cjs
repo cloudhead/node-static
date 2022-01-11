@@ -1,12 +1,13 @@
-import http from 'http';
-import * as statik from '../lib/node-static.js';
+'use strict';
+
+const statik = require('../dist/node-static.cjs');
 
 //
 // Create a node-static server to serve the current directory
 //
 const file = new statik.Server('.', { cache: 7200, headers: {'X-Hello':'World!'} });
 
-http.createServer(function (request, response) {
+require('http').createServer(function (request, response) {
     file.serve(request, response, function (err, res) {
         if (err) { // An error has occurred
             console.error("> Error serving " + request.url + " - " + err.message);
