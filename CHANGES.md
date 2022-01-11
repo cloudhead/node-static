@@ -14,6 +14,7 @@ Fork from `node-static`
 - Enhancement: Allow `serverInfo` to be `null` (@martindale)
 - Enhancement: Time display logging with leading 0 (@mauris)
 - Enhancement: Respect static `--cache 0` (@matthew-andrews)
+- Enhancement: New option: `defaultExtension` (@fmalk)
 - Optimization: 'use strict' directive
 - Docs: Fix header example (@emmanouil)
 - Docs: Sp. (@EdwardBetts)
@@ -25,5 +26,6 @@ Fork from `node-static`
     prefer `startsWith` and `includes`
 - Maintenance: Add `.editorconfig`
 - Testing: Add test for `null` and non-`null` serverInfo
+- Testing: Allow tests at end (@fmalk)
 - npm: Add eslint devDep. and script
 - npm: Add lock file

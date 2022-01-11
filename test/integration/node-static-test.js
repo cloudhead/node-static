@@ -469,4 +469,71 @@ suite.addBatch({
                 assert.equal(response.statusCode, 404);
             }
         }
+    }).addBatch({
+        'serving custom index file': {
+            topic : function(){
+                request.get(TEST_SERVER + '/', this.callback);
+            },
+            'should respond with 200' : function(error, response, body){
+                assert.equal(response.statusCode, 200);
+            },
+            'should respond with empty string': function(error, response, body){
+                assert.equal(body, 'hello world');
+            }
+        }
+    }).addBatch({
+        'finding a file by default extension': {
+            topic: function() {
+                server.close();
+
+                fileServer = new statik.Server(__dirname+'/../fixtures', {defaultExtension: "txt"});
+
+                server = require('http').createServer(function(request, response) {
+                    fileServer.serve(request, response);
+                }).listen(TEST_PORT);
+                request.get(TEST_SERVER + '/hello', this.callback);
+            },
+            'should respond with 200': function(error, response, body) {
+                assert.equal(response.statusCode, 200);
+            },
+            'should respond with text/plain': function(error, response, body) {
+                assert.equal(response.headers['content-type'], 'text/plain');
+            },
+            'should respond with hello world': function(error, response, body) {
+                assert.equal(body, 'hello world');
+            }
+        }
+    }).addBatch({
+        'default extension does not interfere with folders': {
+            topic : function(){
+                server.close();
+
+                fileServer = new statik.Server(__dirname+'/../fixtures', {defaultExtension: "html"});
+
+                server = require('http').createServer(function(request, response) {
+                    fileServer.serve(request, response);
+                }).listen(TEST_PORT);
+                request.get({ url: TEST_SERVER + '/there', followRedirect: false }, this.callback); // without trailing slash
+            },
+            'should respond with 301' : function(error, response, body){
+                assert.equal(response.statusCode, 301);
+            },
+            'should respond with location header': function(error, response, body){
+                assert.equal(response.headers['location'], '/there/'); // now with trailing slash
+            },
+            'should respond with empty string body' : function(error, response, body){
+                assert.equal(body, '');
+            }
+        }
+    }).addBatch({
+        'terminate server': {
+            topic: function() {
+                server.close(this.callback);
+            },
+            'should be listening': function() {
+                /* This test is necessary to ensure the topic execution.
+           * A topic without tests will be not executed */
+                assert.isTrue(true);
+            }
+        }
     }).export(module);
