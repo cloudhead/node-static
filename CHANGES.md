@@ -4,12 +4,13 @@
 
 ### User-facing
 
-- **Breaking change** (npm): Set `engines` to 12.0.0+
+- **Breaking change** (npm): Set `engines` to 14.0.0+
 - **Breaking change**: Add `type: 'module'` and `exports` to `package.json`;
     change internal CJS path
 - Security: Fix dependency vulnerabilities by switching from `optimist` to
-    `neodoc` (@fidian)
-- Security: Update `mime` and `colors` (@fidian)
+    `command-line-basics` (@brettz9)
+- Security: Update `mime` and `colors` (@fidian) and pin `colors`
+    (@mannyluvstacos)
 - Security Update/fix: Use `URL` constructor over deprecated `url.parse`;
     should fix Open Redirect issue <https://www.npmjs.com/advisories/1207>
 - Security Update/fix: Protect `fs.stat` calls from bad path arguments; fixes
@@ -25,6 +26,7 @@
 - Fix: Ensure package `version` stays up to date
 - Fix: path should be more generous in unescaping anything valid in a
     path (such as a hash)
+- Fix: change `fs.createReadStream()` mode to integer (@pixcai)
 - Enhancement: Allow access with local ip (@flyingsky)
 - Enhancement: Allow `serverInfo` to be `null` (@martindale)
 - Enhancement: Time display logging with leading 0 (@mauris)
@@ -52,6 +54,7 @@
 - Testing: Add test for `null` and non-`null` serverInfo
 - Testing: Allow tests to end (@fmalk)
 - Testing: Switch to `mocha`/`chai`/`c8`
+- Testing: Add CI workflow
 - Testing: Begin binary file coverage
 - npm: Add eslint devDep. and script
 - npm: Add lock file
