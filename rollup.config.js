@@ -9,7 +9,7 @@
  * @param {string} config.input
  * @returns {external:RollupConfig}
  */
-function getRollupObject ({input} = {}) {
+function getRollupObject({input} = {}) {
     return {
         external: ['fs', 'events', 'http', 'path', 'mime', 'minimatch'],
         input,
