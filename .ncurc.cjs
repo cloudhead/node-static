@@ -6,6 +6,10 @@ module.exports = {
         'colors',
 
         // ESM-only; only switch when dropping dual CJS support
-        'node-fetch'
+        'node-fetch',
+        'mime',
+
+        // Node 20+
+        'minimatch'
     ]
 };

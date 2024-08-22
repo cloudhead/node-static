@@ -4,7 +4,7 @@
 
 ### User-facing
 
-- **Breaking change** (npm): Set `engines` to 14.0.0+
+- **Breaking change** (npm): Set `engines` to 18.0.0+
 - **Breaking change**: Add `type: 'module'` and `exports` to `package.json`;
     change internal CJS path
 - Security: Fix dependency vulnerabilities by switching from `optimist` to

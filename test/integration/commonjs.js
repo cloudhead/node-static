@@ -1,6 +1,6 @@
-const {assert} = require('chai');
+import {assert} from 'chai';
 
-const statik = require('../../dist/node-static.cjs');
+import statik from '../../dist/node-static.cjs';
 
 describe('node-static (CommonJS)', function () {
     it('Has expected properties', function () {

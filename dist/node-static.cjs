@@ -1,7 +1,5 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
-
 var fs = require('fs');
 var events = require('events');
 var http = require('http');
@@ -9,22 +7,14 @@ var path = require('path');
 var mime = require('mime');
 var minimatch = require('minimatch');
 
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
-var events__default = /*#__PURE__*/_interopDefaultLegacy(events);
-var http__default = /*#__PURE__*/_interopDefaultLegacy(http);
-var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
-var mime__default = /*#__PURE__*/_interopDefaultLegacy(mime);
-var minimatch__default = /*#__PURE__*/_interopDefaultLegacy(minimatch);
-
+var _documentCurrentScript = typeof document !== 'undefined' ? document.currentScript : null;
 function mstat (dir, files, callback) {
     (function mstat(files, stats) {
         const file = files.shift();
 
         if (file) {
             try {
-                fs__default["default"].stat(path__default["default"].join(dir, file), function (e, stat) {
+                fs.stat(path.join(dir, file), function (e, stat) {
                     if (e) {
                         callback(e);
                     } else {
@@ -50,15 +40,15 @@ function mstat (dir, files, callback) {
     })(files.slice(0), []);
 }
 
-const pkg = JSON.parse(fs__default["default"].readFileSync(
-    new URL('../package.json', (typeof document === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : (document.currentScript && document.currentScript.src || new URL('node-static.cjs', document.baseURI).href)))
+const pkg = JSON.parse(fs.readFileSync(
+    new URL('../package.json', (typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.src || new URL('node-static.cjs', document.baseURI).href)))
 ));
 
 const version = pkg.version.split('.');
 
 function tryStat(p, callback) {
     try {
-        fs__default["default"].stat(p, callback);
+        fs.stat(p, callback);
     } catch (e) {
         callback(e);
     }
@@ -69,7 +59,7 @@ class Server {
         if (root && typeof root === 'object') { options = root; root = null; }
 
         // resolve() doesn't normalize (to lowercase) drive letters on Windows
-        this.root    = path__default["default"].normalize(path__default["default"].resolve(root || '.'));
+        this.root    = path.normalize(path.resolve(root || '.'));
         this.options = options || {};
         this.cache   = {'**': 3600};
 
@@ -111,7 +101,7 @@ class Server {
     }
 
     serveDir (pathname, req, res, finish) {
-        const htmlIndex = path__default["default"].join(pathname, this.options.indexFile),
+        const htmlIndex = path.join(pathname, this.options.indexFile),
             that = this;
 
         tryStat(htmlIndex, function (e, stat) {
@@ -126,7 +116,7 @@ class Server {
                 }
             } else {
                 // Stream a directory of files as a single file.
-                fs__default["default"].readFile(path__default["default"].join(pathname, 'index.json'), function (e, contents) {
+                fs.readFile(path.join(pathname, 'index.json'), function (e, contents) {
                     if (e) { return finish(404, {}) }
                     const index = JSON.parse(contents);
                     streamFiles(index.files);
@@ -143,7 +133,7 @@ class Server {
 
     serveFile (pathname, status, headers, req, res) {
         const that = this;
-        const promise = new(events__default["default"].EventEmitter);
+        const promise = new(events.EventEmitter);
 
         pathname = this.resolve(pathname);
 
@@ -162,7 +152,7 @@ class Server {
         const result = {
             status,
             headers,
-            message: http__default["default"].STATUS_CODES[status]
+            message: http.STATUS_CODES[status]
         };
 
         if (this.options.serverInfo !== null) {
@@ -195,7 +185,7 @@ class Server {
 
     servePath (pathname, status, headers, req, res, finish) {
         const that = this,
-            promise = new(events__default["default"].EventEmitter);
+            promise = new(events.EventEmitter);
 
         pathname = this.resolve(pathname);
 
@@ -235,12 +225,12 @@ class Server {
     }
 
     resolve (pathname) {
-        return path__default["default"].resolve(path__default["default"].join(this.root, pathname));
+        return path.resolve(path.join(this.root, pathname));
     }
 
     serve (req, res, callback) {
         const that    = this,
-            promise = new(events__default["default"].EventEmitter);
+            promise = new(events.EventEmitter);
         let pathname;
 
         const finish = function (status, headers) {
@@ -250,7 +240,7 @@ class Server {
         try {
             pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
         }
-        catch(e) {
+        catch {
             return process.nextTick(function() {
                 return finish(400, {});
             });
@@ -417,7 +407,7 @@ class Server {
 
     respond (pathname, status, _headers, files, stat, req, res, finish) {
         const contentType = _headers['Content-Type'] ||
-                          mime__default["default"].getType(files[0]) ||
+                          mime.getType(files[0]) ||
                           'application/octet-stream';
         _headers = this.setCacheHeaders(_headers, req);
 
@@ -434,10 +424,10 @@ class Server {
             let file = files.shift();
 
             if (file) {
-                file = path__default["default"].resolve(file) === path__default["default"].normalize(file)  ? file : path__default["default"].join(pathname || '.', file);
+                file = path.resolve(file) === path.normalize(file)  ? file : path.join(pathname || '.', file);
 
                 // Stream the file to the client
-                fs__default["default"].createReadStream(file, {
+                fs.createReadStream(file, {
                     flags: 'r',
                     mode: 0o666,
                     start: startByte,
@@ -472,7 +462,7 @@ class Server {
     getMaxAge (requestUrl) {
         if (this.cache) {
             for (const pattern in this.cache) {
-                if (minimatch__default["default"](requestUrl, pattern)) {
+                if (minimatch.minimatch(requestUrl, pattern)) {
                     return this.cache[pattern];
                 }
             }
@@ -481,9 +471,6 @@ class Server {
     }
 }
 
-Object.defineProperty(exports, 'mime', {
-    enumerable: true,
-    get: function () { return mime__default["default"]; }
-});
+exports.mime = mime;
 exports.Server = Server;
 exports.version = version;

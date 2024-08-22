@@ -1,13 +1,7 @@
 /**
- * @external RollupConfig
- * @type {PlainObject}
- * @see {@link https://rollupjs.org/guide/en#big-list-of-options}
- */
-
-/**
- * @param {PlainObject} config
+ * @param {object} config
  * @param {string} config.input
- * @returns {external:RollupConfig}
+ * @returns {RollupConfig}
  */
 function getRollupObject ({input} = {}) {
     return {
