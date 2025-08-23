@@ -3,19 +3,18 @@
 import http from 'http';
 import fs from 'fs';
 import tty from 'tty';
-import {join, dirname} from 'path';
-import {fileURLToPath} from 'url';
 
 import {cliBasics} from 'command-line-basics';
 import colors from 'colors/safe.js';
 
 import * as statik from './../lib/node-static.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
 (async () => {
     const args = await cliBasics(
-        join(__dirname, 'optionDefinitions.js')
+        import.meta.dirname + '/optionDefinitions.js',
+        {
+            packageJsonPath: import.meta.dirname + '/../package.json'
+        }
     );
     if (!args) { // cliBasics handled
         process.exit(0);

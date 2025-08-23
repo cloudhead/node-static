@@ -12,9 +12,9 @@ jobs:
         strategy:
             matrix:
                 node-version:
-                    - 14.x
-                    - 16.x
-                    - 17.x
+                    - 20.x
+                    - 22.x
+                    - 24.x
         steps:
             - uses: actions/checkout@v2
             - name: Use Node.js ${{ matrix.node-version }}

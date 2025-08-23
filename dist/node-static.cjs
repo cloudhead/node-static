@@ -41,7 +41,7 @@ function mstat (dir, files, callback) {
 }
 
 const pkg = JSON.parse(fs.readFileSync(
-    new URL('../package.json', (typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.src || new URL('node-static.cjs', document.baseURI).href)))
+    new URL('../package.json', (typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('node-static.cjs', document.baseURI).href)))
 ));
 
 const version = pkg.version.split('.');
