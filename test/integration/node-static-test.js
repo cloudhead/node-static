@@ -1,12 +1,10 @@
 import http from 'http';
-import {dirname, join} from 'path';
-import {fileURLToPath} from 'url';
 
 import {assert} from 'chai';
 import fetch from 'node-fetch';
 import * as statik from '../../lib/node-static.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 let testPort = 8151;
 
@@ -19,7 +17,7 @@ async function setupStaticServer (obj) {
 }
 const version = statik.version.join('.');
 
-let fileServer = new statik.Server(join(__dirname, '../fixtures'));
+let fileServer = new statik.Server(__dirname + '/../fixtures');
 
 function startStaticServer (port) {
     return new Promise((resolve, reject) => {

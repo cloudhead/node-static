@@ -1,12 +1,11 @@
-import {join, dirname} from 'path';
-import {fileURLToPath} from 'url';
+import {join} from 'path';
 
 import {assert} from 'chai';
 import fetch from 'node-fetch';
 
 import {spawnPromise, spawnConditional} from '../utils/spawnPromise.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 const binFile = join(__dirname, '../../bin/cli.js');
 const fixturePath = join(__dirname, '../fixtures');
