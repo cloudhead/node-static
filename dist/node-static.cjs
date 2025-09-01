@@ -148,7 +148,7 @@ class Server {
         return promise;
     }
 
-    finish (status, headers, req, res, promise, callback) {
+    finish (status, headers, req, res, promise, callback, streaming) {
         const result = {
             status,
             headers,
@@ -174,7 +174,7 @@ class Server {
         } else {
             // Don't end the request here, if we're streaming;
             // it's taken care of in `prototype.stream`.
-            if (status !== 200 || req.method !== 'GET') {
+            if (!streaming) {
                 res.writeHead(status, headers);
                 res.end();
             }
@@ -233,8 +233,8 @@ class Server {
             promise = new(events.EventEmitter);
         let pathname;
 
-        const finish = function (status, headers) {
-            that.finish(status, headers, req, res, promise, callback);
+        const finish = function (status, headers, streaming) {
+            that.finish(status, headers, req, res, promise, callback, streaming);
         };
 
         try {
@@ -399,8 +399,8 @@ class Server {
             res.writeHead(status, headers);
 
             this.stream(key, files, length, startByte, res, function (e) {
-                if (e) { return finish(500, {}) }
-                finish(status, headers);
+                if (e) { return finish(500, {}, true) }
+                finish(status, headers, true);
             });
         }
     }
