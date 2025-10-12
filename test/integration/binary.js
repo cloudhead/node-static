@@ -125,6 +125,33 @@ describe('node-static (CLI)', function () {
             assert.equal(text, 'hello world', 'should respond with hello world');
         });
 
+        it('serving file within directory and gzip', async function () {
+            const {response /* , stdout */} = await spawnConditional(binFile, [
+                '-p', this.port, fixturePath, '--gzip'
+            ], timeout - 9000, {
+                condition: /serving ".*?"/,
+                action: (/* err, stdout */) => {
+                    return fetch(
+                        `http://localhost:${this.port}/hello.txt`, {
+                            headers: {
+                                'accept-encoding': 'gzip'
+                            }
+                        }
+                    );
+                }
+            });
+
+            const {status} = response;
+            const contentType = response.headers.get('content-type');
+            const contentEncoding = response.headers.get('content-encoding');
+            const text = await response.text();
+
+            assert.equal(status, 200, 'should respond with 200');
+            assert.equal(contentType, 'text/plain', 'should respond with text/plain');
+            assert.equal(contentEncoding, 'gzip', 'should respond with gzip encoding');
+            assert.equal(text, 'hello world', 'should respond with hello world');
+        });
+
         it('serves custom cache', async function () {
             const {response: responses /* , stdout */} = await spawnConditional(binFile, [
                 '-p', this.port, '--cache', JSON.stringify({
