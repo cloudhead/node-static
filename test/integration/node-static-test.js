@@ -567,6 +567,13 @@ describe('node-static', function () {
             assert.equal(response.headers.get('content-type'), 'text/plain', 'should respond with text/plain');
             assert.equal(await response.text(), 'hello world', 'should respond with hello world');
         });
+        it('responds with 404 if default extension result not found', async function() {
+            fileServer = new statik.Server(__dirname+'/../fixtures', {defaultExtension: "txt"});
+
+            const response = await fetch(this.getTestServer() + '/bad-file');
+
+            assert.equal(response.status, 404, 'should respond with 404');
+        });
         it('default extension does not interfere with folders', async function () {
             fileServer = new statik.Server(__dirname+'/../fixtures', {defaultExtension: "html"});
 
