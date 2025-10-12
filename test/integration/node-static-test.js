@@ -624,4 +624,62 @@ describe('node-static', function () {
             assert.equal(response.headers.get('cache-control'), undefined, 'should not respond with cache-control');
         });
     });
+
+    describe('once an http server is listening with numeric custom cache configuration', function () {
+        beforeEach(async function () {
+            await setupStaticServer(this);
+            fileServer  = new statik.Server(__dirname + '/../fixtures', {
+                cache: 300
+            });
+        });
+        afterEach(async function () {
+            this.server.close();
+        });
+
+        it('requesting custom cache index file', async function () {
+            const response = await fetch(this.getTestServer() + '/');
+            assert.equal(response.status, 200, 'should respond with 200');
+            assert.equal(response.headers.get('cache-control'), 'max-age=300', 'should respond with cache-control');
+        });
+        it('requesting custom cache text file', async function () {
+            const response = await fetch(this.getTestServer() + '/hello.txt');
+
+            assert.equal(response.status, 200, 'should respond with 200');
+            assert.equal(response.headers.get('cache-control'), 'max-age=300', 'should respond with cache-control');
+        });
+        it('requesting custom cache un-cached file', async function () {
+            const response = await fetch(this.getTestServer() + '/empty.css');
+            assert.equal(response.status, 200, 'should respond with 200');
+            assert.equal(response.headers.get('cache-control'), 'max-age=300', 'should respond with cache-control');
+        });
+    });
+
+    describe('once an http server is listening with false custom cache configuration', function () {
+        beforeEach(async function () {
+            await setupStaticServer(this);
+            fileServer  = new statik.Server(__dirname + '/../fixtures', {
+                cache: false
+            });
+        });
+        afterEach(async function () {
+            this.server.close();
+        });
+
+        it('requesting custom cache index file', async function () {
+            const response = await fetch(this.getTestServer() + '/');
+            assert.equal(response.status, 200, 'should respond with 200');
+            assert.equal(response.headers.get('cache-control'), null, 'should not respond with cache-control');
+        });
+        it('requesting custom cache text file', async function () {
+            const response = await fetch(this.getTestServer() + '/hello.txt');
+
+            assert.equal(response.status, 200, 'should respond with 200');
+            assert.equal(response.headers.get('cache-control'), null, 'should not respond with cache-control');
+        });
+        it('requesting custom cache un-cached file', async function () {
+            const response = await fetch(this.getTestServer() + '/empty.css');
+            assert.equal(response.status, 200, 'should respond with 200');
+            assert.equal(response.headers.get('cache-control'), null, 'should not respond with cache-control');
+        });
+    });
 });
