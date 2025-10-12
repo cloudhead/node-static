@@ -72,6 +72,25 @@ describe('node-static (CLI)', function () {
             assert.equal(cacheControl, 'max-age=3600', 'should respond with cache-control');
         });
 
+        it('serving file within directory and 404', async function () {
+            const {response /* , stdout */} = await spawnConditional(binFile, [
+                '-p', this.port, fixturePath
+            ], timeout - 9000, {
+                condition: /serving ".*?"/,
+                action: (/* err, stdout */) => {
+                    return fetch(
+                        `http://localhost:${this.port}/bad-file`
+                    );
+                }
+            });
+
+            const {status} = response;
+            const text = await response.text();
+
+            assert.equal(status, 404, 'should respond with 404');
+            assert.equal(text, 'Not Found', 'should respond with Not Found');
+        });
+
         it('serving file within directory and indexFile', async function () {
             const {response /* , stdout */} = await spawnConditional(binFile, [
                 '-p', this.port, fixturePath, '--index-file', 'hello.txt'
