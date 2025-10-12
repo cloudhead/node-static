@@ -112,6 +112,30 @@ describe('node-static (CLI)', function () {
             assert.equal(text, 'hello world', 'should respond with hello world');
         });
 
+        it('serving file within directory and spa and indexFile', async function () {
+            const {response /* , stdout */} = await spawnConditional(binFile, [
+                '-p', this.port, fixturePath, '--index-file', 'hello.txt', '--spa'
+            ], timeout - 9000, {
+                condition: /serving ".*?"/,
+                error (err) {
+                    console.log('err', err);
+                },
+                action: (/* err, stdout */) => {
+                    return fetch(
+                        `http://localhost:${this.port}/some/other/path`
+                    );
+                }
+            });
+
+            const {status} = response;
+            const contentType = response.headers.get('content-type');
+            const text = await response.text();
+
+            assert.equal(status, 200, 'should respond with 200');
+            assert.equal(contentType, 'text/plain', 'should respond with text/plain');
+            assert.equal(text, 'hello world', 'should respond with hello world');
+        });
+
         it('serving file within directory with headers', async function () {
             const {response /* , stdout */} = await spawnConditional(binFile, [
                 '-p', this.port,
