@@ -214,6 +214,20 @@ describe('node-static', function () {
             assert.equal(await response.text(), 'hello world', 'should respond with "hello world"');
         });
 
+        it('serving differential amount of hello.txt', async function () {
+            const options = {
+                headers: {
+                    'Range': 'bytes=-2'
+                }
+            };
+            const response = await fetch(this.getTestServer() + '/hello.txt', options);
+            assert.equal(response.status, 206, 'should respond with 206');
+            assert.equal(response.headers.get('content-type'), 'text/plain', 'should respond with text/plain');
+            assert.equal(response.headers.get('content-length'), 2, 'should have content-length of 11 bytes');
+            assert.equal(response.headers.get('content-range'), 'bytes 9-10/11', 'should have a valid Content-Range header in response');
+            assert.equal(await response.text(), 'ld', 'should respond with "ld"');
+        });
+
         it('serving full bytes of hello.txt with bad range', async function () {
             fileServer = new statik.Server(__dirname + '/../fixtures');
             const _consoleError = console.error;
@@ -236,6 +250,60 @@ describe('node-static', function () {
             assert.equal(await response.text(), 'hello world', 'should respond with hello world');
             assert.equal(loggedErr.message, 'Range request present but invalid, might serve whole file instead')
             console.error = _consoleError;
+        });
+
+        it('serving full bytes of hello.txt with unsupported range flavor', async function () {
+            fileServer = new statik.Server(__dirname + '/../fixtures');
+            const _consoleWarn = console.warn;
+            let loggedWarning;
+            let loggedHeader;
+            console.warn = (warning, warning2) => {
+                loggedWarning = warning;
+                loggedHeader = warning2;
+            };
+            const options = {
+                headers: {
+                    'Range': 'qubits=1-5'
+                }
+            };
+            const response = await fetch(this.getTestServer() + '/hello.txt', options);
+
+            assert.equal(response.status, 200, 'should respond with 200');
+            assert.equal(response.headers.get('content-type'), 'text/plain', 'should respond with text/plain');
+            assert.equal(response.headers.get('content-length'), 11, 'should have content-length of 5 bytes');
+
+            assert.equal(response.headers.get('content-range'), null);
+            assert.equal(await response.text(), 'hello world', 'should respond with hello world');
+            assert.equal(loggedWarning, 'Request contains unsupported range header: ')
+            assert.equal(loggedHeader, 'qubits=1-5');
+            console.warn = _consoleWarn;
+        });
+
+        it('serving full bytes of hello.txt with invalid range header', async function () {
+            fileServer = new statik.Server(__dirname + '/../fixtures');
+            const _consoleWarn = console.warn;
+            let loggedWarning;
+            let loggedHeader;
+            console.warn = (warning, warning2) => {
+                loggedWarning = warning;
+                loggedHeader = warning2;
+            };
+            const options = {
+                headers: {
+                    'Range': 'bytes=a-b'
+                }
+            };
+            const response = await fetch(this.getTestServer() + '/hello.txt', options);
+
+            assert.equal(response.status, 200, 'should respond with 200');
+            assert.equal(response.headers.get('content-type'), 'text/plain', 'should respond with text/plain');
+            assert.equal(response.headers.get('content-length'), 11, 'should have content-length of 5 bytes');
+
+            assert.equal(response.headers.get('content-range'), null);
+            assert.equal(await response.text(), 'hello world', 'should respond with hello world');
+            assert.equal(loggedWarning, 'Request contains invalid range header: ')
+            assert.deepEqual(loggedHeader, ['a', 'b']);
+            console.warn = _consoleWarn;
         });
 
         it('serving directory index', async function (){
