@@ -330,6 +330,59 @@ describe('node-static', function () {
             assert.equal(await response.text(), 'hello world', 'should respond with hello world');
         });
     });
+
+    describe('once an http server is listening with JSON files configuration', function () {
+        before(function () {
+            fileServer = new statik.Server(__dirname + '/../fixtures/index-with-json');
+        });
+        beforeEach(async function () {
+            await setupStaticServer(this);
+        });
+        afterEach(async function () {
+            this.server.close();
+        });
+
+        it('serving JSON file', async function () {
+            const response = await fetch(this.getTestServer() + '/');
+            assert.equal(response.status, 200, 'should respond with 200');
+            assert.equal(await response.text(), 'hello world', 'should respond with hello world');
+        });
+    });
+
+    describe('once an http server is listening with JSON files configuration', function () {
+        before(function () {
+            fileServer = new statik.Server(__dirname + '/../fixtures/index-without-json');
+        });
+        beforeEach(async function () {
+            await setupStaticServer(this);
+        });
+        afterEach(async function () {
+            this.server.close();
+        });
+
+        it('returns 404 with missing JSON file', async function () {
+            const response = await fetch(this.getTestServer() + '/');
+            assert.equal(response.status, 404, 'should respond with 404');
+        });
+    });
+
+    describe('once an http server is listening with bad JSON files configuration', function () {
+        before(function () {
+            fileServer = new statik.Server(__dirname + '/../fixtures/index-with-bad-json');
+        });
+        beforeEach(async function () {
+            await setupStaticServer(this);
+        });
+        afterEach(async function () {
+            this.server.close();
+        });
+
+        it('returns 404 with missing file from JSON file', async function () {
+            const response = await fetch(this.getTestServer() + '/');
+            assert.equal(response.status, 404, 'should respond with 404');
+        });
+    });
+
     describe('default extension', function () {
         beforeEach(async function () {
             await setupStaticServer(this);
