@@ -8,9 +8,9 @@ const __dirname = import.meta.dirname;
 
 let testPort = 8151;
 
-async function setupStaticServer (obj) {
+async function setupStaticServer (obj, cb) {
     obj.port = ++testPort;
-    obj.server = await startStaticServer(obj.port);
+    obj.server = await startStaticServer(obj.port, cb);
     obj.getTestServer = () => {
         return 'http://localhost:' + obj.port;
     };
@@ -19,10 +19,13 @@ const version = statik.version.join('.');
 
 let fileServer = new statik.Server(__dirname + '/../fixtures');
 
-function startStaticServer (port) {
+function startStaticServer (port, callback) {
     return new Promise((resolve, reject) => {
         const server = http.createServer(function (request, response) {
-            fileServer.serve(request, response);
+            const serveProm = fileServer.serve(request, response);
+            if (callback) {
+                callback(serveProm, request, response);
+            }
         });
         server.listen(port, () => {
             resolve(server);
@@ -117,6 +120,27 @@ describe('node-static', function () {
         }).then(async (srvr) => {
             server = srvr;
             fetch(getTestServer() + '/not-found');
+        });
+    });
+
+    describe('once an http server is listening without a callback', function () {
+        beforeEach(async function () {
+            await setupStaticServer(this, (server, req, res) => {
+                if (server) {
+                    server.on('error', (err) => {
+                        res.writeHead(404, err.headers);
+                        res.end();
+                    })
+                }
+            });
+        });
+        afterEach(async function () {
+            this.server.close();
+        });
+        it('requesting a file not found', async function () {
+            const response = await fetch(this.getTestServer() + '/not-found');
+
+            assert.equal(response.status, 404, 'should respond with 404');
         });
     });
 
