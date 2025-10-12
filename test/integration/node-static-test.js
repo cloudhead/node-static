@@ -30,6 +30,19 @@ function startStaticServer (port) {
     });
 }
 
+function startErringStaticFileServer (port, errBack) {
+    return new Promise((resolve, reject) => {
+        const server = http.createServer(function (request, response) {
+            fileServer.serveFile('bad-file.html', 200, {}, request, response).on('error', () => {
+                errBack(new Error('triggered error'));
+            });
+        });
+        server.listen(port, () => {
+            resolve(server);
+        });
+    });
+}
+
 function startStaticServerWithCallback (port, callback) {
     return new Promise((resolve, reject) => {
         const server = http.createServer((request, response) => {
@@ -88,6 +101,23 @@ describe('node-static', function () {
         );
 
         server.close();
+    });
+
+    it('get error triggered for file serving', function (done) {
+        testPort++;
+        const getTestServer = () => {
+            return 'http://localhost:' + testPort;
+        };
+
+        let server;
+        startErringStaticFileServer(testPort, (err) => {
+            assert.equal(err.message, 'triggered error');
+            server.close();
+            done();
+        }).then(async (srvr) => {
+            server = srvr;
+            fetch(getTestServer() + '/not-found');
+        });
     });
 
     describe('once an http server is listening without a callback', function () {
