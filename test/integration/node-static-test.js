@@ -158,6 +158,25 @@ describe('node-static', function () {
             assert.equal(response.headers.get('server'), 'own header', 'should contain custom server header');
             assert.equal(await response.text(), 'hello world', 'should respond with hello world');
         });
+
+        it('serving hello.txt with non-accepting gzip', async function (){
+            fileServer = new statik.Server(__dirname + '/../fixtures', {
+                gzip: /special-encoding/v
+            });
+
+            const response = await fetch(this.getTestServer() + '/hello.txt', {
+                headers: {
+                    'accept-encoding': 'gzip'
+                }
+            });
+            const contentEncoding = response.headers.get('content-encoding');
+
+            assert.equal(response.status, 200, 'should respond with 200');
+            assert.equal(response.headers.get('content-type'), 'text/plain', 'should respond with text/plain');
+            assert.equal(contentEncoding, null, 'should not respond with gzip encoding');
+            assert.equal(await response.text(), 'hello world', 'should respond with hello world');
+        });
+
         it('serving first 5 bytes of hello.txt', async function () {
             fileServer = new statik.Server(__dirname + '/../fixtures');
             const options = {

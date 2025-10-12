@@ -11,7 +11,7 @@ export default [
             globals: globals.node,
             parserOptions: {
                 sourceType: 'module',
-                ecmaVersion: 2022
+                ecmaVersion: 2024
             }
         },
         rules: {
