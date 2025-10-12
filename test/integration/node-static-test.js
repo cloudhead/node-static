@@ -316,7 +316,7 @@ describe('node-static', function () {
         it('serving custom index file', async function () {
             const response = await fetch(this.getTestServer() + '/');
             assert.equal(response.status, 200, 'should respond with 200');
-            assert.equal(await response.text(), 'hello world', 'should respond with empty string');
+            assert.equal(await response.text(), 'hello world', 'should respond with hello world');
         });
 
         it('handling malicious urls', async function () {
@@ -327,7 +327,7 @@ describe('node-static', function () {
         it('serving custom index file', async function () {
             const response = await fetch(this.getTestServer() + '/');
             assert.equal(response.status, 200, 'should respond with 200');
-            assert.equal(await response.text(), 'hello world', 'should respond with empty string');
+            assert.equal(await response.text(), 'hello world', 'should respond with hello world');
         });
     });
     describe('default extension', function () {
