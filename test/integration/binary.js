@@ -72,6 +72,59 @@ describe('node-static (CLI)', function () {
             assert.equal(cacheControl, 'max-age=3600', 'should respond with cache-control');
         });
 
+        it('serving file within directory with headers', async function () {
+            const {response /* , stdout */} = await spawnConditional(binFile, [
+                '-p', this.port,
+                '--headers', JSON.stringify({
+                    'Access-Control-Allow-Origin': '*'
+                }),
+                fixturePath
+            ], timeout - 9000, {
+                condition: /serving ".*?"/,
+                action: (/* err, stdout */) => {
+                    return fetch(
+                        `http://localhost:${this.port}/hello.txt`
+                    );
+                }
+            });
+
+            const {status} = response;
+            const contentType = response.headers.get('content-type');
+            const allowOrigin = response.headers.get('Access-Control-Allow-Origin');
+            const text = await response.text();
+
+            assert.equal(status, 200, 'should respond with 200');
+            assert.equal(contentType, 'text/plain', 'should respond with text/plain');
+            assert.equal(allowOrigin, '*', 'should respond with all origins');
+            assert.equal(text, 'hello world', 'should respond with hello world');
+        });
+
+        it('serving file within directory with header file', async function () {
+            const {response /* , stdout */} = await spawnConditional(binFile, [
+                '-p', this.port,
+                '--header-file',
+                fixturePath + '/header-file.json',
+                fixturePath
+            ], timeout - 9000, {
+                condition: /serving ".*?"/,
+                action: (/* err, stdout */) => {
+                    return fetch(
+                        `http://localhost:${this.port}/hello.txt`
+                    );
+                }
+            });
+
+            const {status} = response;
+            const contentType = response.headers.get('content-type');
+            const allowOrigin = response.headers.get('Access-Control-Allow-Origin');
+            const text = await response.text();
+
+            assert.equal(status, 200, 'should respond with 200');
+            assert.equal(contentType, 'text/plain', 'should respond with text/plain');
+            assert.equal(allowOrigin, '*', 'should respond with all origins');
+            assert.equal(text, 'hello world', 'should respond with hello world');
+        });
+
         it('serves custom cache', async function () {
             const {response: responses /* , stdout */} = await spawnConditional(binFile, [
                 '-p', this.port, '--cache', JSON.stringify({
