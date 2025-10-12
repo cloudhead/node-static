@@ -43,6 +43,27 @@ function startStaticServerWithCallback (port, callback) {
 }
 
 describe('node-static', function () {
+
+    it('handles stream error', function (done) {
+        let setError = null;
+        const server = http.createServer(function (request, response) {
+            fileServer.stream(
+                undefined, ['bad-file.txt'], 0, 0, response, (err) => {
+                    if (err) {
+                        setError = err;
+                    }
+                }
+            );
+        });
+        server.listen('8081', async () => {
+            const response = await fetch('http://localhost:8081');
+            assert.equal(response.status, 200, 'should respond with 200');
+            assert.equal(await response.text(), '', 'should respond with empty string');
+            assert.equal(setError?.code, 'ENOENT');
+            server.close();
+            done();
+        });
+    });
     it('streaming a 404 page', async function () {
         testPort++;
         const getTestServer = () => {
