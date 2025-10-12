@@ -23,6 +23,7 @@ const dir = args.directory || '.';
 
 const log = function(request, response, statusCode) {
     const d = new Date();
+    /* c8 ignore next 3 -- Time-dependent */
     const seconds = d.getSeconds() < 10 ? '0' + d.getSeconds() : d.getSeconds(),
         minutes = d.getMinutes() < 10 ? '0' + d .getMinutes() : d.getMinutes(),
         hours   = d.getHours() < 10 ? '0' + d .getHours() : d.getHours(),
@@ -30,10 +31,12 @@ const log = function(request, response, statusCode) {
 
         line = datestr + ' [' + response.statusCode + ']: ' + request.url;
     let colorized = line;
-    if (tty.isatty(process.stdout.fd))
+    /* c8 ignore next 5 -- Environment */
+    if (tty.isatty(process.stdout.fd)) {
         colorized = (response.statusCode >= 500) ? colors.red.bold(line) :
             (response.statusCode >= 400) ? colors.red(line) :
                 line;
+    }
     console.log(colorized);
 };
 
@@ -77,7 +80,7 @@ const server = http.createServer(function (request, response) {
         //   npm start -- --spa --index-file test/fixtures/there/index.html
         //   with http://127.0.0.1:8080/test/fixtures/there?email=john.cena
         if (args['spa'] && !new URL(request.url, 'http://localhost').pathname.includes(".")) {
-            file.serveFile(args['index-file'], 200, {}, request, response);
+            file.serveFile(args['index-file'] || 'index.html', 200, {}, request, response);
         } else {
             file.serve(request, response, callback);
         }
@@ -89,6 +92,7 @@ const hostAddress = args['host-address'] || '127.0.0.1';
 
 if (hostAddress === '127.0.0.1') {
     server.listen(port);
+/* c8 ignore next 3 -- Not working with localhost or 0.0.0.0 */
 } else {
     server.listen(port, hostAddress);
 }

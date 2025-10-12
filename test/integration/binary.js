@@ -136,6 +136,30 @@ describe('node-static (CLI)', function () {
             assert.equal(text, 'hello world', 'should respond with hello world');
         });
 
+        it('serving file within directory and spa and default indexFile', async function () {
+            const {response /* , stdout */} = await spawnConditional(binFile, [
+                fixturePath, '--spa'
+            ], timeout - 9000, {
+                condition: 'serving as a single page app',
+                error (err) {
+                    console.log('err', err);
+                },
+                action: (/* err, stdout */) => {
+                    return fetch(
+                        `http://localhost:8080/some/other/path`
+                    );
+                }
+            });
+
+            const {status} = response;
+            const contentType = response.headers.get('content-type');
+            // const text = await response.text();
+
+            assert.equal(status, 200, 'should respond with 200');
+            assert.equal(contentType, 'text/html', 'should respond with text/html');
+            // assert.contains(text, 'hello world', 'should respond with hello world');
+        });
+
         it('serving file within directory with headers', async function () {
             const {response /* , stdout */} = await spawnConditional(binFile, [
                 '-p', this.port,

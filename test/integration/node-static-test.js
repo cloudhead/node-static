@@ -240,7 +240,7 @@ describe('node-static', function () {
                 method: 'HEAD'
             });
             assert.equal(response.status, 200, 'should respond with 200');
-            assert.isEmpty(await response.text(), 'head must has no body');
+            assert.isEmpty(await response.text(), 'head must have no body');
         });
 
         it('requesting headers', async function () {
