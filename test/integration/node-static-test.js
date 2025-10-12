@@ -213,6 +213,31 @@ describe('node-static', function () {
             assert.equal(response.headers.get('content-range'), 'bytes 0-10/11', 'should have a valid Content-Range header in response');
             assert.equal(await response.text(), 'hello world', 'should respond with "hello world"');
         });
+
+        it('serving full bytes of hello.txt with bad range', async function () {
+            fileServer = new statik.Server(__dirname + '/../fixtures');
+            const _consoleError = console.error;
+            let loggedErr;
+            console.error = (err) => {
+                loggedErr = err;
+            };
+            const options = {
+                headers: {
+                    'Range': 'bytes=1000-1004'
+                }
+            };
+            const response = await fetch(this.getTestServer() + '/hello.txt', options);
+
+            assert.equal(response.status, 200, 'should respond with 200');
+            assert.equal(response.headers.get('content-type'), 'text/plain', 'should respond with text/plain');
+            assert.equal(response.headers.get('content-length'), 11, 'should have content-length of 5 bytes');
+
+            assert.equal(response.headers.get('content-range'), null);
+            assert.equal(await response.text(), 'hello world', 'should respond with hello world');
+            assert.equal(loggedErr.message, 'Range request present but invalid, might serve whole file instead')
+            console.error = _consoleError;
+        });
+
         it('serving directory index', async function (){
             const response = await fetch(this.getTestServer());
             assert.equal(response.status, 200, 'should respond with 200');
