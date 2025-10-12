@@ -136,7 +136,7 @@ describe('node-static (CLI)', function () {
             assert.equal(text, 'hello world', 'should respond with hello world');
         });
 
-        it('serving file within directory and spa and default indexFile', async function () {
+        it('serving file within directory and spa and default indexFile (and default port)', async function () {
             const {response /* , stdout */} = await spawnConditional(binFile, [
                 fixturePath, '--spa'
             ], timeout - 9000, {
