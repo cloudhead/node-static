@@ -349,6 +349,34 @@ describe('node-static', function () {
             assert.equal(await response.text(), 'ld', 'should respond with "ld"');
         });
 
+        it('serving differential amount of empty.css (with to)', async function () {
+            const options = {
+                headers: {
+                    'Range': 'bytes=-2'
+                }
+            };
+            const response = await fetch(this.getTestServer() + '/empty.css', options);
+            assert.equal(response.status, 200, 'should respond with 200');
+            assert.equal(response.headers.get('content-type'), 'text/css', 'should respond with text/css');
+            assert.equal(response.headers.get('content-length'), 0, 'should have content-length of 0 bytes');
+            assert.equal(response.headers.get('content-range'), null, 'should have no Content-Range header in response');
+            assert.equal(await response.text(), '', 'should respond with ""');
+        });
+
+        it('serving differential amount of empty.css (with from)', async function () {
+            const options = {
+                headers: {
+                    'Range': 'bytes=2-'
+                }
+            };
+            const response = await fetch(this.getTestServer() + '/empty.css', options);
+            assert.equal(response.status, 200, 'should respond with 200');
+            assert.equal(response.headers.get('content-type'), 'text/css', 'should respond with text/css');
+            assert.equal(response.headers.get('content-length'), 0, 'should have content-length of 0 bytes');
+            assert.equal(response.headers.get('content-range'), null, 'should have no Content-Range header in response');
+            assert.equal(await response.text(), '', 'should respond with ""');
+        });
+
         it('serving full bytes of hello.txt with bad range', async function () {
             fileServer = new statik.Server(__dirname + '/../fixtures');
             const _consoleError = console.error;
