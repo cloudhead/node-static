@@ -236,6 +236,13 @@ describe('node-static', function () {
             assert.equal(await response.text(), 'hello world', 'should respond with hello world');
         });
 
+        it('serving no-extension', async function () {
+            const response = await fetch(this.getTestServer() + '/no-extension');
+            assert.equal(response.status, 200, 'should respond with 200');
+            assert.equal(response.headers.get('content-type'), 'application/octet-stream', 'should respond with application/octet-stream');
+            assert.equal(await response.text(), 'hello world', 'should respond with hello world');
+        });
+
         it('serving hello.txt without server header', async function (){
             fileServer = new statik.Server(__dirname + '/../fixtures', {
                 serverInfo: null
