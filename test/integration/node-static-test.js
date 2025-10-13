@@ -211,7 +211,16 @@ describe('node-static', function () {
             assert.equal(response.status, 400, 'should respond with 400');
         });
 
+        it('requesting against empty root Server constructor', async function () {
+            fileServer = new statik.Server({});
+            const response = await fetch(this.getTestServer() + '/test/fixtures/hello.txt');
+
+            assert.equal(response.status, 200, 'should respond with 200');
+            assert.equal(await response.text(), 'hello world', 'should respond with hello world');
+        });
+
         it('serving empty.css', async function () {
+            fileServer  = new statik.Server(__dirname + '/../fixtures');
             const response = await fetch(this.getTestServer() + '/empty.css');
             assert.equal(response.status, 200, 'should respond with 200');
 
