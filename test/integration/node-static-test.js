@@ -483,6 +483,15 @@ describe('node-static', function () {
 
             assert.equal(response.status, 304, 'should respond with 304');
         })
+        it('requesting with If-Modified-Since', async function () {
+            const serverPath = this.getTestServer();
+            let response = await fetch(serverPath + '/index.html');
+            response = await fetch(serverPath + '/index.html', {
+                headers: {'if-modified-since': new Date()}
+            });
+
+            assert.equal(response.status, 304, 'should respond with 304');
+        })
         it('requesting with If-None-Match and If-Modified-Since', async function () {
             const serverPath = this.getTestServer();
             const response = await fetch(serverPath + '/index.html');
