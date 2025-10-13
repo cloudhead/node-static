@@ -21,6 +21,13 @@ if (!args) { // cliBasics handled
 
 const dir = args.directory || '.';
 
+/**
+ * @param {http.IncomingMessage} request
+ * @param {http.ServerResponse<http.IncomingMessage> & {
+ *   req: http.IncomingMessage;
+ * }} response
+ * @param {number} [statusCode]
+ */
 const log = function(request, response, statusCode) {
     const d = new Date();
     /* c8 ignore next 3 -- Time-dependent */
@@ -31,10 +38,12 @@ const log = function(request, response, statusCode) {
 
         line = datestr + ' [' + response.statusCode + ']: ' + request.url;
     let colorized = line;
-    /* c8 ignore next 5 -- Environment */
+    /* c8 ignore next 7 -- Environment */
     if (tty.isatty(process.stdout.fd)) {
-        colorized = (response.statusCode >= 500) ? colors.red.bold(line) :
-            (response.statusCode >= 400) ? colors.red(line) :
+        colorized = (response.statusCode >= 500)
+            // @ts-expect-error TS error
+            ? colors.red.bold(line)
+            : (response.statusCode >= 400) ? colors.red(line) :
                 line;
     }
     console.log(colorized);
@@ -51,7 +60,10 @@ if (args['headers']) {
 }
 
 if (args['header-file']) {
-    options.headers = JSON.parse(fs.readFileSync(args['header-file']));
+    options.headers = JSON.parse(
+        // @ts-expect-error Works fine
+        fs.readFileSync(args['header-file'])
+    );
 }
 
 if (args['gzip']) {
@@ -66,6 +78,10 @@ const file = new(statik.Server)(dir, options);
 
 const server = http.createServer(function (request, response) {
     request.addListener('end', function () {
+        /**
+         * @param {null|import('../lib/node-static.js').ResultInfo} e
+         * @param {import('../lib/node-static.js').ResultInfo} [rsp]
+         */
         const callback = function(e, rsp) {
             if (e && e.status === 404) {
                 response.writeHead(e.status, e.headers);
@@ -75,6 +91,11 @@ const server = http.createServer(function (request, response) {
                 log(request, response);
             }
         };
+
+        /* c8 ignore next 3 -- TS guard */
+        if (typeof request.url !== 'string') {
+            return;
+        }
 
         // Parsing catches:
         //   npm start -- --spa --index-file test/fixtures/there/index.html

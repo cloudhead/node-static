@@ -8,6 +8,16 @@ const __dirname = import.meta.dirname;
 
 let testPort = 8151;
 
+/**
+ * @param {Mocha.Context} obj
+ * @param {(
+ *   serveProm: import('events')<[never]>|void,
+ *   request: http.IncomingMessage,
+ *   response: http.ServerResponse<http.IncomingMessage> & {
+ *     req: http.IncomingMessage;
+ *   }
+ * ) => void} [cb]
+ */
 async function setupStaticServer (obj, cb) {
     obj.port = ++testPort;
     obj.server = await startStaticServer(obj.port, cb);
@@ -19,6 +29,16 @@ const version = statik.version.join('.');
 
 let fileServer = new statik.Server(__dirname + '/../fixtures');
 
+/**
+ * @param {number} port
+ * @param {(
+ *   serveProm: import('events')<[never]>|void,
+ *   request: http.IncomingMessage,
+ *   response: http.ServerResponse<http.IncomingMessage> & {
+ *     req: http.IncomingMessage;
+ *   }
+ * ) => void} [callback]
+ */
 function startStaticServer (port, callback) {
     return new Promise((resolve, reject) => {
         const server = http.createServer(function (request, response) {
@@ -33,6 +53,10 @@ function startStaticServer (port, callback) {
     });
 }
 
+/**
+ * @param {number} port
+ * @param {(err: Error) => void} errBack
+ */
 function startErringStaticFileServer (port, errBack) {
     return new Promise((resolve, reject) => {
         const server = http.createServer(function (request, response) {
@@ -49,9 +73,18 @@ function startErringStaticFileServer (port, errBack) {
 const gzipFileServer = new statik.Server(__dirname + '/../fixtures', {
     gzip: true
 });
+
+/**
+ * @param {number} port
+ * @param {Record<string, string>} headers
+ */
 function startStaticFileServerWithHeaders (port, headers) {
     return new Promise((resolve, reject) => {
         const server = http.createServer(function (request, response) {
+            /* c8 ignore next 3 -- TS */
+            if (!request.url) {
+                return;
+            }
             gzipFileServer.servePath(request.url, 200, headers, request, response, () => {
                 // Finish
             });
@@ -62,6 +95,17 @@ function startStaticFileServerWithHeaders (port, headers) {
     });
 }
 
+/**
+ * @param {number} port
+ * @param {(
+ *   request: http.IncomingMessage,
+ *   response: http.ServerResponse<http.IncomingMessage> & {
+ *     req: http.IncomingMessage;
+ *   },
+ *   err: statik.ResultInfo | null,
+ *   result: statik.ResultInfo | undefined
+ * ) => void} callback
+ */
 function startStaticServerWithCallback (port, callback) {
     return new Promise((resolve, reject) => {
         const server = http.createServer((request, response) => {
@@ -77,6 +121,7 @@ function startStaticServerWithCallback (port, callback) {
 describe('node-static', function () {
 
     it('handles stream error', function (done) {
+        /** @type {NodeJS.ErrnoException|null} */
         let setError = null;
         const server = http.createServer(function (request, response) {
             fileServer.stream(
@@ -151,6 +196,7 @@ describe('node-static', function () {
             return 'http://localhost:' + testPort;
         };
 
+        /** @type {http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>} */
         let server;
         startErringStaticFileServer(testPort, (err) => {
             assert.equal(err.message, 'triggered error');
@@ -297,7 +343,7 @@ describe('node-static', function () {
 
             assert.equal(response.status, 206, 'should respond with 206');
             assert.equal(response.headers.get('content-type'), 'text/plain', 'should respond with text/plain');
-            assert.equal(response.headers.get('content-length'), 5, 'should have content-length of 5 bytes');
+            assert.equal(response.headers.get('content-length'), '5', 'should have content-length of 5 bytes');
 
             assert.equal(response.headers.get('content-range'), 'bytes 0-4/11', 'should have a valid Content-Range header in response');
             assert.equal(await response.text(), 'hello', 'should respond with hello');
@@ -311,7 +357,7 @@ describe('node-static', function () {
             const response = await fetch(this.getTestServer() + '/hello.txt', options);
             assert.equal(response.status, 206, 'should respond with 206');
             assert.equal(response.headers.get('content-type'), 'text/plain', 'should respond with text/plain');
-            assert.equal(response.headers.get('content-length'), 5, 'should have content-length of 5 bytes');
+            assert.equal(response.headers.get('content-length'), '5', 'should have content-length of 5 bytes');
             assert.equal(response.headers.get('content-range'), 'bytes 6-10/11', 'should have a valid Content-Range header in response');
             assert.equal(await response.text(), 'world', 'should respond with world');
         });
@@ -324,7 +370,7 @@ describe('node-static', function () {
             const response = await fetch(this.getTestServer() + '/hello.txt', options);
             assert.equal(response.status, 206, 'should respond with 206');
             assert.equal(response.headers.get('content-type'), 'text/plain', 'should respond with text/plain');
-            assert.equal(response.headers.get('content-length'), 1, 'should have content-length of 1 bytes');
+            assert.equal(response.headers.get('content-length'), '1', 'should have content-length of 1 bytes');
             assert.equal(response.headers.get('content-range'), 'bytes 0-0/11', 'should have a valid Content-Range header in response');
             assert.equal(await response.text(), 'h', 'should respond with h');
         });
@@ -337,7 +383,7 @@ describe('node-static', function () {
             const response = await fetch(this.getTestServer() + '/hello.txt', options);
             assert.equal(response.status, 206, 'should respond with 206');
             assert.equal(response.headers.get('content-type'), 'text/plain', 'should respond with text/plain');
-            assert.equal(response.headers.get('content-length'), 11, 'should have content-length of 11 bytes');
+            assert.equal(response.headers.get('content-length'), '11', 'should have content-length of 11 bytes');
             assert.equal(response.headers.get('content-range'), 'bytes 0-10/11', 'should have a valid Content-Range header in response');
             assert.equal(await response.text(), 'hello world', 'should respond with "hello world"');
         });
@@ -351,7 +397,7 @@ describe('node-static', function () {
             const response = await fetch(this.getTestServer() + '/hello.txt', options);
             assert.equal(response.status, 206, 'should respond with 206');
             assert.equal(response.headers.get('content-type'), 'text/plain', 'should respond with text/plain');
-            assert.equal(response.headers.get('content-length'), 2, 'should have content-length of 11 bytes');
+            assert.equal(response.headers.get('content-length'), '2', 'should have content-length of 11 bytes');
             assert.equal(response.headers.get('content-range'), 'bytes 9-10/11', 'should have a valid Content-Range header in response');
             assert.equal(await response.text(), 'ld', 'should respond with "ld"');
         });
@@ -365,7 +411,7 @@ describe('node-static', function () {
             const response = await fetch(this.getTestServer() + '/empty.css', options);
             assert.equal(response.status, 200, 'should respond with 200');
             assert.equal(response.headers.get('content-type'), 'text/css', 'should respond with text/css');
-            assert.equal(response.headers.get('content-length'), 0, 'should have content-length of 0 bytes');
+            assert.equal(response.headers.get('content-length'), '0', 'should have content-length of 0 bytes');
             assert.equal(response.headers.get('content-range'), null, 'should have no Content-Range header in response');
             assert.equal(await response.text(), '', 'should respond with ""');
         });
@@ -379,7 +425,7 @@ describe('node-static', function () {
             const response = await fetch(this.getTestServer() + '/empty.css', options);
             assert.equal(response.status, 200, 'should respond with 200');
             assert.equal(response.headers.get('content-type'), 'text/css', 'should respond with text/css');
-            assert.equal(response.headers.get('content-length'), 0, 'should have content-length of 0 bytes');
+            assert.equal(response.headers.get('content-length'), '0', 'should have content-length of 0 bytes');
             assert.equal(response.headers.get('content-range'), null, 'should have no Content-Range header in response');
             assert.equal(await response.text(), '', 'should respond with ""');
         });
@@ -387,6 +433,7 @@ describe('node-static', function () {
         it('serving full bytes of hello.txt with bad range', async function () {
             fileServer = new statik.Server(__dirname + '/../fixtures');
             const _consoleError = console.error;
+            /** @type {Error} */
             let loggedErr;
             console.error = (err) => {
                 loggedErr = err;
@@ -400,11 +447,12 @@ describe('node-static', function () {
 
             assert.equal(response.status, 200, 'should respond with 200');
             assert.equal(response.headers.get('content-type'), 'text/plain', 'should respond with text/plain');
-            assert.equal(response.headers.get('content-length'), 11, 'should have content-length of 5 bytes');
+            assert.equal(response.headers.get('content-length'), '11', 'should have content-length of 5 bytes');
 
             assert.equal(response.headers.get('content-range'), null);
             assert.equal(await response.text(), 'hello world', 'should respond with hello world');
-            assert.equal(loggedErr.message, 'Range request present but invalid, might serve whole file instead')
+            // @ts-expect-error Ok
+            assert.equal(loggedErr?.message, 'Range request present but invalid, might serve whole file instead')
             console.error = _consoleError;
         });
 
@@ -426,7 +474,7 @@ describe('node-static', function () {
 
             assert.equal(response.status, 200, 'should respond with 200');
             assert.equal(response.headers.get('content-type'), 'text/plain', 'should respond with text/plain');
-            assert.equal(response.headers.get('content-length'), 11, 'should have content-length of 5 bytes');
+            assert.equal(response.headers.get('content-length'), '11', 'should have content-length of 5 bytes');
 
             assert.equal(response.headers.get('content-range'), null);
             assert.equal(await response.text(), 'hello world', 'should respond with hello world');
@@ -453,7 +501,7 @@ describe('node-static', function () {
 
             assert.equal(response.status, 200, 'should respond with 200');
             assert.equal(response.headers.get('content-type'), 'text/plain', 'should respond with text/plain');
-            assert.equal(response.headers.get('content-length'), 11, 'should have content-length of 5 bytes');
+            assert.equal(response.headers.get('content-length'), '11', 'should have content-length of 5 bytes');
 
             assert.equal(response.headers.get('content-range'), null);
             assert.equal(await response.text(), 'hello world', 'should respond with hello world');
@@ -478,7 +526,7 @@ describe('node-static', function () {
             const serverPath = this.getTestServer();
             let response = await fetch(serverPath + '/index.html');
             response = await fetch(serverPath + '/index.html', {
-                headers: {'if-none-match': response.headers.get('etag')}
+                headers: {'if-none-match': response.headers.get('etag') ?? ''}
             });
 
             assert.equal(response.status, 304, 'should respond with 304');
@@ -487,7 +535,7 @@ describe('node-static', function () {
             const serverPath = this.getTestServer();
             let response = await fetch(serverPath + '/index.html');
             response = await fetch(serverPath + '/index.html', {
-                headers: {'if-modified-since': new Date()}
+                headers: {'if-modified-since': String(new Date())}
             });
 
             assert.equal(response.status, 304, 'should respond with 304');
@@ -495,7 +543,7 @@ describe('node-static', function () {
         it('requesting with If-None-Match and If-Modified-Since', async function () {
             const serverPath = this.getTestServer();
             const response = await fetch(serverPath + '/index.html');
-            const modified = Date.parse(response.headers.get('last-modified'));
+            const modified = Date.parse(response.headers.get('last-modified') ?? '');
             const oneDayLater = new Date(modified + (24 * 60 * 60 * 1000)).toUTCString();
             const nonMatchingEtag = '1111222233334444';
             await fetch(serverPath + '/index.html', {
@@ -566,7 +614,7 @@ describe('node-static', function () {
             //   when this may be fixed:
             //   https://github.com/node-fetch/node-fetch/issues/1086
             // assert.equal(response.headers.get('location'), '/there/', 'should respond with location header'); // now with trailing slash
-            assert(response.headers.get('location').endsWith('/there/'), 'should respond with location header'); // now with trailing slash
+            assert(response.headers.get('location')?.endsWith('/there/'), 'should respond with location header'); // now with trailing slash
 
             assert.equal(await response.text(), '', 'should respond with empty string body');
         });
@@ -734,7 +782,7 @@ describe('node-static', function () {
             //   when this may be fixed:
             //   https://github.com/node-fetch/node-fetch/issues/1086
             // assert.equal(response.headers.get('location'), '/there/', 'should respond with location header'); // now with trailing slash
-            assert(response.headers.get('location').endsWith('/there/'), 'should respond with location header'); // now with trailing slash
+            assert(response.headers.get('location')?.endsWith('/there/'), 'should respond with location header'); // now with trailing slash
 
             assert.equal(await response.text(), '', 'should respond with empty string body');
         });

@@ -8,6 +8,19 @@ var mime = require('mime');
 var minimatch = require('minimatch');
 
 var _documentCurrentScript = typeof document !== 'undefined' ? document.currentScript : null;
+/**
+ * @typedef {{
+ *   size: number,
+ *   mtime: Date,
+ *   ino: number
+ * }} StatInfo
+ */
+
+/**
+ * @param {string} dir
+ * @param {string[]} files
+ * @param {(errOrNull: NodeJS.ErrnoException|null, result?: StatInfo) => void} callback
+ */
 function mstat (dir, files, callback) {
     (function mstat(files, stats) {
         const file = files.shift();
@@ -18,62 +31,105 @@ function mstat (dir, files, callback) {
                     if (e) {
                         callback(e);
                     } else {
-                        mstat(files, stats.concat([stat]));
+                        mstat(files, stats.concat(stat));
                     }
                 });
             } catch (e) {
-                callback(e);
+                callback(/** @type {NodeJS.ErrnoException} */ (e));
             }
         } else {
             callback(null, {
-                size: stats.reduce(function (total, stat) {
+                size: stats.reduce((total, stat) => {
                     return total + stat.size;
                 }, 0),
-                mtime: stats.reduce(function (latest, stat) {
+                mtime: stats.reduce((latest, stat) => {
                     return latest > stat.mtime ? latest : stat.mtime;
-                }, 0),
-                ino: stats.reduce(function (total, stat) {
+                }, new Date(-864e13)),
+                ino: stats.reduce((total, stat) => {
                     return total + stat.ino;
                 }, 0)
             });
         }
-    })(files.slice(0), []);
+    })(files.slice(0), /** @type {fs.Stats[]} */ ([]));
 }
 
-const pkg = JSON.parse(fs.readFileSync(
-    new URL('../package.json', (typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('node-static.cjs', document.baseURI).href)))
-));
+/**
+ * @typedef {{
+ *   status: number,
+ *   headers: Record<string, string>,
+ *   message?: string
+ * }} ResultInfo
+ */
+
+/**
+ * @typedef {(
+ *   status: number,
+ *   headers: Record<string, string>,
+ *   streaming?: boolean
+ * ) => void} Finish
+ */
+
+const pkg = JSON.parse(
+    // @ts-expect-error Works fine
+    fs.readFileSync(
+        new URL('../package.json', (typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('node-static.cjs', document.baseURI).href)))
+    )
+);
 
 const version = pkg.version.split('.');
 
+/**
+ * @param {string} p
+ * @param {(err: NodeJS.ErrnoException | null, stats?: fs.Stats) => void} callback
+ */
 function tryStat(p, callback) {
     try {
         fs.stat(p, callback);
     } catch (e) {
-        callback(e);
+        callback(/** @type {NodeJS.ErrnoException} */ (e));
     }
 }
 
+/**
+ * @typedef {{
+ *   indexFile?: string,
+ *   gzip?: boolean|RegExp,
+ *   headers?: Record<string, string>
+ *   serverInfo?: string|null,
+ *   cache?: boolean|number|Record<string, number>,
+ *   defaultExtension?: string
+ * }} ServerOptions
+ */
+
 class Server {
+    /**
+     * @param {string|ServerOptions|null} [root]
+     * @param {ServerOptions} [options]
+     */
     constructor (root, options) {
         if (root && typeof root === 'object') { options = root; root = null; }
 
         // resolve() doesn't normalize (to lowercase) drive letters on Windows
         this.root    = path.normalize(path.resolve(root || '.'));
-        this.options = options || {};
+        /** @type {Required<Pick<ServerOptions, 'indexFile'>> & ServerOptions} */
+        this.options = {
+            indexFile: 'index.html',
+            ...(options || {}),
+        };
+
+        /** @type {Record<string, number>} */
         this.cache   = {'**': 3600};
 
+        /** @type {Record<string, string>} */
         this.defaultHeaders  = {};
         this.options.headers = this.options.headers || {};
-
-        this.options.indexFile = this.options.indexFile || 'index.html';
 
         if ('cache' in this.options) {
             if (typeof(this.options.cache) === 'number') {
                 this.cache = {'**': this.options.cache};
             } else if (typeof(this.options.cache) === 'object') {
                 this.cache = this.options.cache;
-            } else if (! this.options.cache) {
+            } else if (!this.options.cache) {
                 this.cache = {};
             }
         }
@@ -100,54 +156,89 @@ class Server {
         }
     }
 
+    /**
+     * @param {string} pathname
+     * @param {http.IncomingMessage} req
+     * @param {http.ServerResponse<http.IncomingMessage> & {
+     *   req: http.IncomingMessage;
+     * }} res
+     * @param {(status: number, headers: Record<string, string>) => void} finish
+     */
     serveDir (pathname, req, res, finish) {
-        const htmlIndex = path.join(pathname, this.options.indexFile),
-            that = this;
+        const htmlIndex = path.join(pathname, this.options.indexFile);
 
-        tryStat(htmlIndex, function (e, stat) {
-            if (!e) {
+        tryStat(htmlIndex, (e, stat) => {
+            if (!e && stat) {
                 const status = 200;
+                /** @type {Record<string, string>} */
                 const headers = {};
-                const originalPathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
+                const originalPathname = decodeURIComponent(new URL(
+                    /* c8 ignore next -- TS */
+                    req.url ?? '',
+                    'http://localhost'
+                ).pathname);
                 if (originalPathname.length && originalPathname.charAt(originalPathname.length - 1) !== '/') {
-                    return finish(301, { 'Location': originalPathname + '/' });
+                    return finish(301, { Location: originalPathname + '/' });
                 } else {
-                    that.respond(null, status, headers, [htmlIndex], stat, req, res, finish);
+                    this.respond(null, status, headers, [htmlIndex], stat, req, res, finish);
                 }
             } else {
                 // Stream a directory of files as a single file.
                 fs.readFile(path.join(pathname, 'index.json'), function (e, contents) {
                     if (e) { return finish(404, {}) }
-                    const index = JSON.parse(contents);
+                    const index = JSON.parse(contents.toString());
                     streamFiles(index.files);
                 });
             }
         });
-        function streamFiles(files) {
-            mstat(pathname, files, function (e, stat) {
-                if (e) { return finish(404, {}) }
-                that.respond(pathname, 200, {}, files, stat, req, res, finish);
+
+        /**
+         * @param {string[]} files
+         */
+        const streamFiles = (files) => {
+            mstat(pathname, files, (e, stat) => {
+                if (e || !stat) { return finish(404, {}) }
+                this.respond(pathname, 200, {}, files, stat, req, res, finish);
             });
-        }
+        };
     }
 
+    /**
+     * @param {string} pathname
+     * @param {number} status
+     * @param {Record<string, string>} headers
+     * @param {http.IncomingMessage} req
+     * @param {http.ServerResponse<http.IncomingMessage> & {
+     *   req: http.IncomingMessage;
+     * }} res
+     */
     serveFile (pathname, status, headers, req, res) {
-        const that = this;
         const promise = new(events.EventEmitter);
 
         pathname = this.resolve(pathname);
 
-        tryStat(pathname, function (e, stat) {
-            if (e) {
+        tryStat(pathname, (e, stat) => {
+            if (e || !stat) {
                 return promise.emit('error', e);
             }
-            that.respond(null, status, headers, [pathname], stat, req, res, function (status, headers) {
-                that.finish(status, headers, req, res, promise);
+            this.respond(null, status, headers, [pathname], stat, req, res, (status, headers, streaming) => {
+                this.finish(status, headers, req, res, promise, undefined, streaming);
             });
         });
         return promise;
     }
 
+    /**
+     * @param {number} status
+     * @param {Record<string, string>} headers
+     * @param {http.IncomingMessage} req
+     * @param {http.ServerResponse<http.IncomingMessage> & {
+     *   req: http.IncomingMessage;
+     * }} res
+     * @param {events<[never]>} promise
+     * @param {(error: null|ResultInfo, result?: ResultInfo) => void} [callback]
+     * @param {boolean} [streaming]
+     */
     finish (status, headers, req, res, promise, callback, streaming) {
         const result = {
             status,
@@ -183,25 +274,35 @@ class Server {
         }
     }
 
+    /**
+     * @param {string} pathname
+     * @param {number} status
+     * @param {Record<string, string>} headers
+     * @param {http.IncomingMessage} req
+     * @param {http.ServerResponse<http.IncomingMessage> & {
+     *   req: http.IncomingMessage;
+     * }} res
+     * @param {Finish} finish
+     */
     servePath (pathname, status, headers, req, res, finish) {
-        const that = this,
-            promise = new(events.EventEmitter);
+        const promise = new(events.EventEmitter);
 
         pathname = this.resolve(pathname);
 
         // Make sure we're not trying to access a
         // file outside of the root.
-        if (pathname.startsWith(that.root)) {
-            tryStat(pathname, function (e, stat) {
-                if (e) {
+        if (pathname.startsWith(this.root)) {
+            tryStat(pathname, (e, stat) => {
+                if (e || !stat) {
                     // possibly not found, check default extension
-                    if (that.defaultExtension) {
-                        tryStat(pathname + that.defaultExtension, function(e2, stat2) {
-                            if (e2) {
+                    if (this.defaultExtension) {
+                        tryStat(pathname + this.defaultExtension, (e2, stat2) => {
+                            if (e2 || !stat2) {
                                 // really not found
                                 finish(404, {});
                             } else if (stat2.isFile()) {
-                                that.respond(null, status, headers, [pathname+that.defaultExtension], stat2, req, res, finish);
+                                this.respond(null, status, headers, [pathname + this.defaultExtension], stat2, req, res, finish);
+                            /* c8 ignore next 3 -- Symblink didn't trigger */
                             } else {
                                 finish(400, {});
                             }
@@ -210,13 +311,15 @@ class Server {
                         finish(404, {});
                     }
                 } else if (stat.isFile()) {      // Stream a single file.
-                    that.respond(null, status, headers, [pathname], stat, req, res, finish);
+                    this.respond(null, status, headers, [pathname], stat, req, res, finish);
                 } else if (stat.isDirectory()) { // Stream a directory of files.
-                    that.serveDir(pathname, req, res, finish);
+                    this.serveDir(pathname, req, res, finish);
+                /* c8 ignore next 3 -- Symblink didn't trigger */
                 } else {
                     finish(400, {});
                 }
             });
+        /* c8 ignore next 4 -- Not possible? */
         } else {
             // Forbidden
             finish(403, {});
@@ -224,21 +327,41 @@ class Server {
         return promise;
     }
 
+    /**
+     * @param {string} pathname
+     */
     resolve (pathname) {
         return path.resolve(path.join(this.root, pathname));
     }
 
+    /**
+     * @param {http.IncomingMessage} req
+     * @param {http.ServerResponse<http.IncomingMessage> & {
+     *   req: http.IncomingMessage;
+     * }} res
+     * @param {(error: null|ResultInfo, result?: ResultInfo) => void} [callback]
+     */
     serve (req, res, callback) {
-        const that    = this,
-            promise = new(events.EventEmitter);
+        const promise = new(events.EventEmitter);
         let pathname;
 
-        const finish = function (status, headers, streaming) {
-            that.finish(status, headers, req, res, promise, callback, streaming);
+        /**
+         * @param {number} status
+         * @param {Record<string, string>} headers
+         * @param {boolean} [streaming]
+         */
+        const finish = (status, headers, streaming) => {
+            this.finish(status, headers, req, res, promise, callback, streaming);
         };
 
         try {
-            pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
+            pathname = decodeURIComponent(
+                new URL(
+                    /* c8 ignore next -- TS */
+                    req.url ?? '',
+                    'http://localhost'
+                ).pathname
+            );
         }
         catch {
             return process.nextTick(function() {
@@ -246,53 +369,75 @@ class Server {
             });
         }
 
-        process.nextTick(function () {
-            that.servePath(pathname, 200, {}, req, res, finish).on('success', function (result) {
+        process.nextTick(() => {
+            this.servePath(pathname, 200, {}, req, res, finish).on('success', function (result) {
+                /* c8 ignore next -- How to cover? */
                 promise.emit('success', result);
             }).on('error', function (err) {
+                /* c8 ignore next -- How to cover? */
                 promise.emit('error');
             });
         });
-        if (! callback) { return promise }
+        if (!callback) { return promise }
     }
 
-    /* Check if we should consider sending a gzip version of the file based on the
+    /**
+     * Check if we should consider sending a gzip version of the file based on the
      * file content type and client's Accept-Encoding header value.
+     * @param {http.IncomingMessage} req
+     * @param {string} contentType
      */
     gzipOk (req, contentType) {
         const enable = this.options.gzip;
         if(enable &&
             (typeof enable === 'boolean' ||
-                (contentType && (enable instanceof RegExp) && enable.test(contentType)))) {
+                (contentType && (enable instanceof RegExp) &&
+                    enable.test(contentType)))
+        ) {
             const acceptEncoding = req.headers['accept-encoding'];
             return acceptEncoding && acceptEncoding.includes('gzip');
         }
         return false;
     }
 
-    /* Send a gzipped version of the file if the options and the client indicate gzip is enabled and
+    /**
+     * Send a gzipped version of the file if the options and the client indicate gzip is enabled and
      * we find a .gz file matching the static resource requested.
+     * @param {string|null} pathname
+     * @param {number} status
+     * @param {string} contentType
+     * @param {Record<string, string>} _headers
+     * @param {string[]} files
+     * @param {import('./node-static/util.js').StatInfo} stat
+     * @param {http.IncomingMessage} req
+     * @param {http.ServerResponse<http.IncomingMessage> & {
+     *   req: http.IncomingMessage;
+     * }} res
+     * @param {Finish} finish
      */
     respondGzip (pathname, status, contentType, _headers, files, stat, req, res, finish) {
-        const that = this;
         if (files.length == 1 && this.gzipOk(req, contentType)) {
             const gzFile = files[0] + '.gz';
-            tryStat(gzFile, function (e, gzStat) {
-                if (!e && gzStat.isFile()) {
+            tryStat(gzFile, (e, gzStat) => {
+                if (!e && gzStat && gzStat.isFile()) {
                     const vary = _headers['Vary'];
                     _headers['Vary'] = (vary && vary != 'Accept-Encoding' ? vary + ', ' : '') + 'Accept-Encoding';
                     _headers['Content-Encoding'] = 'gzip';
                     stat.size = gzStat.size;
                     files = [gzFile];
                 }
-                that.respondNoGzip(pathname, status, contentType, _headers, files, stat, req, res, finish);
+                this.respondNoGzip(pathname, status, contentType, _headers, files, stat, req, res, finish);
             });
         } else {
             // Client doesn't want gzip or we're sending multiple files
-            that.respondNoGzip(pathname, status, contentType, _headers, files, stat, req, res, finish);
+            this.respondNoGzip(pathname, status, contentType, _headers, files, stat, req, res, finish);
         }
     }
 
+    /**
+     * @param {http.IncomingMessage} req
+     * @param {import('./node-static/util.js').StatInfo} stat
+     */
     parseByteRange (req, stat) {
         const byteRange = {
             from: 0,
@@ -300,15 +445,15 @@ class Server {
             valid: false
         };
 
-        let rangeHeader = req.headers['range'];
+        const rangeHeader = req.headers['range'];
         const flavor = 'bytes=';
 
         if (rangeHeader) {
             if (rangeHeader.startsWith(flavor) && !rangeHeader.includes(',')) {
                 /* Parse */
-                rangeHeader = rangeHeader.substr(flavor.length).split('-');
-                byteRange.from = parseInt(rangeHeader[0]);
-                byteRange.to = parseInt(rangeHeader[1]);
+                const rangeHeaderArr = rangeHeader.slice(flavor.length).split('-');
+                byteRange.from = parseInt(rangeHeaderArr[0]);
+                byteRange.to = parseInt(rangeHeaderArr[1]);
 
                 /* Replace empty fields of differential requests by absolute values */
                 if (isNaN(byteRange.from) && !isNaN(byteRange.to)) {
@@ -322,7 +467,7 @@ class Server {
                 if (!isNaN(byteRange.from) && !isNaN(byteRange.to) && 0 <= byteRange.from && byteRange.from <= byteRange.to) {
                     byteRange.valid = true;
                 } else {
-                    console.warn('Request contains invalid range header: ', rangeHeader);
+                    console.warn('Request contains invalid range header: ', rangeHeaderArr);
                 }
             } else {
                 console.warn('Request contains unsupported range header: ', rangeHeader);
@@ -331,12 +476,25 @@ class Server {
         return byteRange;
     }
 
+    /**
+     * @param {string|null} pathname
+     * @param {number} status
+     * @param {string} contentType
+     * @param {Record<string, string>} _headers
+     * @param {string[]} files
+     * @param {import('./node-static/util.js').StatInfo} stat
+     * @param {http.IncomingMessage} req
+     * @param {http.ServerResponse<http.IncomingMessage> & {
+     *   req: http.IncomingMessage;
+     * }} res
+     * @param {Finish} finish
+     */
     respondNoGzip (pathname, status, contentType, _headers, files, stat, req, res, finish) {
-        const mtime           = Date.parse(stat.mtime),
+        const mtime           = Date.parse(stat.mtime.toString()),
             key             = pathname || files[0],
-            headers         = {},
+            headers         = /** @type {Record<string, string>} */ ({}),
             clientETag      = req.headers['if-none-match'],
-            clientMTime     = Date.parse(req.headers['if-modified-since']),
+            clientMTime     = Date.parse(req.headers['if-modified-since'] ?? ''),
             byteRange       = this.parseByteRange(req, stat);
         let startByte       = 0,
             length          = stat.size;
@@ -371,7 +529,7 @@ class Server {
         headers['Date']          = new(Date)().toUTCString();
         headers['Last-Modified'] = new(Date)(stat.mtime).toUTCString();
         headers['Content-Type']   = contentType;
-        headers['Content-Length'] = length;
+        headers['Content-Length'] = String(length);
 
         // Copy custom headers
         for (const k in _headers) { headers[k] = _headers[k]; }
@@ -399,12 +557,25 @@ class Server {
             res.writeHead(status, headers);
 
             this.stream(key, files, length, startByte, res, function (e) {
+                /* c8 ignore next -- Internal uses already checked for bad paths */
                 if (e) { return finish(500, {}, true) }
                 finish(status, headers, true);
             });
         }
     }
 
+    /**
+     * @param {string|null} pathname
+     * @param {number} status
+     * @param {Record<string, string>} _headers
+     * @param {string[]} files
+     * @param {import('./node-static/util.js').StatInfo} stat
+     * @param {http.IncomingMessage} req
+     * @param {http.ServerResponse<http.IncomingMessage> & {
+     *   req: http.IncomingMessage;
+     * }} res
+     * @param {Finish} finish
+     */
     respond (pathname, status, _headers, files, stat, req, res, finish) {
         const contentType = _headers['Content-Type'] ||
                           mime.getType(files[0]) ||
@@ -418,6 +589,16 @@ class Server {
         }
     }
 
+    /**
+     * @param {string|undefined} pathname
+     * @param {string[]} files
+     * @param {number} length
+     * @param {number} startByte
+     * @param {http.ServerResponse<http.IncomingMessage> & {
+     *   req: http.IncomingMessage;
+     * }} res
+     * @param {(err: NodeJS.ErrnoException | null, offset?: number) => void} callback
+     */
     stream (pathname, files, length, startByte, res, callback) {
 
         (function streamFile(files, offset) {
@@ -451,7 +632,15 @@ class Server {
         })(files.slice(0), 0);
     }
 
+    /**
+     * @param {Record<string, string>} _headers
+     * @param {http.IncomingMessage} req
+     */
     setCacheHeaders (_headers, req) {
+        /* c8 ignore next 3 -- TS */
+        if (!req.url) {
+            return _headers;
+        }
         const maxAge = this.getMaxAge(req.url);
         if (typeof(maxAge) === 'number') {
             _headers['cache-control'] = 'max-age=' + maxAge;
@@ -459,6 +648,9 @@ class Server {
         return _headers;
     }
 
+    /**
+     * @param {string} requestUrl
+     */
     getMaxAge (requestUrl) {
         if (this.cache) {
             for (const pattern in this.cache) {

@@ -3,3 +3,4 @@ benchmark
 coverage
 .nyc_output
 rollup.config.js
+*.d.ts.map

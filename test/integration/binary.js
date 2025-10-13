@@ -11,6 +11,10 @@ const binFile = join(__dirname, '../../bin/cli.js');
 const fixturePath = join(__dirname, '../fixtures');
 
 let testPort = 8281;
+
+/**
+ * @param {Mocha.Context} obj
+ */
 async function updatePort (obj) {
     obj.port = ++testPort;
 }
@@ -18,7 +22,11 @@ async function updatePort (obj) {
 
 describe('node-static (CLI)', function () {
     it('Gets help text', async function () {
-        const {stdout} = await spawnPromise(binFile, ['-h']);
+        const {stdout} =
+            /**
+             * @type {{ stdout: string; stderr: string; }}
+             */
+            (await spawnPromise(binFile, ['-h']));
         assert.match(stdout, /USAGE: /u);
     });
 
@@ -29,16 +37,26 @@ describe('node-static (CLI)', function () {
             await updatePort(this);
         });
         it('serving file within directory', async function () {
-            const {response /* , stdout */} = await spawnConditional(binFile, [
-                '-p', this.port, fixturePath
-            ], timeout - 9000, {
-                condition: /serving ".*?"/,
-                action: (/* err, stdout */) => {
-                    return fetch(
-                        `http://localhost:${this.port}/hello.txt`
-                    );
-                }
-            });
+            const {response /* , stdout */} =
+                /**
+                 * @type {{
+                 *   response: Response,
+                 *   stdout: string
+                 * }}
+                 */ (await spawnConditional(
+                    binFile,
+                    [
+                        '-p', this.port, fixturePath
+                    ],
+                    timeout - 9000,
+                    {
+                        condition: /serving ".*?"/,
+                        action: (/* err, stdout */) => {
+                            return fetch(
+                                `http://localhost:${this.port}/hello.txt`
+                            );
+                        }
+                    }));
 
             const {status} = response;
             const contentType = response.headers.get('content-type');
@@ -50,16 +68,22 @@ describe('node-static (CLI)', function () {
         });
 
         it('serving file without directory', async function () {
-            const {response /* , stdout */} = await spawnConditional(binFile, [
-                '-p', this.port
-            ], timeout - 9000, {
-                condition: /serving "."/,
-                action: (/* err, stdout */) => {
-                    return fetch(
-                        `http://localhost:${this.port}/test/fixtures/hello.txt`
-                    );
-                }
-            });
+            const {response /* , stdout */} =
+                /**
+                 * @type {{
+                 *   response: Response,
+                 *   stdout: string
+                 * }}
+                 */ (await spawnConditional(binFile, [
+                    '-p', this.port
+                ], timeout - 9000, {
+                    condition: /serving "."/,
+                    action: (/* err, stdout */) => {
+                        return fetch(
+                            `http://localhost:${this.port}/test/fixtures/hello.txt`
+                        );
+                    }
+                }));
 
             const {status} = response;
             const contentType = response.headers.get('content-type');
@@ -73,16 +97,23 @@ describe('node-static (CLI)', function () {
         });
 
         it('serving file within directory and 404', async function () {
-            const {response /* , stdout */} = await spawnConditional(binFile, [
-                '-p', this.port, fixturePath
-            ], timeout - 9000, {
-                condition: /serving ".*?"/,
-                action: (/* err, stdout */) => {
-                    return fetch(
-                        `http://localhost:${this.port}/bad-file`
-                    );
-                }
-            });
+            const {response /* , stdout */} =
+                /**
+                 * @type {{
+                 *   response: Response,
+                 *   stdout: string
+                 * }}
+                 */
+                (await spawnConditional(binFile, [
+                    '-p', this.port, fixturePath
+                ], timeout - 9000, {
+                    condition: /serving ".*?"/,
+                    action: (/* err, stdout */) => {
+                        return fetch(
+                            `http://localhost:${this.port}/bad-file`
+                        );
+                    }
+                }));
 
             const {status} = response;
             const text = await response.text();
@@ -92,16 +123,23 @@ describe('node-static (CLI)', function () {
         });
 
         it('serving file within directory and indexFile', async function () {
-            const {response /* , stdout */} = await spawnConditional(binFile, [
-                '-p', this.port, fixturePath, '--index-file', 'hello.txt'
-            ], timeout - 9000, {
-                condition: /serving ".*?"/,
-                action: (/* err, stdout */) => {
-                    return fetch(
-                        `http://localhost:${this.port}/`
-                    );
-                }
-            });
+            const {response /* , stdout */} =
+                /**
+                 * @type {{
+                 *   response: Response,
+                 *   stdout: string
+                 * }}
+                 */
+                (await spawnConditional(binFile, [
+                    '-p', this.port, fixturePath, '--index-file', 'hello.txt'
+                ], timeout - 9000, {
+                    condition: /serving ".*?"/,
+                    action: (/* err, stdout */) => {
+                        return fetch(
+                            `http://localhost:${this.port}/`
+                        );
+                    }
+                }));
 
             const {status} = response;
             const contentType = response.headers.get('content-type');
@@ -113,19 +151,26 @@ describe('node-static (CLI)', function () {
         });
 
         it('serving file within directory and spa and indexFile', async function () {
-            const {response /* , stdout */} = await spawnConditional(binFile, [
-                '-p', this.port, fixturePath, '--index-file', 'hello.txt', '--spa'
-            ], timeout - 9000, {
-                condition: /serving ".*?"/,
-                error (err) {
-                    console.log('err', err);
-                },
-                action: (/* err, stdout */) => {
-                    return fetch(
-                        `http://localhost:${this.port}/some/other/path`
-                    );
-                }
-            });
+            const {response /* , stdout */} =
+                /**
+                 * @type {{
+                 *   response: Response,
+                 *   stdout: string
+                 * }}
+                 */
+                (await spawnConditional(binFile, [
+                    '-p', this.port, fixturePath, '--index-file', 'hello.txt', '--spa'
+                ], timeout - 9000, {
+                    condition: /serving ".*?"/,
+                    error (err) {
+                        console.log('err', err);
+                    },
+                    action: (/* err, stdout */) => {
+                        return fetch(
+                            `http://localhost:${this.port}/some/other/path`
+                        );
+                    }
+                }));
 
             const {status} = response;
             const contentType = response.headers.get('content-type');
@@ -137,19 +182,26 @@ describe('node-static (CLI)', function () {
         });
 
         it('serving file within directory and spa and default indexFile (and default port)', async function () {
-            const {response /* , stdout */} = await spawnConditional(binFile, [
-                fixturePath, '--spa'
-            ], timeout - 9000, {
-                condition: 'serving as a single page app',
-                error (err) {
-                    console.log('err', err);
-                },
-                action: (/* err, stdout */) => {
-                    return fetch(
-                        `http://localhost:8080/some/other/path`
-                    );
-                }
-            });
+            const {response /* , stdout */} =
+                /**
+                 * @type {{
+                 *   response: Response,
+                 *   stdout: string
+                 * }}
+                 */
+                (await spawnConditional(binFile, [
+                    fixturePath, '--spa'
+                ], timeout - 9000, {
+                    condition: 'serving as a single page app',
+                    error (err) {
+                        console.log('err', err);
+                    },
+                    action: (/* err, stdout */) => {
+                        return fetch(
+                            `http://localhost:8080/some/other/path`
+                        );
+                    }
+                }));
 
             const {status} = response;
             const contentType = response.headers.get('content-type');
@@ -161,20 +213,27 @@ describe('node-static (CLI)', function () {
         });
 
         it('serving file within directory with headers', async function () {
-            const {response /* , stdout */} = await spawnConditional(binFile, [
-                '-p', this.port,
-                '--headers', JSON.stringify({
-                    'Access-Control-Allow-Origin': '*'
-                }),
-                fixturePath
-            ], timeout - 9000, {
-                condition: /serving ".*?"/,
-                action: (/* err, stdout */) => {
-                    return fetch(
-                        `http://localhost:${this.port}/hello.txt`
-                    );
-                }
-            });
+            const {response /* , stdout */} =
+                /**
+                 * @type {{
+                 *   response: Response,
+                 *   stdout: string
+                 * }}
+                 */
+                (await spawnConditional(binFile, [
+                    '-p', this.port,
+                    '--headers', JSON.stringify({
+                        'Access-Control-Allow-Origin': '*'
+                    }),
+                    fixturePath
+                ], timeout - 9000, {
+                    condition: /serving ".*?"/,
+                    action: (/* err, stdout */) => {
+                        return fetch(
+                            `http://localhost:${this.port}/hello.txt`
+                        );
+                    }
+                }));
 
             const {status} = response;
             const contentType = response.headers.get('content-type');
@@ -188,19 +247,26 @@ describe('node-static (CLI)', function () {
         });
 
         it('serving file within directory with header file', async function () {
-            const {response /* , stdout */} = await spawnConditional(binFile, [
-                '-p', this.port,
-                '--header-file',
-                fixturePath + '/header-file.json',
-                fixturePath
-            ], timeout - 9000, {
-                condition: /serving ".*?"/,
-                action: (/* err, stdout */) => {
-                    return fetch(
-                        `http://localhost:${this.port}/hello.txt`
-                    );
-                }
-            });
+            const {response /* , stdout */} =
+                /**
+                 * @type {{
+                 *   response: Response,
+                 *   stdout: string
+                 * }}
+                 */
+                (await spawnConditional(binFile, [
+                    '-p', this.port,
+                    '--header-file',
+                    fixturePath + '/header-file.json',
+                    fixturePath
+                ], timeout - 9000, {
+                    condition: /serving ".*?"/,
+                    action: (/* err, stdout */) => {
+                        return fetch(
+                            `http://localhost:${this.port}/hello.txt`
+                        );
+                    }
+                }));
 
             const {status} = response;
             const contentType = response.headers.get('content-type');
@@ -214,20 +280,27 @@ describe('node-static (CLI)', function () {
         });
 
         it('serving file within directory and gzip', async function () {
-            const {response /* , stdout */} = await spawnConditional(binFile, [
-                '-p', this.port, fixturePath, '--gzip'
-            ], timeout - 9000, {
-                condition: /serving ".*?"/,
-                action: (/* err, stdout */) => {
-                    return fetch(
-                        `http://localhost:${this.port}/hello.txt`, {
-                            headers: {
-                                'accept-encoding': 'gzip'
+            const {response /* , stdout */} =
+                /**
+                 * @type {{
+                 *   response: Response,
+                 *   stdout: string
+                 * }}
+                 */
+                (await spawnConditional(binFile, [
+                    '-p', this.port, fixturePath, '--gzip'
+                ], timeout - 9000, {
+                    condition: /serving ".*?"/,
+                    action: (/* err, stdout */) => {
+                        return fetch(
+                            `http://localhost:${this.port}/hello.txt`, {
+                                headers: {
+                                    'accept-encoding': 'gzip'
+                                }
                             }
-                        }
-                    );
-                }
-            });
+                        );
+                    }
+                }));
 
             const {status} = response;
             const contentType = response.headers.get('content-type');
@@ -241,20 +314,27 @@ describe('node-static (CLI)', function () {
         });
 
         it('serving file within directory and gzip but without gzip accept request', async function () {
-            const {response /* , stdout */} = await spawnConditional(binFile, [
-                '-p', this.port, fixturePath, '--gzip'
-            ], timeout - 9000, {
-                condition: /serving ".*?"/,
-                action: (/* err, stdout */) => {
-                    return fetch(
-                        `http://localhost:${this.port}/hello.txt`, {
-                            headers: {
-                                'accept-encoding': 'nothing'
+            const {response /* , stdout */} =
+                /**
+                 * @type {{
+                 *   response: Response,
+                 *   stdout: string
+                 * }}
+                 */
+                (await spawnConditional(binFile, [
+                    '-p', this.port, fixturePath, '--gzip'
+                ], timeout - 9000, {
+                    condition: /serving ".*?"/,
+                    action: (/* err, stdout */) => {
+                        return fetch(
+                            `http://localhost:${this.port}/hello.txt`, {
+                                headers: {
+                                    'accept-encoding': 'nothing'
+                                }
                             }
-                        }
-                    );
-                }
-            });
+                        );
+                    }
+                }));
 
             const {status} = response;
             const contentType = response.headers.get('content-type');
@@ -268,30 +348,37 @@ describe('node-static (CLI)', function () {
         });
 
         it('serves custom cache', async function () {
-            const {response: responses /* , stdout */} = await spawnConditional(binFile, [
-                '-p', this.port, '--cache', JSON.stringify({
-                    '**/*.txt': 100,
-                    '**/': 300
-                }), fixturePath
-            ], timeout - 9000, {
-                condition: /serving ".*?"/,
-                error (err) {
-                    throw err;
-                },
-                action: (/* err, stdout */) => {
-                    return Promise.all([
-                        fetch(
-                            `http://localhost:${this.port}/`
-                        ),
-                        fetch(
-                            `http://localhost:${this.port}/hello.txt`
-                        ),
-                        fetch(
-                            `http://localhost:${this.port}/empty.css`
-                        )
-                    ]);
-                }
-            });
+            const {response: responses /* , stdout */} =
+                /**
+                 * @type {{
+                 *   response: Response[],
+                 *   stdout: string
+                 * }}
+                 */
+                (await spawnConditional(binFile, [
+                    '-p', this.port, '--cache', JSON.stringify({
+                        '**/*.txt': 100,
+                        '**/': 300
+                    }), fixturePath
+                ], timeout - 9000, {
+                    condition: /serving ".*?"/,
+                    error (err) {
+                        throw err;
+                    },
+                    action: (/* err, stdout */) => {
+                        return Promise.all([
+                            fetch(
+                                `http://localhost:${this.port}/`
+                            ),
+                            fetch(
+                                `http://localhost:${this.port}/hello.txt`
+                            ),
+                            fetch(
+                                `http://localhost:${this.port}/empty.css`
+                            )
+                        ]);
+                    }
+                }));
 
             [
                 ['max-age=300'],

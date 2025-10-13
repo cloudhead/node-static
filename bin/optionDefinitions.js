@@ -1,6 +1,7 @@
 import {readFileSync} from 'fs';
 
 const pkg = JSON.parse(
+    // @ts-expect-error Works fine
     readFileSync(new URL('../package.json', import.meta.url))
 );
 
