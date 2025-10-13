@@ -45,6 +45,11 @@
     "minimatch": "^9.0.0"
   },
   "c8": {
+    "check-coverage": true,
+    "branches": 100,
+    "functions": 100,
+    "lines": 100,
+    "statements": 100,
     "exclude": [
       "dist",
       "test"
