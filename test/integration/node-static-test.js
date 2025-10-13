@@ -46,6 +46,22 @@ function startErringStaticFileServer (port, errBack) {
     });
 }
 
+const gzipFileServer = new statik.Server(__dirname + '/../fixtures', {
+    gzip: true
+});
+function startStaticFileServerWithHeaders (port, headers) {
+    return new Promise((resolve, reject) => {
+        const server = http.createServer(function (request, response) {
+            gzipFileServer.servePath(request.url, 200, headers, request, response, () => {
+                // Finish
+            });
+        });
+        server.listen(port, () => {
+            resolve(server);
+        });
+    });
+}
+
 function startStaticServerWithCallback (port, callback) {
     return new Promise((resolve, reject) => {
         const server = http.createServer((request, response) => {
@@ -101,6 +117,29 @@ describe('node-static', function () {
             await response.text(),
             'Custom 404 Stream.',
             'should respond with the streamed content'
+        );
+
+        server.close();
+    });
+
+    it('mixes Vary headers', async function () {
+        testPort++;
+        const getTestServer = () => {
+            return 'http://localhost:' + testPort;
+        };
+        const server = await startStaticFileServerWithHeaders(testPort, {
+            'Vary': 'Accept-Language'
+        });
+
+        const response = await fetch(getTestServer() + '/hello.txt');
+
+        const vary = response.headers.get('vary');
+        assert.equal(response.status, 200, 'should respond with 200');
+        assert.equal(vary, 'Accept-Language, Accept-Encoding');
+        assert.equal(
+            await response.text(),
+            'hello world',
+            'should respond with hello world'
         );
 
         server.close();
