@@ -27,6 +27,7 @@
 - Fix: path should be more generous in unescaping anything valid in a
     path (such as a hash)
 - Fix: change `fs.createReadStream()` mode to integer (@pixcai)
+- Enhancement: TypeScript support
 - Enhancement: Allow access with local ip (@flyingsky)
 - Enhancement: Allow `serverInfo` to be `null` (@martindale)
 - Enhancement: Time display logging with leading 0 (@mauris)
@@ -50,8 +51,8 @@
     prefer `startsWith` and `includes`
 - Refactoring: Use safer non-prototype version of `colors`
 - Maintenance: Add `.editorconfig`
+- Testing: Full test coverage
 - Testing: Add checks for supposed direct `node-static` vulnerabilities
-- Testing: Add test for `null` and non-`null` serverInfo
 - Testing: Allow tests to end (@fmalk)
 - Testing: Switch to `mocha`/`chai`/`c8`
 - Testing: Add CI workflow
