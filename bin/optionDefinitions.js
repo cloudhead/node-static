@@ -29,6 +29,20 @@ const optionDefinitions = [
         typeLabel: '{underline SECONDS}'
     },
     {
+        name: 'default-extension', alias: 'e', type: String,
+        description: 'Optional default extension',
+        typeLabel: '{underline extension name}'
+    },
+    {
+        name: 'server-info', type: String,
+        description: 'Info to indicate in a header about the server',
+        typeLabel: '{underline server info}'
+    },
+    {
+        name: 'serve-hidden', type: Boolean,
+        description: 'Whether to serve hidden files. Defaults to `false`.',
+    },
+    {
         name: 'headers', alias: 'H', type: String,
         description: 'Additional headers in JSON format.',
         typeLabel: '{underline HEADERS}'

@@ -7,6 +7,7 @@
 - **Breaking change** (npm): Set `engines` to 20.11.0+
 - **Breaking change**: Add `type: 'module'` and `exports` to `package.json`;
     change internal CJS path
+- **Breaking change**: avoid serving hidden files by default (reenable with `--serve-hidden`/`serveHidden`)
 - Security: Fix dependency vulnerabilities by switching from `optimist` to
     `command-line-basics` (@brettz9)
 - Security: Update `mime` and `colors` (@fidian) and pin `colors`
@@ -27,6 +28,7 @@
 - Fix: path should be more generous in unescaping anything valid in a
     path (such as a hash)
 - Fix: Avoid logging range errors to console
+- Fix: ensure `--default-extension` and `--server-info` are settable by CLI
 - Fix: change `fs.createReadStream()` mode to integer (@pixcai)
 - Enhancement: TypeScript support
 - Enhancement: Allow access with local ip (@flyingsky)

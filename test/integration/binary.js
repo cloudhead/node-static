@@ -67,6 +67,133 @@ describe('node-static (CLI)', function () {
             assert.equal(text, 'hello world', 'should respond with hello world');
         });
 
+        it('serving file within directory with server info', async function () {
+            const {response /* , stdout */} =
+                /**
+                 * @type {{
+                 *   response: Response,
+                 *   stdout: string
+                 * }}
+                 */ (await spawnConditional(
+                    binFile,
+                    [
+                        '-p', this.port, fixturePath,
+                        '--server-info', 'my-server'
+                    ],
+                    timeout - 9000,
+                    {
+                        condition: /serving ".*?"/,
+                        action: (/* err, stdout */) => {
+                            return fetch(
+                                `http://localhost:${this.port}/hello.txt`
+                            );
+                        }
+                    }));
+
+            const {status} = response;
+            const contentType = response.headers.get('content-type');
+            const server = response.headers.get('server');
+            const text = await response.text();
+
+            assert.equal(status, 200, 'should respond with 200');
+            assert.equal(contentType, 'text/plain', 'should respond with text/plain');
+            assert.equal(server, 'my-server', 'should respond with my-server')
+            assert.equal(text, 'hello world', 'should respond with hello world');
+        });
+
+        it('serving file within directory with default extension', async function () {
+            const {response /* , stdout */} =
+                /**
+                 * @type {{
+                 *   response: Response,
+                 *   stdout: string
+                 * }}
+                 */ (await spawnConditional(
+                    binFile,
+                    [
+                        '-p', this.port, fixturePath,
+                        '--default-extension', 'txt'
+                    ],
+                    timeout - 9000,
+                    {
+                        condition: /serving ".*?"/,
+                        action: (/* err, stdout */) => {
+                            return fetch(
+                                `http://localhost:${this.port}/hello`
+                            );
+                        }
+                    }));
+
+            const {status} = response;
+            const contentType = response.headers.get('content-type');
+            const text = await response.text();
+
+            assert.equal(status, 200, 'should respond with 200');
+            assert.equal(contentType, 'text/plain', 'should respond with text/plain');
+            assert.equal(text, 'hello world', 'should respond with hello world');
+        });
+
+        it('serving file within directory with hidden extension', async function () {
+            const {response /* , stdout */} =
+                /**
+                 * @type {{
+                 *   response: Response,
+                 *   stdout: string
+                 * }}
+                 */ (await spawnConditional(
+                    binFile,
+                    [
+                        '-p', this.port, fixturePath,
+                        '--serve-hidden'
+                    ],
+                    timeout - 9000,
+                    {
+                        condition: /serving ".*?"/,
+                        action: (/* err, stdout */) => {
+                            return fetch(
+                                `http://localhost:${this.port}/.hidden-hello.txt`
+                            );
+                        }
+                    }));
+
+            const {status} = response;
+            const contentType = response.headers.get('content-type');
+            const text = await response.text();
+
+            assert.equal(status, 200, 'should respond with 200');
+            assert.equal(contentType, 'text/plain', 'should respond with text/plain');
+            assert.equal(text, 'hello world', 'should respond with hello world');
+        });
+
+        it('serving 404 for file with hidden extension', async function () {
+            const {response /* , stdout */} =
+                /**
+                 * @type {{
+                 *   response: Response,
+                 *   stdout: string
+                 * }}
+                 */ (await spawnConditional(
+                    binFile,
+                    [
+                        '-p', this.port, fixturePath
+                    ],
+                    timeout - 9000,
+                    {
+                        condition: /serving ".*?"/,
+                        action: (/* err, stdout */) => {
+                            return fetch(
+                                `http://localhost:${this.port}/.hidden-hello.txt`
+                            );
+                        }
+                    }));
+
+            const {status} = response;
+            const text = await response.text();
+
+            assert.equal(status, 404, 'should respond with 404');
+            assert.equal(text, 'Not Found', 'should respond with Not Found');
+        });
+
         it('serving file without directory', async function () {
             const {response /* , stdout */} =
                 /**

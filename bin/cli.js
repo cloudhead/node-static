@@ -74,6 +74,18 @@ if (args['index-file']) {
     options.indexFile = args['index-file'];
 }
 
+if (args['default-extension']) {
+    options.defaultExtension = args['default-extension'];
+}
+
+if (args['server-info']) {
+    options.serverInfo = args['server-info'];
+}
+
+if (args['serve-hidden']) {
+    options.serveHidden = args['serve-hidden'];
+}
+
 const file = new(statik.Server)(dir, options);
 
 const server = http.createServer(function (request, response) {
