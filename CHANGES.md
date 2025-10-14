@@ -1,6 +1,6 @@
 # CHANGES for `node-static`
 
-## ? (UNRELEASED)
+## 0.8.0 (UNRELEASED)
 
 ### User-facing
 
