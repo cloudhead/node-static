@@ -432,12 +432,11 @@ describe('node-static', function () {
 
         it('serving full bytes of hello.txt with bad range', async function () {
             fileServer = new statik.Server(__dirname + '/../fixtures');
-            const _consoleError = console.error;
-            /** @type {Error} */
-            let loggedErr;
-            console.error = (err) => {
-                loggedErr = err;
-            };
+            let emittedWarning;
+            fileServer.on('warn', (warning) => {
+                emittedWarning = warning;
+            });
+
             const options = {
                 headers: {
                     'Range': 'bytes=1000-1004'
@@ -451,20 +450,15 @@ describe('node-static', function () {
 
             assert.equal(response.headers.get('content-range'), null);
             assert.equal(await response.text(), 'hello world', 'should respond with hello world');
-            // @ts-expect-error Ok
-            assert.equal(loggedErr?.message, 'Range request present but invalid, might serve whole file instead')
-            console.error = _consoleError;
+            assert.equal(emittedWarning, 'Range request present but invalid, might serve whole file instead')
         });
 
         it('serving full bytes of hello.txt with unsupported range flavor', async function () {
             fileServer = new statik.Server(__dirname + '/../fixtures');
-            const _consoleWarn = console.warn;
-            let loggedWarning;
-            let loggedHeader;
-            console.warn = (warning, warning2) => {
-                loggedWarning = warning;
-                loggedHeader = warning2;
-            };
+            let emittedWarning;
+            fileServer.once('warn', (warning) => {
+                emittedWarning = warning;
+            });
             const options = {
                 headers: {
                     'Range': 'qubits=1-5'
@@ -478,20 +472,15 @@ describe('node-static', function () {
 
             assert.equal(response.headers.get('content-range'), null);
             assert.equal(await response.text(), 'hello world', 'should respond with hello world');
-            assert.equal(loggedWarning, 'Request contains unsupported range header: ')
-            assert.equal(loggedHeader, 'qubits=1-5');
-            console.warn = _consoleWarn;
+            assert.equal(emittedWarning, 'Request contains unsupported range header: qubits=1-5');
         });
 
         it('serving full bytes of hello.txt with invalid range header', async function () {
             fileServer = new statik.Server(__dirname + '/../fixtures');
-            const _consoleWarn = console.warn;
-            let loggedWarning;
-            let loggedHeader;
-            console.warn = (warning, warning2) => {
-                loggedWarning = warning;
-                loggedHeader = warning2;
-            };
+            let emittedWarning;
+            fileServer.once('warn', (warning) => {
+                emittedWarning = warning;
+            });
             const options = {
                 headers: {
                     'Range': 'bytes=a-b'
@@ -505,9 +494,7 @@ describe('node-static', function () {
 
             assert.equal(response.headers.get('content-range'), null);
             assert.equal(await response.text(), 'hello world', 'should respond with hello world');
-            assert.equal(loggedWarning, 'Request contains invalid range header: ')
-            assert.deepEqual(loggedHeader, ['a', 'b']);
-            console.warn = _consoleWarn;
+            assert.equal(emittedWarning, "Request contains invalid range header: a, b")
         });
 
         it('serving directory index', async function (){

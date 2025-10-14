@@ -26,6 +26,7 @@
 - Fix: Ensure package `version` stays up to date
 - Fix: path should be more generous in unescaping anything valid in a
     path (such as a hash)
+- Fix: Avoid logging range errors to console
 - Fix: change `fs.createReadStream()` mode to integer (@pixcai)
 - Enhancement: TypeScript support
 - Enhancement: Allow access with local ip (@flyingsky)

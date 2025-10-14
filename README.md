@@ -225,6 +225,16 @@ A request to '/myFile' would check for a `myFile` folder (first) then a
 
 example: `{ defaultExtension: "html" }`
 
+### Listening for emitted warnings
+
+Certain warnings are not logged to console but instead may be listened for.
+
+```js
+fileServer.on('warn', (msg) => {
+    console.log(msg);
+});
+```
+
 ## Command Line Interface
 
 `node-static` also provides a CLI.
