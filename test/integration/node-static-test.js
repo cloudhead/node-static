@@ -17,10 +17,16 @@ let testPort = 8151;
  *     req: http.IncomingMessage;
  *   }
  * ) => void} [cb]
+ * @param {(
+ *   request: http.IncomingMessage,
+ *   response: http.ServerResponse<http.IncomingMessage> & {
+ *     req: http.IncomingMessage;
+ *   }
+ * ) => void} [preprocessCb]
  */
-async function setupStaticServer (obj, cb) {
+async function setupStaticServer (obj, cb, preprocessCb) {
     obj.port = ++testPort;
-    obj.server = await startStaticServer(obj.port, cb);
+    obj.server = await startStaticServer(obj.port, cb, preprocessCb);
     obj.getTestServer = () => {
         return 'http://localhost:' + obj.port;
     };
@@ -38,10 +44,19 @@ let fileServer = new statik.Server(__dirname + '/../fixtures');
  *     req: http.IncomingMessage;
  *   }
  * ) => void} [callback]
+ * @param {(
+ *   request: http.IncomingMessage,
+ *   response: http.ServerResponse<http.IncomingMessage> & {
+ *     req: http.IncomingMessage;
+ *   }
+ * ) => void} [preprocessCallback]
  */
-function startStaticServer (port, callback) {
+function startStaticServer (port, callback, preprocessCallback) {
     return new Promise((resolve, reject) => {
         const server = http.createServer(function (request, response) {
+            if (preprocessCallback) {
+                preprocessCallback(request, response);
+            }
             const serveProm = fileServer.serve(request, response);
             if (callback) {
                 callback(serveProm, request, response);
@@ -616,6 +631,25 @@ describe('node-static', function () {
             assert.equal(response.status, 404, 'should respond with 404');
         });
     });
+
+    describe('once an http server is listening with a custom header', function () {
+        beforeEach(async function () {
+            await setupStaticServer(this, undefined, (_req, res) => {
+                res.setHeader('Content-Type', 'text/html');
+            });
+        });
+        afterEach(async function () {
+            this.server.close();
+        });
+        it('requesting a text file as HTML', async function () {
+            fileServer = new statik.Server(__dirname+'/../fixtures');
+            const response = await fetch(this.getTestServer() + '/hello.txt');
+
+            assert.equal(response.headers.get('content-type'), 'text/html', 'should respond with text/html');
+            assert.equal(response.status, 200, 'should respond with 200');
+        });
+    });
+
     describe('once an http server is listening with custom index configuration', function () {
         before(function () {
             fileServer = new statik.Server(__dirname + '/../fixtures', { indexFile: "hello.txt" });
