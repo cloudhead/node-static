@@ -67,6 +67,40 @@ describe('node-static (CLI)', function () {
             assert.equal(text, 'hello world', 'should respond with hello world');
         });
 
+        it('serving file within directory with UTF-8 content-type', async function () {
+            const {response /* , stdout */} =
+                /**
+                 * @type {{
+                 *   response: Response,
+                 *   stdout: string
+                 * }}
+                 */ (await spawnConditional(
+                    binFile,
+                    [
+                        '-p', this.port, fixturePath,
+                        '-H', JSON.stringify({
+                            'Content-Type': 'text/html;charset=UTF-8'
+                        })
+                    ],
+                    timeout - 9000,
+                    {
+                        condition: /serving ".*?"/,
+                        action: (/* err, stdout */) => {
+                            return fetch(
+                                `http://localhost:${this.port}/utf8.html`
+                            );
+                        }
+                    }));
+
+            const {status} = response;
+            const contentType = response.headers.get('content-type');
+            const text = await response.text();
+
+            assert.equal(status, 200, 'should respond with 200');
+            assert.equal(contentType, 'text/html', 'should respond with text/html');
+            assert.include(text, '你好，世界！', 'should respond with hello world in Chinese');
+        });
+
         it('serving file within directory with server info', async function () {
             const {response /* , stdout */} =
                 /**
