@@ -24,6 +24,7 @@
 - Fix: Support `bytes=0-0` Range header (@prajwalkman)
 - Fix: Avoid octal (@bgao / @Ilrilan)
 - Fix: For `spa`, allow dots after path (@gjuchault)
+- Fix: ensure query string on directory request is passed on
 - Fix: Ensure package `version` stays up to date
 - Fix: path should be more generous in unescaping anything valid in a
     path (such as a hash)
