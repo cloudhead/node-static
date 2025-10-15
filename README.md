@@ -132,11 +132,20 @@ If you wish to apply a transform to text files before they are streamed in
 response, you can supply a `transform` callback which returns a `stream`
 `Transform`.
 
+For example, if we wished to upper-case everything in text content:
+
 ```js
+import {Transform} from 'stream';
+
 const server = http.createServer((req, res) => {
     const s = new statik.Server(__dirname + '/../fixtures', {
         transform (fileString, pathname, req, res) {
-
+            return new Transform({
+                transform(chunk, _enc, cb) {
+                    // Supply the transformed data as the second argument
+                    cb(null, chunk.toString().toUpperCase());
+                }
+            });
         }
     });
     s.serve(req, res);
