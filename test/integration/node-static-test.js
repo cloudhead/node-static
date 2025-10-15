@@ -140,7 +140,7 @@ describe('node-static', function () {
         let setError = null;
         const server = http.createServer(function (request, response) {
             fileServer.stream(
-                undefined, ['bad-file.txt'], 0, 0, response, (err) => {
+                null, ['bad-file.txt'], 0, 0, response, (err) => {
                     if (err) {
                         setError = err;
                     }
