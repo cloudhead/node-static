@@ -34,12 +34,14 @@ const statik = require('node-static');
 ## Usage
 
 ```js
+import http from 'node:http';
+
 //
 // Create a node-static server instance to serve the './public' folder
 //
 const file = new statik.Server('./public');
 
-require('http').createServer(function (request, response) {
+http.createServer(function (request, response) {
     request.addListener('end', function () {
         //
         // Serve files!
@@ -82,11 +84,12 @@ To serve files under a directory, simply call the `serve` method on a `Server`
 instance, passing it the HTTP request and response object:
 
 ```js
-const statik = require('node-static');
+import http from 'node:http';
+import * as statik from 'node-static';
 
-var fileServer = new statik.Server('./public');
+const fileServer = new statik.Server('./public');
 
-require('http').createServer(function (request, response) {
+http.createServer(function (request, response) {
     request.addListener('end', function () {
         fileServer.serve(request, response);
     }).resume();
@@ -108,7 +111,7 @@ For example, you could serve an error page, when the initial request wasn't
 found:
 
 ```js
-require('http').createServer(function (request, response) {
+http.createServer(function (request, response) {
     request.addListener('end', function () {
         fileServer.serve(request, response, function (e, res) {
             if (e && (e.status === 404)) { // If the file wasn't found
@@ -130,11 +133,12 @@ time a file has been served successfully, or if there was an error serving the
 file:
 
 ```js
-const statik = require('node-static');
+import http from 'node:http';
+import * as statik from 'node-static';
 
 const fileServer = new statik.Server('./public');
 
-require('http').createServer(function (request, response) {
+http.createServer(function (request, response) {
     request.addListener('end', function () {
         fileServer.serve(request, response, function (err, result) {
             if (err) { // There was an error serving the file
