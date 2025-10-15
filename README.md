@@ -155,7 +155,7 @@ const server = http.createServer((req, res) => {
 ### Serving custom directory
 
 ```js
-const fileServer = new statik.Server(__dirname + '/../fixtures', {
+const fileServer = new statik.Server(__dirname + '/../public', {
     directoryCallback (pathname, req, res) {
         res.writeHead(200, {
             'Content-Type': 'text/html'
