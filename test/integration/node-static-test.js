@@ -1,4 +1,5 @@
 import http from 'http';
+import {basename} from 'path';
 
 import {assert} from 'chai';
 import fetch from 'node-fetch';
@@ -725,10 +726,35 @@ describe('node-static', function () {
             this.server.close();
         });
 
-        it('returns 200 with missing JSON file', async function () {
+        it('returns 200 with multiple JSON files config', async function () {
             const response = await fetch(this.getTestServer() + '/');
             assert.equal(response.status, 200, 'should respond with 200');
             assert.equal(await response.text(), 'Hi\nhello world', 'should respond with Hi\nhello world');
+        });
+    });
+
+    describe('once an http server is listening with directoryCallback', function () {
+        before(function () {
+            fileServer = new statik.Server(__dirname + '/../fixtures', {
+                directoryCallback (pathname, req, res) {
+                    res.writeHead(200, {
+                        'Content-Type': 'text/html'
+                    });
+                    res.end(`Hi ${basename(pathname)}!`);
+                }
+            });
+        });
+        beforeEach(async function () {
+            await setupStaticServer(this);
+        });
+        afterEach(async function () {
+            this.server.close();
+        });
+
+        it('returns 200 with directoryCallback', async function () {
+            const response = await fetch(this.getTestServer() + '/there');
+            assert.equal(response.status, 200, 'should respond with 200');
+            assert.equal(await response.text(), 'Hi there!', 'should respond with Hi there!');
         });
     });
 

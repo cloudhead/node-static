@@ -152,6 +152,21 @@ const server = http.createServer((req, res) => {
 }).listen(9010);
 ```
 
+### Serving custom directory
+
+```js
+fileServer = new statik.Server(__dirname + '/../fixtures', {
+    directoryCallback (pathname, req, res) {
+        res.writeHead(200, {
+            'Content-Type': 'text/html'
+        });
+        res.end(`Hi <b>${basename(pathname)}</b>!`);
+
+        // You could add a listing of files by `readdir` here
+    }
+});
+```
+
 ### Intercepting errors & Listening
 
 An optional callback can be passed as last argument, it will be called every
