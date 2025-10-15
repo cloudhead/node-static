@@ -13,7 +13,7 @@ it('invokes custom transform factory and applies its transform', async function 
         called = true;
         return new Transform({
             transform(chunk, _enc, cb) {
-                cb(null, Buffer.from(chunk.toString().toUpperCase() + '\n--CUSTOM--'));
+                cb(null, chunk.toString().toUpperCase() + '\n--CUSTOM--');
             }
         });
     };

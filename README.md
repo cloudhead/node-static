@@ -124,7 +124,24 @@ http.createServer(function (request, response) {
 }).listen(8080);
 ```
 
-More on intercepting errors bellow.
+More on intercepting errors below.
+
+### Transforming text files
+
+If you wish to apply a transform to text files before they are streamed in
+response, you can supply a `transform` callback which returns a `stream`
+`Transform`.
+
+```js
+const server = http.createServer((req, res) => {
+    const s = new statik.Server(__dirname + '/../fixtures', {
+        transform (fileString, pathname, req, res) {
+
+        }
+    });
+    s.serve(req, res);
+}).listen(9010);
+```
 
 ### Intercepting errors & Listening
 
