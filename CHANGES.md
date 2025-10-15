@@ -8,6 +8,8 @@
 - **Breaking change**: Add `type: 'module'` and `exports` to `package.json`;
     change internal CJS path
 - **Breaking change**: avoid serving hidden files by default (reenable with `--serve-hidden`/`serveHidden`)
+- **Breaking change**: `cache: false` now sets `no-cache` (as do 0 or
+    negative values). Set to `null` instead to reproduce old behavior
 - Security: Fix dependency vulnerabilities by switching from `optimist` to
     `command-line-basics` (@brettz9)
 - Security: Update `mime` and `colors` (@fidian) and pin `colors`
