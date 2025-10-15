@@ -44,6 +44,7 @@
   "dependencies": {
     "colors": "1.4.0",
     "command-line-basics": "^3.0.0",
+    "is-hidden-file": "^1.1.2",
     "mime": "^3.0.0",
     "minimatch": "^9.0.0"
   },
