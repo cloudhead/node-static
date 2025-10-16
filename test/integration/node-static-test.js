@@ -8,6 +8,9 @@ import * as statik from '../../lib/node-static.js';
 const __dirname = import.meta.dirname;
 
 let testPort = 8151;
+const getTestServer = () => {
+    return 'http://localhost:' + testPort;
+};
 
 /**
  * @param {Mocha.Context} obj
@@ -94,7 +97,7 @@ const gzipFileServer = new statik.Server(__dirname + '/../fixtures', {
  * @param {number} port
  * @param {Record<string, string>} headers
  */
-function startStaticFileServerWithHeaders (port, headers) {
+function startStaticFileServerWithGzipAndHeaders (port, headers) {
     return new Promise((resolve, reject) => {
         const server = http.createServer(function (request, response) {
             /* c8 ignore next 3 -- TS */
@@ -159,9 +162,6 @@ describe('node-static', function () {
     });
     it('streaming a 404 page', async function () {
         testPort++;
-        const getTestServer = () => {
-            return 'http://localhost:' + testPort;
-        };
         const server = await startStaticServerWithCallback(testPort, (request, response, err, result) => {
             if (err) {
                 response.writeHead(err.status, err.headers);
@@ -185,10 +185,7 @@ describe('node-static', function () {
 
     it('mixes Vary headers', async function () {
         testPort++;
-        const getTestServer = () => {
-            return 'http://localhost:' + testPort;
-        };
-        const server = await startStaticFileServerWithHeaders(testPort, {
+        const server = await startStaticFileServerWithGzipAndHeaders(testPort, {
             'Vary': 'Accept-Language'
         });
 
@@ -208,9 +205,6 @@ describe('node-static', function () {
 
     it('get error triggered for file serving', function (done) {
         testPort++;
-        const getTestServer = () => {
-            return 'http://localhost:' + testPort;
-        };
 
         /** @type {http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>} */
         let server;
