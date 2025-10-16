@@ -35,6 +35,8 @@
 - Fix: change `fs.createReadStream()` mode to integer (@pixcai)
 - Enhancement: TypeScript support
 - Enhancement: Add `directoryCallback` option
+- Enhancement: Emit warning if gzipped file is older than source file
+- Enhancement: add `gzipOnly` option
 - Enhancement: Allow access with local ip (@flyingsky)
 - Enhancement: Allow `serverInfo` to be `null` (@martindale)
 - Enhancement: Time display logging with leading 0 (@mauris)

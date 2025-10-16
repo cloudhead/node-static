@@ -90,7 +90,7 @@ function startErringStaticFileServer (port, errBack) {
 }
 
 let gzipFileServer = new statik.Server(__dirname + '/../fixtures', {
-    gzip: true
+    gzip: true,
 });
 
 /**
@@ -237,6 +237,50 @@ describe('node-static', function () {
             true,
             'should emit file name'
         );
+        assert.equal(
+            await response.text(),
+            'hello world',
+            'should respond with hello world'
+        );
+
+        server.close();
+    });
+
+    it('gets gzipped file without source file', async function () {
+        testPort++;
+
+        gzipFileServer = new statik.Server(__dirname + '/../fixtures', {
+            gzip: true,
+            gzipOnly: 'allow'
+        });
+        const server = await startStaticFileServerWithGzipAndHeaders(testPort, {});
+        const response = await fetch(getTestServer() + '/lone-hello.txt');
+
+        const vary = response.headers.get('vary');
+        assert.equal(response.status, 200, 'should respond with 200');
+        assert.equal(vary, 'Accept-Encoding');
+        assert.equal(
+            await response.text(),
+            'hello world',
+            'should respond with hello world'
+        );
+
+        server.close();
+    });
+
+    it('gets required gzipped file only (without source file)', async function () {
+        testPort++;
+
+        gzipFileServer = new statik.Server(__dirname + '/../fixtures', {
+            gzip: true,
+            gzipOnly: 'require'
+        });
+        const server = await startStaticFileServerWithGzipAndHeaders(testPort, {});
+        const response = await fetch(getTestServer() + '/lone-hello.txt');
+
+        const vary = response.headers.get('vary');
+        assert.equal(response.status, 200, 'should respond with 200');
+        assert.equal(vary, 'Accept-Encoding');
         assert.equal(
             await response.text(),
             'hello world',

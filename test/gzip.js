@@ -30,6 +30,10 @@ await Promise.all([
     gzip(
         import.meta.dirname + '/fixtures/hello.txt',
         import.meta.dirname + '/fixtures/hello-with-older-gz.txt.gz'
+    ),
+    gzip(
+        import.meta.dirname + '/fixtures/hello.txt',
+        import.meta.dirname + '/fixtures/lone-hello.txt.gz'
     )
 ]);
 

@@ -274,6 +274,14 @@ gzipFileServer.on(
 );
 ```
 
+#### `gzipOnly` (Default: `undefined`)
+
+The default behavior is to require checking of a source file's existence.
+If you want to allow gzipped files without source files, set
+`gzipOnly` to `allow`. If you want to go further and require that source
+files not be present for gzipped equivalents, then set `gzipOnly` to
+`require`.
+
 #### `indexFile` (Default: `index.html`)
 
 Choose a custom index file when serving up directories.

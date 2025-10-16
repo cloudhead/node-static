@@ -58,6 +58,11 @@ const optionDefinitions = [
             'plus ".gz"). Optional.'
     },
     {
+        name: 'gzip-only', type: String,
+        description: 'Allows or requires compression. Optional.',
+        typeLabel: '{underline "allow"|"require"}'
+    },
+    {
         name: 'spa', type: Boolean,
         description: 'Serve the content as a single page app by redirecting ' +
             'all non-file requests to the index HTML file. Optional.'

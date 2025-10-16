@@ -474,6 +474,41 @@ describe('node-static (CLI)', function () {
             assert.equal(text, 'hello world', 'should respond with hello world');
         });
 
+        it('serving file within directory and gzip and gzipOnly', async function () {
+            const {response /* , stdout */} =
+                /**
+                 * @type {{
+                 *   response: Response,
+                 *   stdout: string
+                 * }}
+                 */
+                (await spawnConditional(binFile, [
+                    '-p', this.port, fixturePath, '--gzip',
+                    '--gzip-only', 'allow'
+                ], timeout - 9000, {
+                    condition: /serving ".*?"/,
+                    action: (/* err, stdout */) => {
+                        return fetch(
+                            `http://localhost:${this.port}/lone-hello.txt`, {
+                                headers: {
+                                    'accept-encoding': 'gzip'
+                                }
+                            }
+                        );
+                    }
+                }));
+
+            const {status} = response;
+            const contentType = response.headers.get('content-type');
+            const contentEncoding = response.headers.get('content-encoding');
+            const text = await response.text();
+
+            assert.equal(status, 200, 'should respond with 200');
+            assert.equal(contentType, 'text/plain', 'should respond with text/plain');
+            assert.equal(contentEncoding, 'gzip', 'should respond with gzip encoding');
+            assert.equal(text, 'hello world', 'should respond with hello world');
+        });
+
         it('serving file within directory and gzip but without gzip accept request', async function () {
             const {response /* , stdout */} =
                 /**
