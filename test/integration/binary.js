@@ -1,4 +1,5 @@
-import {join} from 'path';
+import {join} from 'node:path';
+import {unlink} from 'node:fs/promises';
 
 import {assert} from 'chai';
 import fetch from 'node-fetch';
@@ -9,6 +10,7 @@ const __dirname = import.meta.dirname;
 
 const binFile = join(__dirname, '../../bin/cli.js');
 const fixturePath = join(__dirname, '../fixtures');
+const autoGzPath = join(__dirname, '../fixtures/auto-gz-hello.txt.gz');
 
 let testPort = 8281;
 
@@ -472,6 +474,57 @@ describe('node-static (CLI)', function () {
             assert.equal(contentType, 'text/plain', 'should respond with text/plain');
             assert.equal(contentEncoding, 'gzip', 'should respond with gzip encoding');
             assert.equal(text, 'hello world', 'should respond with hello world');
+        });
+
+        describe('`gzipAuto`', function () {
+            const tryUnlink = async () => {
+                try {
+                    await unlink(autoGzPath);
+                } catch (err) {
+                    if (/** @type {NodeJS.ErrnoException} */ (err).code !== 'ENOENT') {
+                        throw err;
+                    }
+                }
+            };
+            beforeEach(async () => {
+                await tryUnlink();
+            });
+            afterEach(async () => {
+                await tryUnlink();
+            });
+            it('serving file within directory and gzip and gzipAuto', async function () {
+                const {response /* , stdout */} =
+                    /**
+                     * @type {{
+                     *   response: Response,
+                     *   stdout: string
+                     * }}
+                     */
+                    (await spawnConditional(binFile, [
+                        '-p', this.port, fixturePath, '--gzip', '--gzip-auto'
+                    ], timeout - 9000, {
+                        condition: /serving ".*?"/,
+                        action: (/* err, stdout */) => {
+                            return fetch(
+                                `http://localhost:${this.port}/auto-gz-hello.txt`, {
+                                    headers: {
+                                        'accept-encoding': 'gzip'
+                                    }
+                                }
+                            );
+                        }
+                    }));
+
+                const {status} = response;
+                const contentType = response.headers.get('content-type');
+                const contentEncoding = response.headers.get('content-encoding');
+                const text = await response.text();
+
+                assert.equal(status, 200, 'should respond with 200');
+                assert.equal(contentType, 'text/plain', 'should respond with text/plain');
+                assert.equal(contentEncoding, 'gzip', 'should respond with gzip encoding');
+                assert.equal(text, 'hello world', 'should respond with hello world');
+            });
         });
 
         it('serving file within directory and gzip and gzipOnly', async function () {

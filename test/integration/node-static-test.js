@@ -1,9 +1,14 @@
-import http from 'http';
-import {basename} from 'path';
+import http from 'node:http';
+import {basename} from 'node:path';
+import {writeFile} from 'node:fs/promises';
+import {
+    setTimeout,
+} from 'node:timers/promises';
 
 import {assert} from 'chai';
 import fetch from 'node-fetch';
 import * as statik from '../../lib/node-static.js';
+import {gzip} from '../../lib/node-static/gzip.js';
 
 const __dirname = import.meta.dirname;
 
@@ -162,12 +167,11 @@ describe('node-static', function () {
     });
     it('streaming a 404 page', async function () {
         testPort++;
-        const server = await startStaticServerWithCallback(testPort, (request, response, err, result) => {
+        const server = await startStaticServerWithCallback(testPort, async (request, response, err, result) => {
             if (err) {
                 response.writeHead(err.status, err.headers);
-                setTimeout(() => {
-                    response.end('Custom 404 Stream.')
-                }, 100);
+                await setTimeout(100);
+                response.end('Custom 404 Stream.')
             }
         });
         const response = await fetch(getTestServer() + '/not-found');
@@ -246,6 +250,51 @@ describe('node-static', function () {
         server.close();
     });
 
+    describe('`gzipAuto`', function () {
+        const buildOlderGzipped = async () => {
+            await gzip(
+                __dirname + '/../fixtures/hello-with-older-auto-gz.txt',
+                __dirname + '/../fixtures/hello-with-older-auto-gz.txt.gz'
+            );
+            // Rewrite the contents after a delay, so the gzip is now older
+            await setTimeout(100);
+            await writeFile(
+                __dirname + '/../fixtures/hello-with-older-auto-gz.txt',
+                'hello world',
+                'utf8'
+            );
+        };
+        beforeEach(async () => {
+            await buildOlderGzipped();
+        });
+        afterEach(async () => {
+            await buildOlderGzipped();
+        });
+        it('rebuilds gzipped file if older than source file', async function () {
+            testPort++;
+
+            gzipFileServer = new statik.Server(__dirname + '/../fixtures', {
+                gzip: true,
+                gzipAuto: true
+            });
+
+            const server = await startStaticFileServerWithGzipAndHeaders(testPort, {});
+
+            const response = await fetch(getTestServer() + '/hello-with-older-auto-gz.txt');
+
+            const vary = response.headers.get('vary');
+            assert.equal(response.status, 200, 'should respond with 200');
+            assert.equal(vary, 'Accept-Encoding');
+            assert.equal(
+                await response.text(),
+                'hello world',
+                'should respond with hello world'
+            );
+
+            server.close();
+        });
+    });
+
     it('gets gzipped file without source file', async function () {
         testPort++;
 
@@ -266,6 +315,25 @@ describe('node-static', function () {
         );
 
         server.close();
+    });
+
+    it('throws with both `gzipOnly` and `gzipAuto` arguments', function () {
+        /** @type {Error|null} */
+        let thrownError = null;
+        try {
+            new statik.Server(__dirname + '/../fixtures', {
+                gzip: true,
+                gzipAuto: true,
+                gzipOnly: 'require'
+            });
+        } catch (err) {
+            thrownError = /** @type {Error} */ (err);
+        }
+        assert.equal(
+            thrownError?.message,
+            '`gzipOnly` and `gzipAuto` may not be used togther.',
+            'May not use `gzipOnly` and `gzipAuto` options together'
+        );
     });
 
     it('gets required gzipped file only (without source file)', async function () {

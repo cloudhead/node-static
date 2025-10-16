@@ -70,6 +70,10 @@ if (args['gzip']) {
     options.gzip = true;
 }
 
+if (args['gzip-auto']) {
+    options.gzipAuto = true;
+}
+
 if (args['gzip-only']) {
     options.gzipOnly = args['gzip-only'];
 }

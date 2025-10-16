@@ -246,18 +246,19 @@ Enable support for sending compressed responses.  This will enable a check for
 a file with the same name plus '.gz' in the same folder.  If the compressed
 file is found and the client has indicated support for gzip file transfer,
 the contents of the .gz file will be sent in place of the uncompressed file
-along with a Content-Encoding: gzip header to inform the client the data has
+along with a `Content-Encoding: gzip` header to inform the client the data has
 been compressed.
 
 example: `{ gzip: true }`
 example: `{ gzip: /^\/text/ }`
 
 Passing `true` will enable this check for all files.
-Passing a RegExp instance will only enable this check if the content-type of
-the respond would match that RegExp using its test() method.
+
+Passing a `RegExp` instance will only enable this check if the content-type of
+the respond would match that `RegExp` using its `test()` method.
 
 For cases where a gzip file is older than the source file, you can
-listen for warnings about this.
+listen for warnings:
 
 ```js
 const gzipFileServer = new statik.Server(__dirname + '/public', {
@@ -281,6 +282,13 @@ If you want to allow gzipped files without source files, set
 `gzipOnly` to `allow`. If you want to go further and require that source
 files not be present for gzipped equivalents, then set `gzipOnly` to
 `require`.
+
+#### `gzipAuto` (Default: `undefined`)
+
+If set, `gzipAuto` will trigger automatic gzipping of resources.
+
+This will follow the settings of `gzip` to determine which files should be
+gzipped.
 
 #### `indexFile` (Default: `index.html`)
 

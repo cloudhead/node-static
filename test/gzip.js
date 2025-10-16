@@ -1,26 +1,10 @@
 import {
-    createReadStream,
-    createWriteStream,
-} from 'node:fs';
-import {
     writeFile
 } from 'node:fs/promises';
 import {
     setTimeout,
 } from 'node:timers/promises';
-import { createGzip } from 'node:zlib';
-import { pipeline } from 'node:stream/promises';
-
-/**
- * @param {string} input
- * @param {string} output
- */
-async function gzip (input, output) {
-    const gzip = createGzip();
-    const source = createReadStream(input);
-    const destination = createWriteStream(output);
-    await pipeline(source, gzip, destination);
-}
+import { gzip } from '../lib/node-static/gzip.js';
 
 await Promise.all([
     gzip(

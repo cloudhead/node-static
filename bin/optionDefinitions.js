@@ -63,6 +63,10 @@ const optionDefinitions = [
         typeLabel: '{underline "allow"|"require"}'
     },
     {
+        name: 'gzip-auto', type: Boolean,
+        description: 'Whether to automatically gzip resources according to `gzip`.',
+    },
+    {
         name: 'spa', type: Boolean,
         description: 'Serve the content as a single page app by redirecting ' +
             'all non-file requests to the index HTML file. Optional.'
