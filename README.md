@@ -138,7 +138,7 @@ For example, if we wished to upper-case everything in text content:
 import {Transform} from 'stream';
 
 const server = http.createServer((req, res) => {
-    const s = new statik.Server(__dirname + '/../fixtures', {
+    const s = new statik.Server(__dirname + '/public', {
         transform (fileString, pathname, req, res) {
             return new Transform({
                 transform(chunk, _enc, cb) {
@@ -155,7 +155,7 @@ const server = http.createServer((req, res) => {
 ### Serving custom directory
 
 ```js
-const fileServer = new statik.Server(__dirname + '/../public', {
+const fileServer = new statik.Server(__dirname + '/public', {
     directoryCallback (pathname, req, res) {
         res.writeHead(200, {
             'Content-Type': 'text/html'
@@ -255,6 +255,24 @@ example: `{ gzip: /^\/text/ }`
 Passing `true` will enable this check for all files.
 Passing a RegExp instance will only enable this check if the content-type of
 the respond would match that RegExp using its test() method.
+
+For cases where a gzip file is older than the source file, you can
+listen for warnings about this.
+
+```js
+const gzipFileServer = new statik.Server(__dirname + '/public', {
+    gzip: true
+});
+gzipFileServer.on(
+    'warn',
+    (warning, file, statMtime, gzStatMtime) => {
+        if (warning === 'Gzipped version is older than source file') {
+            // One could append an extension and create the gzip file here
+            console.log(file);
+        }
+    }
+);
+```
 
 #### `indexFile` (Default: `index.html`)
 
