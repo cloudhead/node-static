@@ -89,7 +89,7 @@ function startErringStaticFileServer (port, errBack) {
     });
 }
 
-const gzipFileServer = new statik.Server(__dirname + '/../fixtures', {
+let gzipFileServer = new statik.Server(__dirname + '/../fixtures', {
     gzip: true
 });
 
@@ -194,6 +194,49 @@ describe('node-static', function () {
         const vary = response.headers.get('vary');
         assert.equal(response.status, 200, 'should respond with 200');
         assert.equal(vary, 'Accept-Language, Accept-Encoding');
+        assert.equal(
+            await response.text(),
+            'hello world',
+            'should respond with hello world'
+        );
+
+        server.close();
+    });
+
+    it('avoids using gzipped file if older than source file', async function () {
+        testPort++;
+
+        let emittedWarning;
+        let emittedFile = '';
+
+        gzipFileServer = new statik.Server(__dirname + '/../fixtures', {
+            gzip: true
+        });
+        gzipFileServer.on(
+            'warn',
+            /**
+             * @param {string} warning
+             * @param {string} file
+             */
+            (warning, file) => {
+                emittedWarning = warning;
+                emittedFile = file;
+            }
+        );
+
+        const server = await startStaticFileServerWithGzipAndHeaders(testPort, {});
+
+        const response = await fetch(getTestServer() + '/hello-with-older-gz.txt');
+
+        const vary = response.headers.get('vary');
+        assert.equal(response.status, 200, 'should respond with 200');
+        assert.equal(vary, null, 'should not have vary header');
+        assert.equal(emittedWarning, 'Gzipped version is older than source file', 'should show warning about gzipped version');
+        assert.equal(
+            emittedFile.endsWith('hello-with-older-gz.txt'),
+            true,
+            'should emit file name'
+        );
         assert.equal(
             await response.text(),
             'hello world',
