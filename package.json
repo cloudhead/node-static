@@ -73,7 +73,6 @@
     "globals": "^16.4.0",
     "mocha": "^11.7.4",
     "node-fetch": "^2.6.6",
-    "node-gzip": "^1.1.2",
     "rollup": "^4.52.4",
     "typescript": "^5.9.3"
   },
