@@ -8,6 +8,8 @@ node-static understands and supports *conditional GET* and *HEAD* requests.
 node-static was inspired by some of the other static-file serving modules out
 there, such as node-paperboy and antinode.
 
+**Note: `node-static` is no longer being actively maintained within this repository or as an npm package. See [this issue](https://github.com/cloudhead/node-static/issues/231) for the background. A fork is, however, being maintained at <https://github.com/node-static/node-static> (npm package `@node-static/node-static`).**
+
 ## Installation
 
 ```sh
