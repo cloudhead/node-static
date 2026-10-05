@@ -5,7 +5,7 @@
   "author": "Alexis Sellier <alexis@cloudhead.io>",
   "contributors": [
     "Pablo Cantero",
-    "Ionică Bizău <bizauionica@gmail.com>",
+    "Ionic\u0103 Biz\u0103u <bizauionica@gmail.com>",
     "Brett Zamir"
   ],
   "type": "module",
@@ -86,5 +86,10 @@
   "directories": {
     "example": "examples",
     "test": "test"
+  },
+  "overrides": {
+    "minimatch": {
+      "brace-expansion": "5.0.12"
+    }
   }
 }
